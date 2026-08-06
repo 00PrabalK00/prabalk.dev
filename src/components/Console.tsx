@@ -18,7 +18,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { profile } from "@/lib/data";
-import { cinema } from "@/lib/scroll";
+import { cinema, setScenePaused } from "@/lib/scroll";
 import Smr300Section from "@/components/Smr300Section";
 import GithubLive from "@/components/GithubLive";
 import Timeline from "@/components/Timeline";
@@ -328,10 +328,16 @@ export default function Console() {
   }, [open]);
 
   // Lenis owns wheel and touch for the whole document, so an overlay's own
-  // scroll container does nothing until the page scroller is paused.
+  // scroll container does nothing until the page scroller is paused. The WebGL
+  // loop is frozen at the same time — it is fully hidden but would otherwise
+  // keep spending the frame budget the window needs.
   useEffect(() => {
     cinema.setPageScroll(!open);
-    return () => cinema.setPageScroll(true);
+    setScenePaused(Boolean(open));
+    return () => {
+      cinema.setPageScroll(true);
+      setScenePaused(false);
+    };
   }, [open]);
 
   const complete = () => {
@@ -359,7 +365,7 @@ export default function Console() {
         }}
       />
 
-      <div className="relative mx-auto w-full max-w-[1720px] px-4 pt-10 pb-20 sm:px-8 sm:pt-14 sm:pb-28">
+      <div className="relative mx-auto w-full max-w-[1720px] px-4 pt-6 pb-16 sm:px-8 sm:pt-8 sm:pb-20">
         {/* title bar */}
         <div className="flex flex-wrap items-center gap-x-4 gap-y-3 border border-line bg-ink-2/70 px-4 py-3 backdrop-blur-sm">
           <span className="flex shrink-0 items-center gap-1.5">
@@ -402,31 +408,28 @@ export default function Console() {
           </span>
         </div>
 
-        {/* heading */}
-        <div className="mt-12 mb-10 flex flex-wrap items-end justify-between gap-6 sm:mt-16 sm:mb-14">
+        {/* heading — kept compact so the first row of cards is on screen
+            with it at 100% zoom on a laptop */}
+        <div className="mt-7 mb-7 flex flex-wrap items-end justify-between gap-x-8 gap-y-4 sm:mt-9 sm:mb-9">
           <div>
-            <p className="mono mb-4 text-[11px] tracking-[0.24em] uppercase text-accent">
+            <p className="mono mb-2.5 text-[10.5px] tracking-[0.24em] uppercase text-accent">
               Flight complete · system ready
             </p>
-            <h2 className="max-w-[18ch] text-[2.4rem] leading-[0.98] font-semibold tracking-[-0.04em] text-bone sm:text-6xl lg:text-7xl">
-              Everything else
-              <br />
-              lives in here.
+            <h2 className="text-[2rem] leading-[1] font-semibold tracking-[-0.04em] text-bone sm:text-[2.6rem] lg:text-5xl">
+              Everything else lives in here.
             </h2>
           </div>
-          <div className="mono space-y-1.5 text-[11px] text-mute/70">
-            <div>
-              <LiveClock tz="America/New_York" label="brooklyn" />
-            </div>
-            <div>
-              <LiveClock tz="Asia/Bangkok" label="bangkok" />
-            </div>
+          <div className="mono flex gap-5 text-[10.5px] text-mute/70">
+            <LiveClock tz="America/New_York" label="brooklyn" />
+            <LiveClock tz="Asia/Bangkok" label="bangkok" />
           </div>
         </div>
 
-        <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_420px] xl:gap-8">
+        {/* items-start: without it the card column stretches to match the
+            sidebar's height and every card grows a tail of dead space. */}
+        <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_400px] xl:gap-8">
           {/* app grid */}
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
+          <div className="grid auto-rows-min grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
             {APPS.map((a, i) => {
               const { Icon } = a;
               return (
@@ -434,7 +437,7 @@ export default function Console() {
                   key={a.id}
                   type="button"
                   onClick={() => launch(a.id)}
-                  className="group relative flex flex-col items-start overflow-hidden border border-line bg-ink-2/80 p-5 text-left backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-line-2 sm:p-6"
+                  className="group relative flex flex-col items-start overflow-hidden border border-line bg-ink-2/80 p-4 text-left transition-all duration-300 hover:-translate-y-1 hover:border-line-2 sm:p-5"
                   style={
                     {
                       "--card": a.accent,
@@ -452,30 +455,30 @@ export default function Console() {
                     style={{ background: a.accent }}
                   />
 
-                  <span className="flex w-full items-start justify-between">
+                  <span className="flex w-full items-center gap-3">
                     <span
-                      className="grid h-12 w-12 place-items-center border transition-all duration-300 group-hover:scale-105"
+                      className="grid h-10 w-10 shrink-0 place-items-center border transition-all duration-300 group-hover:scale-105"
                       style={{
                         color: a.accent,
                         borderColor: `${a.accent}44`,
                         background: `${a.accent}14`,
                       }}
                     >
-                      <Icon size={20} strokeWidth={1.6} />
+                      <Icon size={18} strokeWidth={1.7} />
                     </span>
-                    <span className="mono text-[10px] tracking-[0.14em] text-mute/40 tabular-nums">
+                    <span className="mono truncate text-[14px] text-bone transition-colors group-hover:text-[color:var(--card)]">
+                      {a.name}
+                    </span>
+                    <span className="mono ml-auto shrink-0 text-[9.5px] tracking-[0.14em] text-mute/40 tabular-nums">
                       {String(i + 1).padStart(2, "0")}
                     </span>
                   </span>
 
-                  <span className="mono mt-5 block text-[15px] text-bone transition-colors group-hover:text-[color:var(--card)]">
-                    {a.name}
-                  </span>
-                  <span className="mt-2 block text-[13px] leading-snug text-mute">
+                  <span className="mt-3 block text-[12.5px] leading-snug text-mute">
                     {a.desc}
                   </span>
 
-                  <span className="mono mt-5 flex w-full items-center justify-between text-[10px] tracking-[0.14em] uppercase">
+                  <span className="mono mt-3.5 flex w-full items-center justify-between text-[9.5px] tracking-[0.14em] uppercase">
                     <span className="text-mute/50">{a.meta}</span>
                     <span
                       className="translate-x-[-4px] opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100"
@@ -489,11 +492,14 @@ export default function Console() {
             })}
           </div>
 
-          {/* live panel + terminal */}
-          <div className="flex flex-col gap-5 xl:sticky xl:top-8 xl:self-start">
-            <GithubMini onOpen={() => launch("github")} />
+          {/* live panel + terminal — capped to the viewport so a long `ls`
+              scrolls inside the log instead of pushing the pane off-screen */}
+          <div className="flex flex-col gap-5 xl:sticky xl:top-8 xl:max-h-[calc(100svh-4rem)] xl:self-start">
+            <div className="shrink-0">
+              <GithubMini onOpen={() => launch("github")} />
+            </div>
 
-            <div className="flex min-h-[300px] flex-col border border-line bg-ink-2/80 backdrop-blur-sm">
+            <div className="flex h-[380px] min-h-0 flex-col border border-line bg-ink-2/80 backdrop-blur-sm sm:h-[420px] xl:h-auto xl:flex-1">
             <div className="mono flex items-center gap-2 border-b border-line px-4 py-2.5 text-[10px] tracking-[0.16em] uppercase text-mute">
               <TerminalIcon size={12} strokeWidth={1.8} />
               bash
@@ -504,7 +510,7 @@ export default function Console() {
               ref={logRef}
               data-lenis-prevent
               onClick={() => inputRef.current?.focus()}
-              className="mono flex-1 cursor-text overflow-y-auto px-4 py-3.5 text-[12px] leading-[1.8]"
+              className="mono min-h-0 flex-1 cursor-text overflow-y-auto px-4 py-3.5 text-[12px] leading-[1.8]"
             >
               {lines.map((l, i) => (
                 <div
@@ -597,7 +603,9 @@ export default function Console() {
       {/* window */}
       {app && (
         <div
-          className="fixed inset-0 z-50 flex flex-col bg-ink/95 backdrop-blur-xl"
+          /* opaque, not a blur: a fullscreen backdrop-filter is repainted every
+             frame and was the main cost while scrolling inside a window */
+          className="fixed inset-0 z-50 flex flex-col bg-ink"
           role="dialog"
           aria-modal="true"
           aria-label={app.name}

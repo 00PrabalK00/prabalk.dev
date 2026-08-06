@@ -23,6 +23,20 @@ export const cinema: {
   setPageScroll: () => {},
 };
 
+/**
+ * Freezes the WebGL render loop. A fullscreen overlay hides the scene
+ * completely, but three keeps drawing it every frame underneath — which is
+ * exactly the budget the overlay's own scrolling and animation needs.
+ */
+export const SCENE_PAUSE_EVENT = "pk-scene-pause";
+
+export function setScenePaused(paused: boolean) {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(
+    new CustomEvent(SCENE_PAUSE_EVENT, { detail: paused })
+  );
+}
+
 /** Smoothstep — soft in, soft out. */
 export const smoothstep = (t: number) => {
   const x = Math.min(1, Math.max(0, t));

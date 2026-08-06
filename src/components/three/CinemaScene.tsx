@@ -11,6 +11,7 @@ import {
   lerp,
   lerp3,
   range,
+  SCENE_PAUSE_EVENT,
   smoothstep,
 } from "@/lib/scroll";
 import { ACT1_END, MONOLITH_Z, OUTRO, STATIONS } from "@/lib/cinema";
@@ -807,9 +808,19 @@ export default function CinemaScene() {
   // Phones are fill-rate bound long before they're geometry bound, so the DPR
   // ceiling matters more than polygon count.
   const [maxDpr, setMaxDpr] = useState(() => (isLowPower() ? 1.25 : 1.75));
+  const [paused, setPaused] = useState(false);
+
+  // Stop rendering entirely while a fullscreen overlay covers the scene.
+  useEffect(() => {
+    const onPause = (e: Event) =>
+      setPaused(Boolean((e as CustomEvent<boolean>).detail));
+    window.addEventListener(SCENE_PAUSE_EVENT, onPause);
+    return () => window.removeEventListener(SCENE_PAUSE_EVENT, onPause);
+  }, []);
 
   return (
     <Canvas
+      frameloop={paused ? "never" : "always"}
       dpr={[1, maxDpr]}
       performance={{ min: 0.5 }}
       gl={{
