@@ -19,6 +19,13 @@ import {
 } from "lucide-react";
 import { profile } from "@/lib/data";
 import { cinema, setScenePaused } from "@/lib/scroll";
+import {
+  EGG_COMMANDS,
+  RM_FRAMES,
+  runEgg,
+  type EggLine,
+} from "@/lib/console-eggs";
+import { ACHIEVEMENTS, unlock, unlockedIds } from "@/lib/eggs";
 import Smr300Section from "@/components/Smr300Section";
 import GithubLive from "@/components/GithubLive";
 import Timeline from "@/components/Timeline";
@@ -170,6 +177,8 @@ const COMMANDS = [
   "clear",
   "close",
   ...APPS.map((a) => a.cmd),
+  // tab-completable but absent from `help`, so hunting still pays off
+  ...EGG_COMMANDS,
 ];
 
 /* ------------------------------------------------------------------ */
@@ -192,6 +201,7 @@ export default function Console() {
   const [hIdx, setHIdx] = useState(-1);
   const logRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const visited = useRef<Set<string>>(new Set());
 
   const app = useMemo(() => APPS.find((a) => a.id === open) ?? null, [open]);
 
@@ -204,6 +214,8 @@ export default function Console() {
       setOpen(id);
       const a = APPS.find((x) => x.id === id);
       if (a) say([{ kind: "ok", text: `opening ~/${a.cmd}` }]);
+      visited.current.add(id);
+      if (visited.current.size >= APPS.length) unlock("explorer");
     },
     [say]
   );
@@ -215,6 +227,7 @@ export default function Console() {
       say([{ kind: "in", text: cmd }]);
       setHistory((h) => [cmd, ...h].slice(0, 40));
       setHIdx(-1);
+      unlock("terminal");
 
       const [verb, ...rest] = cmd.toLowerCase().split(/\s+/);
       const arg = rest.join(" ");
@@ -232,6 +245,10 @@ export default function Console() {
             { kind: "out", text: "  resume           open the PDF" },
             { kind: "out", text: "  download         save the PDF" },
             { kind: "dim", text: "tab completes · ↑ ↓ for history" },
+            {
+              kind: "dim",
+              text: `there are ${EGG_COMMANDS.length} undocumented commands. this is a robotics site.`,
+            },
           ]);
           break;
         case "ls":
@@ -294,20 +311,87 @@ export default function Console() {
           setOpen(null);
           say([{ kind: "dim", text: "closed" }]);
           break;
-        case "sudo":
-          say([{ kind: "err", text: "prabal is not in the sudoers file." }]);
+        case "hire":
+        case "apply":
+          unlock("terminal");
+          say([
+            { kind: "ok", text: "" },
+            { kind: "out", text: "  AVAILABLE      from Aug 2026 · NYU Tandon, MS Mechatronics & Robotics" },
+            { kind: "out", text: "  LOOKING FOR    Robotics SWE · Autonomy · Mechatronics" },
+            { kind: "out", text: "  LOCATION       New York City, or remote" },
+            { kind: "dim", text: "" },
+            { kind: "out", text: "  Shipped a 300 kg AMR: 97% docking success, 2 cm error," },
+            { kind: "out", text: "  300 logged trials on a live factory floor. 3 patents filed." },
+            { kind: "dim", text: "" },
+            { kind: "ok", text: `  ${profile.email}` },
+            { kind: "dim", text: "  `resume` for the PDF · `contact` for everything else" },
+          ]);
           break;
+
+        case "achievements":
+        case "eggs": {
+          const have = unlockedIds();
+          say([
+            {
+              kind: "dim",
+              text: `${have.size}/${ACHIEVEMENTS.length} found`,
+            },
+            ...ACHIEVEMENTS.map((a) =>
+              have.has(a.id)
+                ? { kind: "ok" as const, text: `  [x] ${a.title}` }
+                : { kind: "dim" as const, text: `  [ ] ???  — ${a.hint}` }
+            ),
+          ]);
+          break;
+        }
+
+        case "rm": {
+          const nuke = rest.includes("-rf") || rest.includes("-fr");
+          if (!nuke) {
+            say([{ kind: "err", text: "rm: missing operand" }]);
+            break;
+          }
+          // staged so it plays out rather than dumping at once
+          RM_FRAMES.forEach((frame, i) => {
+            setTimeout(() => say(frame), 380 * (i + 1));
+          });
+          break;
+        }
+
+        case "sudo": {
+          const tail = rest.join(" ");
+          if (tail.startsWith("rm")) {
+            say([{ kind: "err", text: "root privileges granted. bold of you." }]);
+            RM_FRAMES.forEach((frame, i) => {
+              setTimeout(() => say(frame), 380 * (i + 1));
+            });
+            break;
+          }
+          say([
+            { kind: "err", text: "prabal is not in the sudoers file." },
+            { kind: "dim", text: "This incident will be reported." },
+          ]);
+          break;
+        }
         case "exit":
           say([{ kind: "dim", text: "there is no exit. scroll up." }]);
           break;
         default: {
           const guess = APP_BY_CMD.get(verb);
-          if (guess) launch(guess.id);
-          else
-            say([
-              { kind: "err", text: `${verb}: command not found` },
-              { kind: "dim", text: "`help` lists everything" },
-            ]);
+          if (guess) {
+            launch(guess.id);
+            break;
+          }
+          const egg = runEgg(verb, rest, cinema.progress);
+          if (egg) {
+            if (verb === "ros2") unlock("ros2");
+            say(egg as EggLine[]);
+            break;
+          }
+          say([
+            { kind: "err", text: `${verb}: command not found` },
+            { kind: "dim", text: "`help` lists everything. mostly." },
+          ]);
         }
       }
     },

@@ -18,6 +18,7 @@ import { ACT1_END, MONOLITH_Z, OUTRO, STATIONS } from "@/lib/cinema";
 import { Monoliths, StationObject } from "@/components/three/stations";
 import { P, STAGE } from "@/lib/palette";
 import { resolveTheme, themeStore } from "@/lib/theme";
+import { chirp, eggState, unlock } from "@/lib/eggs";
 
 const accent = P.accent;
 const CYAN = P.teal;
@@ -372,14 +373,30 @@ function Robot() {
   const ringB = useRef<THREE.Mesh>(null);
   const led = useRef<THREE.MeshBasicMaterial>(null);
   const liftPlate = useRef<THREE.Group>(null);
+  const drift = useRef(0);
 
   useFrame((state, dt) => {
     const p = cinema.progress;
     const u = act1(p);
     const t = state.clock.elapsedTime;
+    const now = performance.now();
 
     if (root.current) {
       root.current.position.z = robotZ(p);
+
+      // idle roam: drift off the planned path and weave
+      const roam = eggState.idle ? 1 : 0;
+      drift.current = lerp(drift.current, roam, damp(dt, 0.15));
+      root.current.position.x = Math.sin(t * 0.5) * 2.6 * drift.current;
+      root.current.rotation.y = Math.sin(t * 0.5 + Math.PI / 2) * 0.5 * drift.current;
+
+      // konami: barrel roll, once, then hold level
+      if (eggState.unsafe) {
+        const since = (now - eggState.unsafeAt) / 1000;
+        root.current.rotation.z =
+          since < 1.6 ? smoothstep(since / 1.6) * Math.PI * 2 : 0;
+      }
+
       root.current.visible = p < ACT1_END + 0.02;
       if (!root.current.visible) return;
     }
@@ -398,6 +415,15 @@ function Robot() {
     ring(ringA, 0);
     ring(ringB, 0.5);
 
+    // rainbow scan once safety gating is "disabled"
+    if (eggState.unsafe && fanMat.current) {
+      fanMat.current.color.setHSL((t * 0.25) % 1, 0.85, 0.62);
+    }
+
+    // horn: hard beacon flash for a beat after a click
+    const sinceHorn = (now - eggState.hornAt) / 1000;
+    const honking = eggState.hornAt > 0 && sinceHorn < 0.9;
+
     // beacon: accent while driving, green once docked
     if (led.current) {
       const docked = smoothstep(range(u, 0.56, 0.62));
@@ -406,7 +432,12 @@ function Robot() {
         new THREE.Color(PASS),
         docked
       );
-      led.current.opacity = 0.5 + Math.sin(t * 4) * 0.45;
+      if (honking) {
+        led.current.color.set("#ffb020");
+        led.current.opacity = Math.sin(sinceHorn * 42) > 0 ? 1 : 0.1;
+      } else {
+        led.current.opacity = 0.5 + Math.sin(t * 4) * 0.45;
+      }
     }
 
     // lift plate rises on dock
@@ -416,7 +447,21 @@ function Robot() {
   });
 
   return (
-    <group ref={root}>
+    <group
+      ref={root}
+      onPointerDown={(e) => {
+        e.stopPropagation();
+        eggState.hornAt = performance.now();
+        chirp();
+        unlock("horn");
+      }}
+      onPointerOver={() => {
+        document.body.style.cursor = "pointer";
+      }}
+      onPointerOut={() => {
+        document.body.style.cursor = "";
+      }}
+    >
       {/* chassis — clearcoat reads as painted industrial steel */}
       <mesh position={[0, 0.28, 0]} castShadow>
         <boxGeometry args={[1.5, 0.42, 2.1]} />

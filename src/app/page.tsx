@@ -1,5 +1,6 @@
 import Cinema from "@/components/Cinema";
 import Console from "@/components/Console";
+import Achievements from "@/components/Achievements";
 import { profile } from "@/lib/data";
 import { SITE_URL } from "@/lib/site";
 
@@ -37,6 +38,7 @@ export default function Home() {
         <Cinema />
         <Console />
       </main>
+      <Achievements />
     </>
   );
 }

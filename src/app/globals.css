@@ -330,6 +330,17 @@ body {
   animation: pulse-ring 2.4s ease-out infinite;
 }
 
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 @keyframes marquee {
   from {
     transform: translateX(0);

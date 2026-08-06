@@ -7,6 +7,7 @@ import { cinema, deriveFades, isSmallScreen, window01 } from "@/lib/scroll";
 import { ACT1_END, OUTRO, STATIONS } from "@/lib/cinema";
 import { profile } from "@/lib/data";
 import ThemeToggle from "@/components/ThemeToggle";
+import { eggState, unlock, watchKonami } from "@/lib/eggs";
 
 const CinemaScene = dynamic(() => import("@/components/three/CinemaScene"), {
   ssr: false,
@@ -157,6 +158,8 @@ export default function Cinema() {
   const stageRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const beatRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const hudRef = useRef<HTMLDivElement>(null);
+  const secretRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -183,7 +186,25 @@ export default function Cinema() {
       cinema.setPageScroll = (enabled) => (enabled ? lenis.start() : lenis.stop());
     }
 
+    // ↑↑↓↓←→←→BA — barrel roll and a rainbow scan
+    const stopKonami = watchKonami(() => {
+      eggState.unsafe = true;
+      eggState.unsafeAt = performance.now();
+      unlock("unsafe");
+      const el = hudRef.current;
+      if (el) {
+        el.textContent = "SAFETY GATING DISABLED · do not try this on a real 300 kg AMR";
+        el.style.opacity = "1";
+        setTimeout(() => {
+          if (hudRef.current) hudRef.current.style.opacity = "0";
+        }, 5000);
+      }
+    });
+
     let raf = 0;
+    let lastP = -1;
+    let lastMoveAt = performance.now();
+
     const frame = (time: number) => {
       lenis?.raf(time);
 
@@ -193,6 +214,39 @@ export default function Cinema() {
         const total = stage.offsetHeight - window.innerHeight;
         const p = total > 0 ? Math.min(1, Math.max(0, -rect.top / total)) : 0;
         cinema.progress = p;
+
+        /* ---- easter eggs driven by scroll ---- */
+        if (Math.abs(p - lastP) > 0.0004) {
+          lastMoveAt = time;
+          lastP = p;
+          if (eggState.idle) {
+            eggState.idle = false;
+            if (hudRef.current) hudRef.current.style.opacity = "0";
+          }
+        } else if (
+          !eggState.idle &&
+          time - lastMoveAt > 45_000 &&
+          p > 0.02 &&
+          p < 0.95
+        ) {
+          // stopped mid-flight: the robot leaves the planned path
+          eggState.idle = true;
+          unlock("idle");
+          if (hudRef.current) {
+            hudRef.current.textContent =
+              "OPERATOR IDLE · AUTONOMOUS ROAM ENGAGED";
+            hudRef.current.style.opacity = "1";
+          }
+        }
+
+        // the 3% marker — has to be found on purpose
+        if (secretRef.current) {
+          const near = Math.abs(p - 0.97) < 0.0022;
+          secretRef.current.style.opacity = near ? "1" : "0";
+          if (near) unlock("threepercent");
+        }
+
+        if (p > 0.995) unlock("flight");
 
         // fade the whole 3D stage out as the DOM content takes over
         if (overlayRef.current) {
@@ -211,7 +265,9 @@ export default function Cinema() {
           el.style.transform = reduced
             ? "none"
             : `translate3d(0, ${(1 - o) * 26}px, 0)`;
-          el.style.pointerEvents = o > 0.5 ? "auto" : "none";
+          // never interactive: these sit over the canvas and would otherwise
+          // swallow clicks meant for the robot
+          el.style.pointerEvents = "none";
         });
       }
 
@@ -222,6 +278,7 @@ export default function Cinema() {
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", sizeStage);
+      stopKonami();
       cinema.setPageScroll = () => {};
       lenis?.destroy();
     };
@@ -355,6 +412,22 @@ export default function Cinema() {
               </div>
             </div>
           ))}
+
+          {/* egg HUD — konami / idle roam */}
+          <div
+            ref={hudRef}
+            className="mono pointer-events-none absolute top-6 left-1/2 z-20 -translate-x-1/2 border border-fault/50 bg-fault/10 px-3 py-1.5 text-[10px] tracking-[0.16em] whitespace-nowrap text-fault uppercase opacity-0 transition-opacity duration-500"
+          />
+
+          {/* the 3% marker — only at exactly 97% of the flight */}
+          <div
+            ref={secretRef}
+            className="pointer-events-none absolute inset-x-0 bottom-24 z-20 flex justify-center opacity-0 transition-opacity duration-300"
+          >
+            <p className="mono max-w-[34ch] text-center text-[12px] leading-relaxed text-accent">
+              97%. the other 3% is why I logged 150 trials.
+            </p>
+          </div>
 
           {/* flight manifest — where you are in the route */}
           <StationIndex />
