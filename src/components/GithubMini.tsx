@@ -121,9 +121,10 @@ export default function GithubMini({
         ))}
       </div>
 
-      {/* contribution strip */}
+      {/* contribution strip — hidden on short viewports where the sidebar is
+          already competing with the terminal for height */}
       {weeks && (
-        <div className="border-b border-line px-4 py-3">
+        <div className="hidden border-b border-line px-4 py-3 [@media(min-height:820px)]:block">
           <div className="flex gap-[2px]">
             {weeks.map((w, i) => (
               <div key={i} className="flex flex-col gap-[2px]">
@@ -168,7 +169,7 @@ export default function GithubMini({
       ) : null}
 
       {/* recent activity */}
-      <ol data-lenis-prevent className="max-h-[190px] overflow-y-auto">
+      <ol data-lenis-prevent className="max-h-[150px] overflow-y-auto">
         {(data?.events ?? []).slice(0, 8).map((e) => (
           <li key={e.id} className="border-b border-line/50 px-4 py-2 last:border-0">
             <div className="flex items-baseline gap-2">
