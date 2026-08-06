@@ -16,7 +16,7 @@ import {
 } from "@/lib/scroll";
 import { ACT1_END, MONOLITH_Z, OUTRO, STATIONS } from "@/lib/cinema";
 import { Monoliths, StationObject } from "@/components/three/stations";
-import { P, STAGE } from "@/lib/palette";
+import { LIGHT_ADJUST, P, STAGE } from "@/lib/palette";
 import { resolveTheme, themeStore } from "@/lib/theme";
 import { chirp, eggState, unlock } from "@/lib/eggs";
 
@@ -187,14 +187,46 @@ function Floor() {
   const tagMat = useRef<THREE.MeshBasicMaterial>(null);
 
   const group = useRef<THREE.Group>(null);
+  const grid1 = useRef<THREE.GridHelper>(null);
+  const grid2 = useRef<THREE.GridHelper>(null);
+  const floorMat = useRef<THREE.MeshStandardMaterial>(null);
 
   useFrame(() => {
     const u = act1(cinema.progress);
+    const b = themeStore.blend;
+
     // tags glow while the PGV beat is on screen
     if (tagMat.current) {
       const on = smoothstep(range(u, 0.24, 0.34));
       const off = 1 - smoothstep(range(u, 0.6, 0.72));
-      tagMat.current.opacity = 0.1 + 0.55 * on * off;
+      // a faint tag is invisible against a light floor, so lift the floor
+      tagMat.current.opacity = (0.1 + 0.55 * on * off) * lerp(1, 1.5, b);
+    }
+
+    // a near-black floor under a light sweep reads as a hole; lift it to a
+    // pale studio surface and let the grid supply the contrast instead
+    if (floorMat.current) {
+      floorMat.current.color.setRGB(
+        lerp(0.063, 0.8, b),
+        lerp(0.086, 0.84, b),
+        lerp(0.118, 0.88, b)
+      );
+      floorMat.current.roughness = lerp(0.42, 0.62, b);
+      floorMat.current.metalness = lerp(0.35, 0.12, b);
+    }
+
+    // grid lines are lighter than the floor in dark mode and must become
+    // darker than it in light, or the floor reads as blank paper
+    for (const g of [grid1, grid2]) {
+      const m = g.current?.material as THREE.Material & { color?: THREE.Color };
+      if (!m?.color) continue;
+      const isMajor = g === grid2;
+      m.color.setRGB(
+        lerp(isMajor ? 0.2 : 0.12, isMajor ? 0.42 : 0.55, b),
+        lerp(isMajor ? 0.26 : 0.16, isMajor ? 0.47 : 0.59, b),
+        lerp(isMajor ? 0.32 : 0.21, isMajor ? 0.53 : 0.64, b)
+      );
+      m.color.multiplyScalar(b > 0.5 ? 0.62 : 1);
     }
     // the floor itself is gone once we leave the warehouse
     if (group.current) group.current.visible = cinema.progress < ACT1_END + 0.02;
@@ -202,10 +234,13 @@ function Floor() {
 
   return (
     <group ref={group}>
-      {/* polished concrete: low roughness so the env map gives it a sheen */}
+      {/* polished concrete: low roughness so the env map gives it a sheen.
+          Driven per-frame, so opted out of the generic re-tone. */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.02, -14]}>
         <planeGeometry args={[160, 160]} />
         <meshStandardMaterial
+          ref={floorMat}
+          userData={{ noRetone: true }}
           color="#10161e"
           roughness={0.42}
           metalness={0.35}
@@ -214,10 +249,12 @@ function Floor() {
       </mesh>
 
       <gridHelper
-        args={[160, 160, new THREE.Color("#1f2833"), new THREE.Color("#161d26")]}
+        ref={grid1}
+        args={[160, 160, new THREE.Color("#1f2833"), new THREE.Color("#1f2833")]}
         position={[0, 0.001, -14]}
       />
       <gridHelper
+        ref={grid2}
         args={[160, 32, new THREE.Color("#334252"), new THREE.Color("#334252")]}
         position={[0, 0.002, -14]}
       />
@@ -740,6 +777,14 @@ function Stars() {
     if (matRef.current) {
       matRef.current.opacity =
         0.55 * smoothstep(range(cinema.progress, ACT1_END * 0.82, ACT1_END + 0.04));
+      // pale stars vanish on a light sweep — they become dark motes instead
+      const b = themeStore.blend;
+      matRef.current.color.setRGB(
+        lerp(0.62, 0.24, b),
+        lerp(0.7, 0.29, b),
+        lerp(0.78, 0.36, b)
+      );
+      matRef.current.opacity *= lerp(1, 0.75, b);
     }
   });
 
@@ -796,6 +841,72 @@ function Director() {
 /* ------------------------------------------------------------------ */
 /* Theme driver — crossfades background, fog and exposure               */
 /* ------------------------------------------------------------------ */
+/**
+ * Re-tones every material for the current theme.
+ *
+ * The whole scene was authored to read against near-black: pale metals, hot
+ * emissives and additive blending. On a light sweep that reads as a white
+ * smudge — additive blending in particular is mathematically invisible on
+ * white, since it can only add light to something already at maximum.
+ *
+ * Rather than author two sets of materials, each one's dark values are cached
+ * on first pass and then interpolated toward a darker, calmer version as the
+ * theme blends. Runs only when the blend actually moves.
+ */
+type Tuned = THREE.Material & {
+  color?: THREE.Color;
+  emissive?: THREE.Color;
+  emissiveIntensity?: number;
+  opacity: number;
+  blending: THREE.Blending;
+};
+
+function retone(root: THREE.Object3D, b: number) {
+  root.traverse((o) => {
+    // Grids, points and the floor are driven explicitly every frame — letting
+    // the generic pass also touch them would cache an already-mutated colour.
+    if (o.type === "GridHelper" || o.type === "Points") return;
+
+    const mats = (o as THREE.Mesh).material;
+    if (!mats) return;
+    const list = Array.isArray(mats) ? mats : [mats];
+
+    for (const raw of list) {
+      const m = raw as Tuned;
+      if ((m.userData as { noRetone?: boolean }).noRetone) continue;
+      const cache = m.userData as {
+        _c?: THREE.Color;
+        _e?: THREE.Color;
+        _ei?: number;
+        _bl?: THREE.Blending;
+      };
+
+      if (!cache._c && m.color) cache._c = m.color.clone();
+      if (!cache._e && m.emissive) cache._e = m.emissive.clone();
+      if (cache._ei === undefined && m.emissiveIntensity !== undefined)
+        cache._ei = m.emissiveIntensity;
+      if (cache._bl === undefined) cache._bl = m.blending;
+
+      if (cache._c && m.color) {
+        m.color.copy(cache._c);
+        m.color.multiplyScalar(1 - (1 - LIGHT_ADJUST.surface) * b);
+      }
+      if (cache._e && m.emissive) {
+        m.emissive.copy(cache._e);
+        m.emissive.multiplyScalar(1 - (1 - LIGHT_ADJUST.emissiveColor) * b);
+      }
+      if (cache._ei !== undefined && m.emissiveIntensity !== undefined) {
+        m.emissiveIntensity =
+          cache._ei * (1 - (1 - LIGHT_ADJUST.emissiveIntensity) * b);
+      }
+      // additive adds light — useless once the background is already bright
+      if (cache._bl === THREE.AdditiveBlending) {
+        m.blending = b > 0.5 ? THREE.NormalBlending : THREE.AdditiveBlending;
+      }
+    }
+  });
+}
+
 function ThemeDriver() {
   // The theme-driven lights are owned here rather than passed in — a component
   // may not mutate refs it received as props.
@@ -803,6 +914,7 @@ function ThemeDriver() {
   const hemi = useRef<THREE.HemisphereLight>(null);
   const sun = useRef<THREE.DirectionalLight>(null);
 
+  const applied = useRef(-1);
   const dark = useMemo(() => new THREE.Color(STAGE.dark.bg), []);
   const light = useMemo(() => new THREE.Color(STAGE.light.bg), []);
   // one Color, mutated in place — cloning per frame would allocate 60×/s
@@ -840,13 +952,20 @@ function ThemeDriver() {
       b
     );
 
-    // light mode needs far more fill or everything reads as a silhouette
-    if (ambient.current) ambient.current.intensity = lerp(0.35, 1.15, b);
+    // Light mode wants DIRECTIONAL light, not more ambient — flooding it with
+    // fill was what turned everything into a flat silhouette-free wash.
+    if (ambient.current) ambient.current.intensity = lerp(0.35, 0.55, b);
     if (hemi.current) {
-      hemi.current.intensity = lerp(0.6, 1.5, b);
-      hemi.current.groundColor.set(b > 0.5 ? "#c7d2e0" : "#05070a");
+      hemi.current.intensity = lerp(0.6, 0.85, b);
+      hemi.current.groundColor.set(b > 0.5 ? "#9aa7b6" : "#05070a");
     }
-    if (sun.current) sun.current.intensity = lerp(1.6, 2.6, b);
+    if (sun.current) sun.current.intensity = lerp(1.6, 3.4, b);
+
+    // Re-tone materials only when the blend has actually moved.
+    if (Math.abs(b - applied.current) > 0.015) {
+      applied.current = b;
+      retone(state.scene, b);
+    }
   });
 
   return (

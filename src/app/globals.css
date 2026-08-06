@@ -27,6 +27,9 @@
 
   --shade-0: #171d26;
   --grain: 0.022;
+  /* Per-station accents are picked to glow on near-black. On a light surface
+     they need darkening to stay legible — see the beat copy in the flight. */
+  --accent-darken: 0%;
 }
 
 :root[data-theme="light"] {
@@ -50,6 +53,7 @@
 
   --shade-0: #e4eaf2;
   --grain: 0.012;
+  --accent-darken: 34%;
 }
 
 @media (prefers-color-scheme: light) {
@@ -74,6 +78,7 @@
 
     --shade-0: #e4eaf2;
     --grain: 0.012;
+    --accent-darken: 34%;
   }
 }
 

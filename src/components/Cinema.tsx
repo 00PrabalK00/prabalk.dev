@@ -308,11 +308,13 @@ export default function Cinema() {
 
           {/* film grain + vignette */}
           <div className="scanlines pointer-events-none absolute inset-0" />
+          {/* Vignette in the stage's own colour — a black vignette over a
+              light sweep reads as dirt on the lens. */}
           <div
             className="pointer-events-none absolute inset-0"
             style={{
               background:
-                "radial-gradient(ellipse 85% 70% at 50% 50%, transparent 40%, rgba(5,5,6,0.75) 100%)",
+                "radial-gradient(ellipse 85% 70% at 50% 50%, transparent 40%, color-mix(in srgb, var(--c-ink) 82%, transparent) 100%)",
             }}
           />
 
@@ -359,7 +361,7 @@ export default function Cinema() {
                 {b.kicker && (
                   <p
                     className="mono mb-6 text-[11px] leading-relaxed tracking-[0.24em] uppercase"
-                    style={{ color: b.accent ?? "var(--color-accent)" }}
+                    style={{ color: `color-mix(in srgb, ${b.accent ?? "var(--c-accent)"}, black var(--accent-darken))` }}
                   >
                     {b.kicker}
                   </p>
@@ -408,7 +410,7 @@ export default function Cinema() {
                       <li key={f} className="flex gap-4">
                         <span
                           className="mt-[9px] h-px w-5 shrink-0"
-                          style={{ background: b.accent ?? "var(--color-accent)" }}
+                          style={{ background: `color-mix(in srgb, ${b.accent ?? "var(--c-accent)"}, black var(--accent-darken))` }}
                         />
                         <span className="text-[14px] leading-[1.65] text-bone/75">
                           {f}
@@ -513,7 +515,7 @@ function StationIndex() {
         if (!el) return;
         const on = p >= leg.from - 0.05 && p <= leg.to + 0.03;
         el.style.color = on ? leg.color : "";
-        el.style.opacity = on ? "1" : "0.32";
+        el.style.opacity = on ? "1" : "0.55";
         const bar = el.lastElementChild as HTMLElement | null;
         if (bar) bar.style.width = on ? "22px" : "9px";
       });
@@ -550,7 +552,7 @@ function StationIndex() {
             items.current[i] = el;
           }}
           className="mono group flex items-center justify-end gap-3 text-[9.5px] tracking-[0.16em] uppercase text-mute transition-opacity"
-          style={{ opacity: 0.32 }}
+          style={{ opacity: 0.55 }}
         >
           <span className="whitespace-nowrap">{leg.label}</span>
           <span

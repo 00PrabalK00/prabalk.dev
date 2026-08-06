@@ -18,8 +18,31 @@ export const P = {
   deck: "#4a5566",
 } as const;
 
-/** Stage background + fog, per theme. */
+/**
+ * Stage background + fog, per theme.
+ *
+ * Light mode is a studio sweep, not a white void: a cool mid-grey gives the
+ * chrome something to reflect and stops pale geometry disappearing. Exposure
+ * comes DOWN in light — pushing it up was blowing every highlight to paper
+ * white and flattening the whole scene.
+ */
 export const STAGE = {
   dark: { bg: "#0a0d12", fog: "#0a0d12", exposure: 1.0 },
-  light: { bg: "#dfe6ef", fog: "#dfe6ef", exposure: 1.15 },
+  light: { bg: "#c9d2dd", fog: "#c9d2dd", exposure: 0.92 },
+} as const;
+
+/**
+ * How far a material is pushed toward its dark counterpart in light mode.
+ * Objects designed to read against near-black are far too pale to sit on a
+ * light sweep, so surfaces darken and emissives calm right down.
+ */
+export const LIGHT_ADJUST = {
+  /** multiply surface colour by this at full light */
+  surface: 0.42,
+  /** multiply emissive colour by this at full light */
+  emissiveColor: 0.55,
+  /** scale emissiveIntensity by this at full light */
+  emissiveIntensity: 0.3,
+  /** additive blending is invisible on a light background */
+  additiveOpacity: 0.55,
 } as const;
