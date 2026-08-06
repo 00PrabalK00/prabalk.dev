@@ -21,6 +21,11 @@ export const profile = {
   githubUser: "00PrabalK00",
   linkedin: "https://www.linkedin.com/in/prabalk",
   youtube: "https://www.youtube.com/@evtol459",
+  /** Served from this origin so it always resolves and can be downloaded
+   *  directly — no Google sign-in wall, no broken share link. */
+  resume: "/Prabal_Khare_Resume.pdf",
+  resumeFileName: "Prabal_Khare_Resume.pdf",
+  /** Kept as a mirror in case the Drive copy is ever the newer one. */
   resumeDrive:
     "https://drive.google.com/file/d/1GmldZ472upLU58mr1qOuZ3cXxaoN7R9H/view",
   botopsy: "https://botopsylab.com",
@@ -534,15 +539,15 @@ export const patents = [
     title: "Transformation Drone — Autonomous Drone-Rover System",
     number: "202641035669",
     status: "Filed",
-    body: "A hybrid UAV-UGV with a deployable micro-drone and AI-driven visual and thermal detection for search and rescue in GPS-denied environments.",
-    tags: ["UAV-UGV", "Search & rescue", "GPS-denied", "Thermal"],
+    body: "One vehicle that drives and flies. Four arms carry both the propellers and geared drive wheels, so it rolls through terrain on the ground and lifts off when the ground runs out — with AI-driven visual and thermal detection for search and rescue in GPS-denied environments.",
+    tags: ["UAV-UGV", "Search & rescue", "GPS-denied", "Thermal", "Raspberry Pi"],
   },
   {
     title: "Thermoregulation System for Portable Water Containers",
     number: "Number pending",
     status: "Filed",
-    body: "A Peltier-based heating and cooling system with heat dissipation, battery management and app-enabled remote control.",
-    tags: ["Peltier", "Thermal design", "BMS", "IoT"],
+    body: "A smart bottle that heats or cools its own contents. A Peltier stack under the body circulates water through inlet and outlet lines, with a sealed compartment for the microcontroller, battery and wiring, and an integrated pill dispenser on the side — so medication and the water to take it with travel together.",
+    tags: ["Peltier", "Thermal design", "BMS", "Pill dispenser", "Embedded"],
   },
   {
     title: "IMU Calibration and Sensor Fusion Module",
@@ -550,13 +555,6 @@ export const patents = [
     status: "Filed",
     body: "Bias, scale-factor and misalignment calibration with complementary and EKF-based fusion for stable attitude estimation under vibration.",
     tags: ["IMU", "Calibration", "EKF", "Attitude estimation"],
-  },
-  {
-    title: "Smart Elevator System and Method Thereof",
-    number: "202441007367",
-    status: "Filed",
-    body: "A smart elevator control system and associated method covering intelligent dispatch and operation.",
-    tags: ["Control systems", "Smart infrastructure"],
   },
 ];
 

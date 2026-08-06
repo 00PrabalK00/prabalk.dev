@@ -103,6 +103,12 @@
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  /* Belt and braces: any single overflowing child used to widen the document
+     past the viewport, which showed up on phones as a mismatched strip down
+     one edge where the pinned canvas no longer reached. */
+  overflow-x: clip;
+  max-width: 100%;
+  background: var(--c-ink);
 }
 
 body {
@@ -191,10 +197,34 @@ body {
 /* column with dead space either side.                                  */
 /* ------------------------------------------------------------------ */
 .window-body section {
-  max-width: 1560px;
+  max-width: none;
   padding-top: 2rem;
   padding-bottom: 4rem;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
   scroll-margin-top: 0;
+}
+
+@media (min-width: 640px) {
+  .window-body section {
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .window-body section {
+    padding-left: 4rem;
+    padding-right: 4rem;
+  }
+}
+
+/* wider index rail so the body copy starts further left and fills the pane */
+@media (min-width: 1024px) {
+  .window-body section > div:last-child {
+    grid-template-columns: 150px minmax(0, 1fr);
+    column-gap: 3rem;
+  }
 }
 
 @media (min-width: 768px) {

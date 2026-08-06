@@ -122,13 +122,12 @@ const BEATS: Beat[] = [
     to: OUTRO.patents.to,
     align: "center",
     kicker: "Intellectual property",
-    title: "Four filings.",
-    body: "Hybrid aerial-ground robotics, portable thermoregulation, IMU calibration and sensor fusion, and a smart elevator system.",
+    title: "Three filings.",
+    body: "A vehicle that drives and flies, a bottle that heats and cools its own contents, and an IMU module that stays honest under vibration.",
     facts: [
       "Transformation Drone — autonomous drone-rover · 202641035669",
       "Thermoregulation System for Portable Water Containers · pending",
       "IMU Calibration and Sensor Fusion Module · pending",
-      "Smart Elevator System and Method Thereof · 202441007367",
     ],
     accent: "#4da6ff",
   },
@@ -357,22 +356,27 @@ export default function Cinema() {
           <StationIndex />
 
           {/* persistent chrome */}
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between px-6 pb-7 sm:px-12">
-            <span className="mono text-[10px] tracking-[0.22em] uppercase text-mute/60">
+          {/* min-w-0 + wrapping: this row used to force the page wider than a
+              phone viewport, which is what produced the mismatched strip down
+              the left edge. */}
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 px-5 pb-6 sm:px-12 sm:pb-7">
+            <span className="mono shrink-0 text-[10px] tracking-[0.22em] uppercase text-mute/60">
               Scroll
             </span>
-            <div className="pointer-events-auto flex items-center gap-6">
+            <div className="pointer-events-auto flex min-w-0 items-center gap-4 sm:gap-6">
               {[
-                { label: "GitHub", href: profile.github },
-                { label: "LinkedIn", href: profile.linkedin },
-                { label: "Résumé", href: profile.resumeDrive },
+                { label: "GitHub", href: profile.github, small: false },
+                { label: "LinkedIn", href: profile.linkedin, small: false },
+                { label: "Résumé", href: profile.resume, small: true },
               ].map((l) => (
                 <a
                   key={l.label}
                   href={l.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mono text-[10px] tracking-[0.16em] uppercase text-mute transition-colors hover:text-accent"
+                  className={`mono text-[10px] tracking-[0.16em] uppercase text-mute transition-colors hover:text-accent ${
+                    l.small ? "" : "hidden sm:inline"
+                  }`}
                 >
                   {l.label}
                 </a>

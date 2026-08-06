@@ -979,7 +979,7 @@ export function Monoliths({
 
   return (
     <group ref={root} position={[0, 0, z]} visible={false}>
-      {[-4.8, -1.6, 1.6, 4.8].map((x, i) => (
+      {[-3.4, 0, 3.4].map((x, i) => (
         <group key={x} position={[x, -0.4, 0]}>
           {/* polished obsidian slab — the env map does the work here */}
           <mesh>

@@ -9,7 +9,7 @@ export function Patents() {
       id="patents"
       index="05 / IP"
       title="Patents filed"
-      kicker="Four Indian patent applications across hybrid aerial-ground robotics, thermal systems, inertial sensing and smart infrastructure."
+      kicker="Three Indian patent applications: hybrid aerial-ground robotics, portable thermoregulation, and inertial sensing."
     >
       <ol>
         {patents.map((p, i) => (

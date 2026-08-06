@@ -154,6 +154,7 @@ export default function Console() {
             { kind: "out", text: "whoami             short bio" },
             { kind: "out", text: "neofetch           system summary" },
             { kind: "out", text: "resume             open the PDF" },
+            { kind: "out", text: "download           save the PDF" },
             { kind: "out", text: "clear              clear this log" },
             { kind: "out", text: "close              close the open window" },
           ]);
@@ -202,8 +203,18 @@ export default function Console() {
           ]);
           break;
         case "resume":
-          window.open(profile.resumeDrive, "_blank", "noopener");
-          say([{ kind: "ok", text: "opening résumé in a new tab" }]);
+        case "cv":
+          window.open(profile.resume, "_blank", "noopener");
+          say([{ kind: "ok", text: `opening ${profile.resumeFileName}` }]);
+          break;
+        case "download":
+          say([{ kind: "ok", text: `downloading ${profile.resumeFileName}` }]);
+          {
+            const a = document.createElement("a");
+            a.href = profile.resume;
+            a.download = profile.resumeFileName;
+            a.click();
+          }
           break;
         case "clear":
           setLines(BANNER);
@@ -276,6 +287,13 @@ export default function Console() {
               className="transition-colors hover:text-accent"
             >
               linkedin
+            </a>
+            <a
+              href={profile.resume}
+              download={profile.resumeFileName}
+              className="transition-colors hover:text-accent"
+            >
+              résumé
             </a>
             <ThemeToggle />
           </span>

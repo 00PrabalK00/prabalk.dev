@@ -33,28 +33,70 @@ export default function ThemeToggle({ className = "" }: { className?: string }) 
     setTheme(next);
   };
 
+  const isDark = theme === "dark";
+
   return (
     <button
       type="button"
       onClick={toggle}
-      aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
-      title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
-      className={`mono relative grid h-8 w-14 place-items-center overflow-hidden border border-line text-[10px] tracking-[0.12em] text-mute transition-colors hover:border-accent hover:text-accent ${className}`}
+      aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
+      title={`Switch to ${isDark ? "light" : "dark"} mode`}
+      className={`group relative grid h-9 w-9 shrink-0 place-items-center border border-line text-mute transition-colors hover:border-accent hover:text-accent ${className}`}
     >
-      <span
-        className="absolute inset-y-0 w-1/2 bg-accent/12 transition-transform duration-400 ease-out"
-        style={{
-          transform: theme === "dark" ? "translateX(0)" : "translateX(100%)",
-        }}
-      />
-      <span className="relative flex w-full items-center justify-around">
-        <span className={theme === "dark" ? "text-accent" : "opacity-40"}>
-          ●
-        </span>
-        <span className={theme === "light" ? "text-accent" : "opacity-40"}>
-          ○
-        </span>
-      </span>
+      {/* One icon that morphs: the moon is the sun with a bite taken out of
+          it, via a mask circle that slides in. No layout shift, no two-state
+          slider to misread. */}
+      <svg
+        viewBox="0 0 24 24"
+        className="h-[18px] w-[18px] overflow-visible"
+        aria-hidden
+      >
+        <defs>
+          <mask id="theme-bite">
+            <rect x="0" y="0" width="24" height="24" fill="white" />
+            <circle
+              cx={isDark ? 15 : 26}
+              cy={isDark ? 8 : 0}
+              r="7.5"
+              fill="black"
+              style={{ transition: "all 0.45s cubic-bezier(0.16,1,0.3,1)" }}
+            />
+          </mask>
+        </defs>
+
+        <circle
+          cx="12"
+          cy="12"
+          r={isDark ? 8 : 5.2}
+          fill="currentColor"
+          mask="url(#theme-bite)"
+          style={{ transition: "r 0.45s cubic-bezier(0.16,1,0.3,1)" }}
+        />
+
+        {/* sun rays — only present in light mode */}
+        <g
+          stroke="currentColor"
+          strokeWidth="1.7"
+          strokeLinecap="round"
+          style={{
+            opacity: isDark ? 0 : 1,
+            transform: `rotate(${isDark ? -45 : 0}deg)`,
+            transformOrigin: "12px 12px",
+            transition: "opacity 0.35s ease, transform 0.5s cubic-bezier(0.16,1,0.3,1)",
+          }}
+        >
+          {[0, 45, 90, 135, 180, 225, 270, 315].map((deg) => (
+            <line
+              key={deg}
+              x1="12"
+              y1="2.6"
+              x2="12"
+              y2="4.9"
+              transform={`rotate(${deg} 12 12)`}
+            />
+          ))}
+        </g>
+      </svg>
     </button>
   );
 }

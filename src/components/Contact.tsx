@@ -30,7 +30,12 @@ export default function Contact() {
     { label: "LinkedIn", value: "in/prabalk", href: profile.linkedin },
     { label: "YouTube", value: "@evtol459", href: profile.youtube },
     { label: "Botopsy Lab", value: "botopsylab.com", href: profile.botopsy },
-    { label: "Résumé", value: "PDF", href: profile.resumeDrive },
+    {
+      label: "Résumé",
+      value: "Download PDF",
+      href: profile.resume,
+      download: profile.resumeFileName,
+    },
   ];
 
   return (
@@ -70,6 +75,7 @@ export default function Contact() {
               <li key={l.label} className="border-t border-line/60 last:border-b">
                 <a
                   href={l.href}
+                  download={l.download}
                   target={l.href.startsWith("mailto") ? undefined : "_blank"}
                   rel="noopener noreferrer"
                   className="group grid items-baseline gap-x-10 gap-y-1 py-6 sm:grid-cols-[180px_minmax(0,1fr)_28px]"
