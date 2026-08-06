@@ -1,6 +1,7 @@
 import Cinema from "@/components/Cinema";
 import Console from "@/components/Console";
 import { profile } from "@/lib/data";
+import { SITE_URL } from "@/lib/site";
 
 const personSchema = {
   "@context": "https://schema.org",
@@ -8,7 +9,7 @@ const personSchema = {
   name: profile.name,
   jobTitle: "Robotics Software Engineer",
   email: `mailto:${profile.email}`,
-  url: "https://prabalkhare.com",
+  url: SITE_URL,
   sameAs: [profile.github, profile.linkedin, profile.youtube, profile.botopsy],
   alumniOf: [
     { "@type": "CollegeOrUniversity", name: "Vellore Institute of Technology, Chennai" },
