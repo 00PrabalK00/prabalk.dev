@@ -16,7 +16,7 @@ const mono = Space_Mono({
   display: "swap",
 });
 
-const SITE = "https://prabalkhare.dev";
+const SITE = "https://prabalkhare.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE),

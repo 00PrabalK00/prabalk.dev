@@ -15,7 +15,7 @@ const personSchema = {
   name: profile.name,
   jobTitle: "Robotics Software Engineer",
   email: `mailto:${profile.email}`,
-  url: "https://prabalkhare.dev",
+  url: "https://prabalkhare.com",
   sameAs: [profile.github, profile.linkedin, profile.youtube, profile.botopsy],
   alumniOf: [
     { "@type": "CollegeOrUniversity", name: "Vellore Institute of Technology, Chennai" },

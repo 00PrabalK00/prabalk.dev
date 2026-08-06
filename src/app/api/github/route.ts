@@ -20,7 +20,12 @@ const USER = process.env.NEXT_PUBLIC_GITHUB_USER || "00PrabalK00";
 const TOKEN = process.env.GITHUB_TOKEN;
 const REVALIDATE = 300;
 
-export const dynamic = "force-dynamic";
+// NOTE: do not add `export const dynamic = "force-dynamic"` here. It forces
+// every fetch() in this route to { cache: 'no-store', revalidate: 0 }, which
+// silently defeats REVALIDATE below — each visitor would then hit the GitHub
+// API directly and burn the 60 req/hr unauthenticated limit shared across the
+// host's IP pool. The route is already request-time because it does network
+// I/O; the fetch cache is what keeps upstream calls to one per 5 minutes.
 
 function headers(): HeadersInit {
   const h: Record<string, string> = {
