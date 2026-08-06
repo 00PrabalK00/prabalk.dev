@@ -374,6 +374,8 @@ function Robot() {
   const led = useRef<THREE.MeshBasicMaterial>(null);
   const liftPlate = useRef<THREE.Group>(null);
   const drift = useRef(0);
+  const taps = useRef(0);
+  const lastTap = useRef(0);
 
   useFrame((state, dt) => {
     const p = cinema.progress;
@@ -451,9 +453,21 @@ function Robot() {
       ref={root}
       onPointerDown={(e) => {
         e.stopPropagation();
-        eggState.hornAt = performance.now();
+        const now = performance.now();
+        eggState.hornAt = now;
         chirp();
         unlock("horn");
+
+        // Konami needs a keyboard, so touch gets its own way in:
+        // five taps inside three seconds arms unsafe mode.
+        taps.current = now - lastTap.current < 3000 ? taps.current + 1 : 1;
+        lastTap.current = now;
+        if (taps.current >= 5) {
+          taps.current = 0;
+          eggState.unsafe = true;
+          eggState.unsafeAt = now;
+          unlock("unsafe");
+        }
       }}
       onPointerOver={() => {
         document.body.style.cursor = "pointer";

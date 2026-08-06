@@ -488,7 +488,7 @@ export default function Console() {
             >
               <FileDown size={13} strokeWidth={1.8} /> résumé
             </a>
-            <ThemeToggle />
+            <ThemeToggle className="tap-target" />
           </span>
         </div>
 
@@ -521,7 +521,7 @@ export default function Console() {
                   key={a.id}
                   type="button"
                   onClick={() => launch(a.id)}
-                  className="group relative flex flex-col items-start overflow-hidden border border-line bg-ink-2/80 p-4 text-left transition-all duration-300 hover:-translate-y-1 hover:border-line-2 sm:p-5"
+                  className="group no-touch-lift relative flex flex-col items-start overflow-hidden border border-line bg-ink-2/80 p-4 text-left transition-all duration-300 hover:-translate-y-1 hover:border-line-2 sm:p-5"
                   style={
                     {
                       "--card": a.accent,
@@ -565,7 +565,7 @@ export default function Console() {
                   <span className="mono mt-3.5 flex w-full items-center justify-between text-[9.5px] tracking-[0.14em] uppercase">
                     <span className="text-mute/50">{a.meta}</span>
                     <span
-                      className="translate-x-[-4px] opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100"
+                      className="touch-reveal translate-x-[-4px] opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100"
                       style={{ color: a.accent }}
                     >
                       open →
@@ -671,8 +671,14 @@ export default function Console() {
                 }}
                 spellCheck={false}
                 autoComplete="off"
+                /* iOS capitalises the first letter and autocorrects by
+                   default, which turns `ls` into `Ls` and `neofetch` into
+                   something else entirely. Every command would fail. */
+                autoCapitalize="none"
+                autoCorrect="off"
+                enterKeyHint="go"
                 aria-label="Terminal input"
-                className="mono w-full bg-transparent text-[12px] text-bone caret-transparent outline-none"
+                className="mono w-full bg-transparent text-[16px] text-bone caret-transparent outline-none sm:text-[12px]"
               />
               {/* our own caret so it blinks even when the field is empty */}
               <span className="mono -ml-2 shrink-0 text-[12px] text-accent blink">

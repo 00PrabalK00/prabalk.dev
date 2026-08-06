@@ -67,7 +67,7 @@ export default function MediaSlot({
       )}
 
       {!failed && meta?.caption && (
-        <figcaption className="mono absolute inset-x-0 bottom-0 translate-y-full bg-gradient-to-t from-ink to-transparent px-4 py-3 text-[10px] tracking-[0.14em] uppercase text-bone/80 transition-transform duration-500 group-hover:translate-y-0">
+        <figcaption className="touch-caption mono absolute inset-x-0 bottom-0 translate-y-full bg-gradient-to-t from-ink to-transparent px-4 py-3 text-[10px] tracking-[0.14em] uppercase text-bone/80 transition-transform duration-500 group-hover:translate-y-0">
           {meta.caption}
         </figcaption>
       )}

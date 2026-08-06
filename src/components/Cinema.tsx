@@ -191,19 +191,12 @@ export default function Cinema() {
       eggState.unsafe = true;
       eggState.unsafeAt = performance.now();
       unlock("unsafe");
-      const el = hudRef.current;
-      if (el) {
-        el.textContent = "SAFETY GATING DISABLED · do not try this on a real 300 kg AMR";
-        el.style.opacity = "1";
-        setTimeout(() => {
-          if (hudRef.current) hudRef.current.style.opacity = "0";
-        }, 5000);
-      }
     });
 
     let raf = 0;
     let lastP = -1;
     let lastMoveAt = performance.now();
+    let sawUnsafe = false;
 
     const frame = (time: number) => {
       lenis?.raf(time);
@@ -214,6 +207,21 @@ export default function Cinema() {
         const total = stage.offsetHeight - window.innerHeight;
         const p = total > 0 ? Math.min(1, Math.max(0, -rect.top / total)) : 0;
         cinema.progress = p;
+
+        /* ---- unsafe mode: armed by keyboard OR by five taps on the robot,
+               so the HUD is driven off the flag rather than the key handler ---- */
+        if (eggState.unsafe && !sawUnsafe) {
+          sawUnsafe = true;
+          if (hudRef.current) {
+            hudRef.current.textContent =
+              "SAFETY GATING DISABLED · do not try this on a real 300 kg AMR";
+            hudRef.current.style.opacity = "1";
+            setTimeout(() => {
+              if (hudRef.current && !eggState.idle)
+                hudRef.current.style.opacity = "0";
+            }, 5000);
+          }
+        }
 
         /* ---- easter eggs driven by scroll ---- */
         if (Math.abs(p - lastP) > 0.0004) {
@@ -458,7 +466,7 @@ export default function Cinema() {
                   {l.label}
                 </a>
               ))}
-              <ThemeToggle />
+              <ThemeToggle className="tap-target" />
             </div>
           </div>
 

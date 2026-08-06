@@ -354,6 +354,44 @@ body {
   will-change: transform;
 }
 
+/* ------------------------------------------------------------------ */
+/* Touch devices                                                       */
+/* Feature query, not user-agent sniffing: what matters is whether the  */
+/* pointer can hover, not what the device calls itself. Anything gated  */
+/* behind :hover is unreachable here, so it is revealed by default.     */
+/* ------------------------------------------------------------------ */
+@media (hover: none) {
+  /* card "open →" affordance */
+  .touch-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* media captions sit permanently at the foot of the frame */
+  .touch-caption {
+    transform: none !important;
+    background: linear-gradient(
+      to top,
+      var(--c-ink) 10%,
+      color-mix(in srgb, var(--c-ink) 55%, transparent) 65%,
+      transparent 100%
+    );
+  }
+
+  /* hover lift does nothing but cause a sticky state after a tap */
+  .no-touch-lift:hover {
+    transform: none;
+  }
+}
+
+/* Bigger tap targets where the design is deliberately small. */
+@media (pointer: coarse) {
+  .tap-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .reveal {
     opacity: 1 !important;
