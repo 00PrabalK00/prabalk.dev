@@ -7,6 +7,7 @@ import MediaSlot from "@/components/MediaSlot";
 /** Photographs of the filed hardware, keyed by patent title prefix. */
 const PATENT_MEDIA: Record<string, string[]> = {
   "Transformation Drone": [
+    "TransformationDroneVideo.mp4",
     "transformationdrone_rovermode.jpeg",
     "transformationdrone_dronemode.jpeg",
   ],
@@ -58,14 +59,21 @@ export function Patents() {
 
                   {/* the built hardware, where a photo exists */}
                   {mediaFor(p.title).length > 0 && (
-                    <div
-                      className={`mt-8 grid gap-3 ${
-                        mediaFor(p.title).length > 1 ? "sm:grid-cols-2" : "sm:max-w-md"
-                      }`}
-                    >
-                      {mediaFor(p.title).map((f) => (
-                        <MediaSlot key={f} file={f} aspect="aspect-[16/10]" />
-                      ))}
+                    <div className="mt-8 space-y-3">
+                      {/* first item leads at full width, the rest pair up */}
+                      <MediaSlot
+                        file={mediaFor(p.title)[0]}
+                        aspect="aspect-[16/9]"
+                      />
+                      {mediaFor(p.title).length > 1 && (
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          {mediaFor(p.title)
+                            .slice(1)
+                            .map((f) => (
+                              <MediaSlot key={f} file={f} aspect="aspect-[16/10]" />
+                            ))}
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>

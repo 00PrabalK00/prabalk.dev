@@ -768,6 +768,47 @@ export const mediaSlots: MediaSlot[] = [
     span: "hero",
   },
   {
+    file: "TransformationDroneVideo.mp4",
+    type: "video",
+    caption: "Transformation Drone — driving and flying on the same four arms",
+    group: "Patents",
+    span: "hero",
+  },
+  {
+    file: "VideoOfUsDoingAutonomousDockingAUV.mp4",
+    type: "video",
+    caption: "Project MIRA — autonomous docking run",
+    group: "Project MIRA",
+    span: "hero",
+  },
+  {
+    file: "Kurat_body.jpeg",
+    type: "image",
+    caption:
+      "Kurat — RealSense D435i and Jetson Orin Nano on a four-wheel chassis",
+    group: "Kurat",
+    span: "tall",
+  },
+  {
+    file: "KURAT_Detection.jpeg",
+    type: "image",
+    caption: "Kurat perception — YOLO detections with confidence, live indoor scene",
+    group: "Kurat",
+    span: "wide",
+  },
+  {
+    file: "Anamatronic_head.jpg",
+    type: "image",
+    caption: "Animatronic head — eye, jaw and head servos driven over GPIO",
+    group: "Hardware",
+  },
+  {
+    file: "2LayerPCBFab.jpg",
+    type: "image",
+    caption: "Two-layer PCB, fabricated",
+    group: "Hardware",
+  },
+  {
     file: "DNT_Team_Pic.jpeg",
     type: "image",
     caption: "Dreadnought Robotics — 120 members, 4 departments",
@@ -790,14 +831,10 @@ export const mediaSlots: MediaSlot[] = [
   { file: "mira-electronics.jpg", type: "image", caption: "Sealed-hull electronics and power distribution", group: "Project MIRA" },
   { file: "mira-underwater.mp4", type: "video", caption: "MIRA under test", group: "Project MIRA", span: "wide" },
 
-  { file: "transform-drone.mp4", type: "video", caption: "Ground-to-air transition", group: "Patents", span: "wide" },
 
   { file: "vtol-flight.mp4", type: "video", caption: "VTOL flight test", group: "UAV", span: "wide" },
 
-  { file: "kurat-robot.jpg", type: "image", caption: "Kurat companion robot", group: "Kurat", span: "tall" },
   { file: "robotdrawing-abb.mp4", type: "video", caption: "ABB IRB140 drawing a learned stroke route", group: "Hardware", span: "wide" },
-  { file: "pcb-animatronic.jpg", type: "image", caption: "Animatronic head PCB", group: "Hardware" },
-  { file: "pcb-rccar.jpg", type: "image", caption: "RC car control board", group: "Hardware" },
   { file: "opendronekit-ui.jpg", type: "image", caption: "OpenDroneKit — defect analysis", group: "Hardware" },
 
   { file: "workshop-kicad.jpg", type: "image", caption: "KiCad workshop — 50 attendees", group: "Team", span: "wide" },
@@ -817,4 +854,10 @@ export const SHIPPED_MEDIA = new Set([
   "DNT_Team_Pic.jpeg",
   "portrait.jpg",
   "VTOL.jpeg",
+  "TransformationDroneVideo.mp4",
+  "VideoOfUsDoingAutonomousDockingAUV.mp4",
+  "Kurat_body.jpeg",
+  "KURAT_Detection.jpeg",
+  "Anamatronic_head.jpg",
+  "2LayerPCBFab.jpg",
 ]);
