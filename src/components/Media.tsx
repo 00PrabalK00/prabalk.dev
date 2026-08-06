@@ -13,24 +13,35 @@ export default function Media() {
       kicker="Robots on real floors, sealed hulls in real water, boards on real benches."
     >
       {/* asymmetric editorial layout, not an even grid */}
-      <div className="space-y-4">
-        <div className="grid gap-4 lg:grid-cols-[1.6fr_1fr]">
+      <div className="space-y-3 sm:space-y-4">
+        <div className="grid gap-3 sm:gap-4 lg:grid-cols-[1.6fr_1fr]">
           <MediaSlot file="mira-auv.jpg" aspect="aspect-[16/10]" />
           <MediaSlot file="mira-electronics.jpg" aspect="aspect-[16/10]" />
         </div>
 
         <MediaSlot file="mira-norway.jpg" aspect="aspect-[21/9]" />
 
-        <div className="grid gap-4 sm:grid-cols-3">
-          <MediaSlot file="kurat-robot.jpg" aspect="aspect-[3/4]" />
-          <MediaSlot file="vtol-uav.jpg" aspect="aspect-[3/4]" />
-          <MediaSlot file="transformation-drone.jpg" aspect="aspect-[3/4]" />
+        <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-[1.3fr_1fr]">
+          <MediaSlot file="transform-drone.mp4" aspect="aspect-video" />
+          <MediaSlot file="transform-drone.jpg" aspect="aspect-video" />
         </div>
 
-        <div className="grid gap-4 lg:grid-cols-[1fr_1fr_1.4fr]">
-          <MediaSlot file="pcb-animatronic.jpg" aspect="aspect-square" />
-          <MediaSlot file="pcb-rccar.jpg" aspect="aspect-square" />
-          <MediaSlot file="workshop-kicad.jpg" aspect="aspect-square" />
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
+          <MediaSlot file="kurat-robot.jpg" aspect="aspect-[3/4]" />
+          <MediaSlot file="vtol-uav.jpg" aspect="aspect-[3/4]" />
+          <MediaSlot file="pcb-animatronic.jpg" aspect="aspect-[3/4]" />
+          <MediaSlot file="pcb-rccar.jpg" aspect="aspect-[3/4]" />
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
+          <MediaSlot file="vtol-flight.mp4" aspect="aspect-video" />
+          <MediaSlot file="mira-underwater.mp4" aspect="aspect-video" />
+          <MediaSlot file="robotdrawing-abb.mp4" aspect="aspect-video" />
+        </div>
+
+        <div className="grid gap-3 sm:gap-4 lg:grid-cols-[1.4fr_1fr]">
+          <MediaSlot file="workshop-kicad.jpg" aspect="aspect-[16/9]" />
+          <MediaSlot file="rosscope-ui.jpg" aspect="aspect-[16/9]" />
         </div>
       </div>
 

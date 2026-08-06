@@ -694,6 +694,12 @@ export type MediaSlot = {
 };
 
 export const mediaSlots: MediaSlot[] = [
+  { file: "transform-drone.jpg", type: "image", caption: "Transformation Drone — rover mode, prop arms stowed", group: "Patents" },
+  { file: "transform-drone.mp4", type: "video", caption: "Transformation Drone — ground to air transition", group: "Patents" },
+  { file: "vtol-flight.mp4", type: "video", caption: "VTOL search-and-rescue flight test", group: "UAV" },
+  { file: "mira-underwater.mp4", type: "video", caption: "Project MIRA under test", group: "Project MIRA" },
+  { file: "robotdrawing-abb.mp4", type: "video", caption: "ABB IRB140 drawing a learned stroke route", group: "Hardware" },
+  { file: "rosscope-ui.jpg", type: "image", caption: "RosScope — engineer mode", group: "SMR300" },
   { file: "smr300-hero.jpg", type: "image", caption: "SMR300 on the factory floor", group: "SMR300" },
   { file: "smr300-docking.jpg", type: "image", caption: "Shelf docking approach", group: "SMR300" },
   { file: "smr300-rviz.jpg", type: "image", caption: "Nav2 costmap in RViz", group: "SMR300" },

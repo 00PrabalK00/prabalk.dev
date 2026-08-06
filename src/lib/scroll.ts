@@ -75,3 +75,19 @@ export const lerp3 = (
 /** Frame-rate independent damping factor. */
 export const damp = (dt: number, smoothing = 0.0015) =>
   1 - Math.pow(smoothing, dt);
+
+/**
+ * Coarse device tier. Phones get fewer particles, a lower DPR ceiling and a
+ * shorter stage — a 3400vh flight is punishing on a 700px-tall screen, and
+ * mobile GPUs choke on the particle counts a laptop shrugs off.
+ */
+export function isSmallScreen() {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia("(max-width: 767px)").matches;
+}
+
+export function isLowPower() {
+  if (typeof navigator === "undefined") return false;
+  const cores = navigator.hardwareConcurrency ?? 8;
+  return isSmallScreen() || cores <= 4;
+}

@@ -1,12 +1,5 @@
-import Nav from "@/components/Nav";
 import Cinema from "@/components/Cinema";
-import Smr300Section from "@/components/Smr300Section";
-import GithubLive from "@/components/GithubLive";
-import Timeline from "@/components/Timeline";
-import Projects from "@/components/Projects";
-import { Honors, Patents, Skills } from "@/components/Patents";
-import Media from "@/components/Media";
-import Contact from "@/components/Contact";
+import Console from "@/components/Console";
 import { profile } from "@/lib/data";
 
 const personSchema = {
@@ -39,19 +32,10 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
       />
-      <Nav />
-      <Cinema />
-      <main className="relative z-10 flex-1 bg-ink">
-        <Smr300Section />
-        <GithubLive />
-        <Timeline />
-        <Projects />
-        <Patents />
-        <Skills />
-        <Honors />
-        <Media />
+      <main className="flex-1">
+        <Cinema />
+        <Console />
       </main>
-      <Contact />
     </>
   );
 }

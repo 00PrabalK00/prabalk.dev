@@ -4,7 +4,15 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { AdaptiveDpr, PerformanceMonitor } from "@react-three/drei";
 import * as THREE from "three";
-import { cinema, damp, lerp, lerp3, range, smoothstep } from "@/lib/scroll";
+import {
+  cinema,
+  damp,
+  isLowPower,
+  lerp,
+  lerp3,
+  range,
+  smoothstep,
+} from "@/lib/scroll";
 import { ACT1_END, MONOLITH_Z, OUTRO, STATIONS } from "@/lib/cinema";
 import { Monoliths, StationObject } from "@/components/three/stations";
 import { P, STAGE } from "@/lib/palette";
@@ -246,8 +254,9 @@ function Racks() {
   const rows = useMemo(() => {
     const rand = makeRand(0x51ed270b);
     const out: { pos: [number, number, number]; h: number; w: number }[] = [];
+    const depth = isLowPower() ? 10 : 18;
     for (const side of [-1, 1]) {
-      for (let i = 0; i < 18; i++) {
+      for (let i = 0; i < depth; i++) {
         const z = 6 - i * 3.1;
         const h = 2.6 + rand() * 3.2;
         out.push({ pos: [side * (5.4 + rand() * 0.6), h / 2, z], h, w: 2.2 });
@@ -653,7 +662,7 @@ function Stars() {
 
   const geo = useMemo(() => {
     const rand = makeRand(0x2f6b1a37);
-    const n = 2600;
+    const n = isLowPower() ? 900 : 2600;
     const pos = new Float32Array(n * 3);
     for (let i = 0; i < n; i++) {
       // a long box of stars covering the whole flight corridor, not a sphere
@@ -795,7 +804,9 @@ function ThemeDriver() {
 }
 
 export default function CinemaScene() {
-  const [maxDpr, setMaxDpr] = useState(1.75);
+  // Phones are fill-rate bound long before they're geometry bound, so the DPR
+  // ceiling matters more than polygon count.
+  const [maxDpr, setMaxDpr] = useState(() => (isLowPower() ? 1.25 : 1.75));
 
   return (
     <Canvas
@@ -828,7 +839,7 @@ export default function CinemaScene() {
         pmrem.dispose();
       }}
     >
-      <PerformanceMonitor onDecline={() => setMaxDpr(1)} />
+      <PerformanceMonitor onDecline={() => setMaxDpr(0.85)} />
       <AdaptiveDpr pixelated={false} />
 
       {/* cool rim from behind keeps chassis edges legible on both themes */}

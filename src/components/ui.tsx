@@ -132,11 +132,11 @@ export function Section({
   return (
     <section
       id={id}
-      className={`relative mx-auto w-full max-w-[1180px] scroll-mt-28 px-6 py-28 sm:px-10 md:py-40 ${className}`}
+      className={`relative mx-auto w-full max-w-[1440px] scroll-mt-28 px-5 py-24 sm:px-8 md:px-12 md:py-32 ${className}`}
     >
       <div className="hairline mb-14" />
 
-      <div className="grid gap-y-10 lg:grid-cols-[160px_minmax(0,1fr)] lg:gap-x-20">
+      <div className="grid gap-y-8 lg:grid-cols-[190px_minmax(0,1fr)] lg:gap-x-16 xl:gap-x-24">
         <Reveal>
           <div className="mono top-28 text-[11px] leading-relaxed tracking-[0.2em] text-accent lg:sticky">
             {index.split(" / ").map((part, i) => (

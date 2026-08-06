@@ -3,7 +3,7 @@
 import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import { cinema, range, smoothstep } from "@/lib/scroll";
+import { cinema, isLowPower, range, smoothstep } from "@/lib/scroll";
 import type { Station } from "@/lib/cinema";
 import { P } from "@/lib/palette";
 
@@ -101,7 +101,7 @@ function AuvStation({ s }: { s: Station }) {
 
   const bubbleGeo = useMemo(() => {
     const rand = makeRand(0x1a77c3);
-    const n = 260;
+    const n = isLowPower() ? 110 : 260;
     const pos = new Float32Array(n * 3);
     for (let i = 0; i < n; i++) {
       // kept close to the frame so the bubbles read as coming off the vehicle
@@ -761,7 +761,7 @@ function CloudStation({ s }: { s: Station }) {
   // a point cloud shaped like a bridge pier / wall section
   const geo = useMemo(() => {
     const rand = makeRand(0x77c1a4);
-    const n = 2600;
+    const n = isLowPower() ? 1100 : 2600;
     const pos = new Float32Array(n * 3);
     for (let i = 0; i < n; i++) {
       const face = Math.floor(rand() * 4);

@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { useEffect, useRef } from "react";
 import Lenis from "lenis";
-import { cinema, deriveFades, window01 } from "@/lib/scroll";
+import { cinema, deriveFades, isSmallScreen, window01 } from "@/lib/scroll";
 import { ACT1_END, OUTRO, STATIONS } from "@/lib/cinema";
 import { profile } from "@/lib/data";
 import ThemeToggle from "@/components/ThemeToggle";
@@ -148,7 +148,11 @@ const FADES = deriveFades(BEATS);
 /* ------------------------------------------------------------------ */
 /* Stage                                                               */
 /* ------------------------------------------------------------------ */
-const STAGE_VH = 3400; // total scroll length of the cinematic, in vh
+// Desktop gets the full-length flight. On a phone the same progress is spread
+// over far less pixel height, so the whole thing is shortened rather than
+// asking someone to swipe through 34 screens.
+const STAGE_VH = 3400;
+const STAGE_VH_SM = 2100;
 
 export default function Cinema() {
   const stageRef = useRef<HTMLDivElement>(null);
@@ -157,6 +161,16 @@ export default function Cinema() {
 
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // Stage height is set here rather than in a media query so the rAF loop and
+    // the DOM agree on exactly one number.
+    const sizeStage = () => {
+      if (stageRef.current) {
+        stageRef.current.style.height = `${isSmallScreen() ? STAGE_VH_SM : STAGE_VH}svh`;
+      }
+    };
+    sizeStage();
+    window.addEventListener("resize", sizeStage);
 
     // Weighted smooth scroll. Without this the camera move feels like a
     // slideshow rather than one continuous take.
@@ -205,6 +219,7 @@ export default function Cinema() {
 
     return () => {
       cancelAnimationFrame(raf);
+      window.removeEventListener("resize", sizeStage);
       lenis?.destroy();
     };
   }, []);
@@ -214,7 +229,7 @@ export default function Cinema() {
       ref={stageRef}
       id="top"
       className="relative"
-      style={{ height: `${STAGE_VH}vh` }}
+      style={{ height: `${STAGE_VH}svh` }}
     >
       {/* pinned viewport */}
       <div className="sticky top-0 h-[100svh] w-full overflow-hidden">
@@ -240,7 +255,7 @@ export default function Cinema() {
               ref={(el) => {
                 beatRefs.current[i] = el;
               }}
-              className="absolute inset-0 flex items-center px-6 sm:px-12 lg:px-20"
+              className="absolute inset-0 flex items-center px-5 sm:px-12 lg:px-20"
               style={{
                 opacity: 0,
                 justifyContent:
@@ -290,7 +305,7 @@ export default function Cinema() {
 
                 {b.metric && (
                   <div>
-                    <div className="text-[20vw] leading-[0.82] font-semibold tracking-[-0.06em] tabular-nums text-accent sm:text-[13vw] lg:text-[11rem]">
+                    <div className="text-[24vw] leading-[0.82] font-semibold tracking-[-0.06em] tabular-nums text-accent sm:text-[13vw] lg:text-[11rem]">
                       {b.metric.value}
                     </div>
                     <div className="mono mt-5 text-[12px] tracking-[0.16em] uppercase text-bone/80">
@@ -300,14 +315,14 @@ export default function Cinema() {
                 )}
 
                 {b.title && (
-                  <h2 className="text-[2.4rem] leading-[1.02] font-semibold tracking-[-0.04em] text-bone sm:text-6xl">
+                  <h2 className="text-[8.5vw] leading-[1.04] font-semibold tracking-[-0.04em] text-bone sm:text-[2.6rem] md:text-5xl lg:text-6xl">
                     {b.title}
                   </h2>
                 )}
 
                 {b.body && (
                   <p
-                    className={`mt-7 text-[16px] leading-[1.7] text-bone/85 sm:text-lg ${
+                    className={`mt-5 text-[15px] leading-[1.65] text-bone/85 sm:mt-7 sm:text-[16px] md:text-lg ${
                       b.align === "center" ? "mx-auto max-w-[46ch]" : "max-w-[44ch]"
                     }`}
                   >
@@ -317,7 +332,7 @@ export default function Cinema() {
 
                 {b.facts && (
                   <ul
-                    className={`mt-8 space-y-3 ${
+                    className={`mt-6 hidden space-y-3 sm:mt-8 sm:block ${
                       b.align === "center" ? "mx-auto max-w-[52ch] text-left" : "max-w-[44ch]"
                     }`}
                   >

@@ -184,6 +184,41 @@ body {
   );
 }
 
+/* ------------------------------------------------------------------ */
+/* Window body                                                         */
+/* Sections were authored as standalone page segments. Inside a console */
+/* window they need to fill the pane instead of sitting in a 1180px     */
+/* column with dead space either side.                                  */
+/* ------------------------------------------------------------------ */
+.window-body section {
+  max-width: 1560px;
+  padding-top: 2rem;
+  padding-bottom: 4rem;
+  scroll-margin-top: 0;
+}
+
+@media (min-width: 768px) {
+  .window-body section {
+    padding-top: 3rem;
+    padding-bottom: 6rem;
+  }
+}
+
+/* the leading divider belongs to page flow, not to a window */
+.window-body section > .hairline:first-child {
+  display: none;
+}
+
+/* the sticky index rail has nothing to stick to inside a scroll pane */
+.window-body .lg\:sticky {
+  position: static;
+}
+
+/* footer inside a window shouldn't try to be a page footer */
+.window-body footer > div:last-child {
+  padding-bottom: 2rem;
+}
+
 /* ---------- reveal ---------- */
 .reveal {
   opacity: 0;
