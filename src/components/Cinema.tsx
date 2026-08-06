@@ -251,8 +251,25 @@ export default function Cinema() {
                       : "center",
               }}
             >
+              {/* Readability scrim. The 3D behind the copy is bright and busy
+                  (grid lines, racking, floor), so body text needs the stage
+                  darkened under it. A gradient rather than a panel keeps it
+                  invisible as a shape. */}
               <div
-                className={`max-w-[38rem] ${
+                aria-hidden
+                className="pointer-events-none absolute inset-0"
+                style={{
+                  background:
+                    b.align === "left"
+                      ? "linear-gradient(to right, var(--c-ink) 0%, color-mix(in srgb, var(--c-ink) 82%, transparent) 34%, color-mix(in srgb, var(--c-ink) 40%, transparent) 58%, transparent 78%)"
+                      : b.align === "right"
+                        ? "linear-gradient(to left, var(--c-ink) 0%, color-mix(in srgb, var(--c-ink) 82%, transparent) 34%, color-mix(in srgb, var(--c-ink) 40%, transparent) 58%, transparent 78%)"
+                        : "radial-gradient(ellipse 62% 58% at 50% 50%, color-mix(in srgb, var(--c-ink) 88%, transparent) 0%, color-mix(in srgb, var(--c-ink) 60%, transparent) 45%, transparent 80%)",
+                }}
+              />
+
+              <div
+                className={`relative max-w-[38rem] ${
                   b.align === "center" ? "text-center" : ""
                 }`}
               >
@@ -276,7 +293,7 @@ export default function Cinema() {
                     <div className="text-[20vw] leading-[0.82] font-semibold tracking-[-0.06em] tabular-nums text-accent sm:text-[13vw] lg:text-[11rem]">
                       {b.metric.value}
                     </div>
-                    <div className="mono mt-5 text-[12px] tracking-[0.16em] uppercase text-mute">
+                    <div className="mono mt-5 text-[12px] tracking-[0.16em] uppercase text-bone/80">
                       {b.metric.label}
                     </div>
                   </div>
@@ -290,7 +307,7 @@ export default function Cinema() {
 
                 {b.body && (
                   <p
-                    className={`mt-7 text-[16px] leading-[1.7] text-mute sm:text-lg ${
+                    className={`mt-7 text-[16px] leading-[1.7] text-bone/85 sm:text-lg ${
                       b.align === "center" ? "mx-auto max-w-[46ch]" : "max-w-[44ch]"
                     }`}
                   >
@@ -310,7 +327,7 @@ export default function Cinema() {
                           className="mt-[9px] h-px w-5 shrink-0"
                           style={{ background: b.accent ?? "var(--color-accent)" }}
                         />
-                        <span className="text-[14px] leading-[1.65] text-mute/85">
+                        <span className="text-[14px] leading-[1.65] text-bone/75">
                           {f}
                         </span>
                       </li>

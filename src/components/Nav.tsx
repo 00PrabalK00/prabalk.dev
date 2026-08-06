@@ -59,11 +59,8 @@ export default function Nav() {
         }`}
       >
         <div className="mx-auto flex h-16 max-w-[1240px] items-center justify-between px-5 sm:px-8">
-          <a href="#top" className="group flex items-center gap-3">
-            <span className="grid h-8 w-8 place-items-center border border-accent/50 bg-accent/10">
-              <span className="mono text-[11px] font-bold text-accent">PK</span>
-            </span>
-            <span className="hidden text-sm font-medium tracking-tight text-bone sm:block">
+          <a href="#top" className="group flex items-center">
+            <span className="text-sm font-medium tracking-tight text-bone transition-colors group-hover:text-accent">
               {profile.name}
             </span>
           </a>

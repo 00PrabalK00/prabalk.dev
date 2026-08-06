@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Letterforms are drawn as paths, not <text>: a favicon renders before
+       any webfont loads, so type would fall back to whatever the OS has. -->
+  <rect width="64" height="64" rx="12" fill="#0A0D12"/>
+  <rect x="2.5" y="2.5" width="59" height="59" rx="10" fill="none" stroke="#4DA6FF" stroke-opacity="0.5" stroke-width="2"/>
+  <g fill="#4DA6FF">
+    <!-- P -->
+    <rect x="13" y="19" width="6.5" height="26"/>
+    <path d="M18 19 H25.5 A6.75 6.75 0 0 1 25.5 32.5 H18 Z"/>
+    <!-- K -->
+    <rect x="34" y="19" width="6.5" height="26"/>
+    <path d="M40 33.6 L47.6 19 H53.4 L44.6 32 Z"/>
+    <path d="M40 30.4 L47.6 45 H53.4 L44.6 32 Z"/>
+  </g>
+</svg>

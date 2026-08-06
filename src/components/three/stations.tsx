@@ -104,9 +104,10 @@ function AuvStation({ s }: { s: Station }) {
     const n = 260;
     const pos = new Float32Array(n * 3);
     for (let i = 0; i < n; i++) {
-      pos[i * 3] = (rand() - 0.5) * 9;
-      pos[i * 3 + 1] = (rand() - 0.5) * 9;
-      pos[i * 3 + 2] = (rand() - 0.5) * 9;
+      // kept close to the frame so the bubbles read as coming off the vehicle
+      pos[i * 3] = (rand() - 0.5) * 5.5;
+      pos[i * 3 + 1] = (rand() - 0.5) * 5;
+      pos[i * 3 + 2] = (rand() - 0.5) * 5.5;
     }
     const g = new THREE.BufferGeometry();
     g.setAttribute("position", new THREE.BufferAttribute(pos, 3));
@@ -124,63 +125,149 @@ function AuvStation({ s }: { s: Station }) {
       const arr = bubbles.current.geometry.attributes.position
         .array as Float32Array;
       for (let i = 1; i < arr.length; i += 3) {
-        arr[i] += dt * 0.55;
-        if (arr[i] > 4.5) arr[i] = -4.5;
+        arr[i] += dt * 0.42;
+        if (arr[i] > 2.5) arr[i] = -2.5;
       }
       bubbles.current.geometry.attributes.position.needsUpdate = true;
     }
   });
 
+  // Open aluminium space-frame: longitudinal rails, cross members, uprights.
+  const FR = { x: 1.55, y: 0.82, z: 1.15 };
+  const rails: {
+    pos: [number, number, number];
+    size: [number, number, number];
+  }[] = [
+    // longitudinal (along Z)
+    ...[-1, 1].flatMap((sx) =>
+      [-1, 1].map(
+        (sy) =>
+          ({
+            pos: [sx * FR.x, sy * FR.y, 0],
+            size: [0.1, 0.1, FR.z * 2],
+          }) as (typeof rails)[number]
+      )
+    ),
+    // lateral (along X)
+    ...[-1, 1].flatMap((sz) =>
+      [-1, 1].map(
+        (sy) =>
+          ({
+            pos: [0, sy * FR.y, sz * FR.z],
+            size: [FR.x * 2, 0.1, 0.1],
+          }) as (typeof rails)[number]
+      )
+    ),
+    // uprights
+    ...[-1, 1].flatMap((sx) =>
+      [-1, 1].map(
+        (sz) =>
+          ({
+            pos: [sx * FR.x, 0, sz * FR.z],
+            size: [0.1, FR.y * 2, 0.1],
+          }) as (typeof rails)[number]
+      )
+    ),
+  ];
+
+  // Six ducted thrusters: four vectored on the corners, two vertical.
+  const thrusters: {
+    pos: [number, number, number];
+    rot: [number, number, number];
+  }[] = [
+    { pos: [-1.55, -0.42, -0.78], rot: [0, Math.PI / 4, Math.PI / 2] },
+    { pos: [1.55, -0.42, -0.78], rot: [0, -Math.PI / 4, Math.PI / 2] },
+    { pos: [-1.55, -0.42, 0.78], rot: [0, -Math.PI / 4, Math.PI / 2] },
+    { pos: [1.55, -0.42, 0.78], rot: [0, Math.PI / 4, Math.PI / 2] },
+    { pos: [-0.95, 0.52, 0], rot: [0, 0, 0] },
+    { pos: [0.95, 0.52, 0], rot: [0, 0, 0] },
+  ];
+
   return (
     <group ref={root} position={s.pos} visible={false}>
       <StationLights color={s.color} />
       <group ref={hull}>
-        {/* pressure hull — anodised aluminium with a wet clearcoat */}
-        <mesh rotation={[0, 0, Math.PI / 2]}>
-          <capsuleGeometry args={[0.72, 2.5, 12, 32]} />
-          <meshPhysicalMaterial
-            color="#3f4b59"
-            roughness={0.24}
-            metalness={1}
-            clearcoat={0.8}
-            clearcoatRoughness={0.16}
-            envMapIntensity={1.5}
-            transparent
-          />
-        </mesh>
-        {/* end caps */}
-        {[-1.9, 1.9].map((x) => (
-          <mesh key={x} position={[x, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
-            <cylinderGeometry args={[0.74, 0.6, 0.3, 32]} />
+        {/* space-frame */}
+        {rails.map((r, i) => (
+          <mesh key={i} position={r.pos}>
+            <boxGeometry args={r.size} />
             <meshStandardMaterial
-              color={s.color}
-              {...PAINTED}
-              emissive={s.color}
-              emissiveIntensity={0.25}
+              color="#d8dee6"
+              roughness={0.34}
+              metalness={0.9}
+              envMapIntensity={1.35}
               transparent
             />
           </mesh>
         ))}
-        {/* hull banding */}
-        {[-0.9, 0, 0.9].map((x) => (
-          <mesh key={x} position={[x, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
-            <cylinderGeometry args={[0.745, 0.745, 0.09, 32]} />
+
+        {/* main electronics pressure housing, acrylic dome forward */}
+        <mesh rotation={[Math.PI / 2, 0, 0]}>
+          <cylinderGeometry args={[0.44, 0.44, 1.5, 36]} />
+          <meshPhysicalMaterial
+            color="#39424f"
+            roughness={0.22}
+            metalness={1}
+            clearcoat={0.7}
+            envMapIntensity={1.5}
+            transparent
+          />
+        </mesh>
+        <mesh position={[0, 0, -0.75]} rotation={[-Math.PI / 2, 0, 0]}>
+          <sphereGeometry args={[0.44, 32, 20, 0, Math.PI * 2, 0, Math.PI / 2]} />
+          <meshPhysicalMaterial
+            color="#cfe6f5"
+            roughness={0.04}
+            metalness={0}
+            transmission={0.92}
+            thickness={0.35}
+            ior={1.45}
+            clearcoat={1}
+            envMapIntensity={1.6}
+            transparent
+          />
+        </mesh>
+        {/* housing clamps */}
+        {[-0.5, 0.5].map((z) => (
+          <mesh key={z} position={[0, 0, z]} rotation={[Math.PI / 2, 0, 0]}>
+            <cylinderGeometry args={[0.47, 0.47, 0.08, 36]} />
             <meshStandardMaterial color="#8d98a8" {...METAL} transparent />
           </mesh>
         ))}
-        {/* thrusters: dark duct + bright hub */}
-        {[
-          [-1.0, 0.95, 0.95],
-          [-1.0, 0.95, -0.95],
-          [1.0, -0.95, 0.95],
-          [1.0, -0.95, -0.95],
-        ].map((v, i) => (
-          <group key={i} position={v as [number, number, number]} rotation={[0, 0, Math.PI / 2]}>
+
+        {/* battery pod slung underneath */}
+        <mesh position={[0, -0.5, 0.1]} rotation={[Math.PI / 2, 0, 0]}>
+          <cylinderGeometry args={[0.26, 0.26, 1.05, 28]} />
+          <meshStandardMaterial
+            color={s.color}
+            {...PAINTED}
+            emissive={s.color}
+            emissiveIntensity={0.3}
+            transparent
+          />
+        </mesh>
+
+        {/* forward camera dome */}
+        <mesh position={[0, 0.42, -0.9]}>
+          <sphereGeometry args={[0.2, 24, 24]} />
+          <meshPhysicalMaterial
+            color="#cfe6f5"
+            roughness={0.05}
+            transmission={0.9}
+            thickness={0.2}
+            ior={1.45}
+            transparent
+          />
+        </mesh>
+
+        {/* ducted thrusters: shroud, hub, blades */}
+        {thrusters.map((t, i) => (
+          <group key={i} position={t.pos} rotation={t.rot}>
             <mesh>
-              <cylinderGeometry args={[0.26, 0.26, 0.42, 24, 1, true]} />
+              <cylinderGeometry args={[0.28, 0.28, 0.34, 28, 1, true]} />
               <meshStandardMaterial
-                color="#232b35"
-                roughness={0.5}
+                color="#1c232c"
+                roughness={0.48}
                 metalness={0.9}
                 envMapIntensity={1.2}
                 side={THREE.DoubleSide}
@@ -188,23 +275,37 @@ function AuvStation({ s }: { s: Station }) {
               />
             </mesh>
             <mesh>
-              <cylinderGeometry args={[0.1, 0.1, 0.46, 16]} />
+              <cylinderGeometry args={[0.09, 0.09, 0.36, 16]} />
               <meshStandardMaterial color="#aab6c4" {...METAL} transparent />
             </mesh>
+            {[0, Math.PI / 3, (2 * Math.PI) / 3].map((r) => (
+              <mesh key={r} rotation={[0, r, 0.34]}>
+                <boxGeometry args={[0.5, 0.015, 0.13]} />
+                <meshStandardMaterial
+                  color="#7f8b9a"
+                  roughness={0.4}
+                  metalness={0.85}
+                  transparent
+                />
+              </mesh>
+            ))}
           </group>
         ))}
-        {/* hydrophone sonar rings */}
-        {[0, 1, 2].map((i) => (
-          <mesh key={i} rotation={[Math.PI / 2, 0, 0]} position={[-2.2, 0, 0]}>
-            <ringGeometry args={[1.1 + i * 0.9, 1.16 + i * 0.9, 56]} />
-            <meshBasicMaterial
-              color={s.color}
-              transparent
-              opacity={0.3}
-              side={THREE.DoubleSide}
-              depthWrite={false}
-            />
-          </mesh>
+
+        {/* hydrophones — the sonar cue now lives ON the frame, not orbiting it */}
+        {[-1, 1].map((sx) => (
+          <group key={sx} position={[sx * 1.55, -0.82, -1.15]}>
+            <mesh rotation={[Math.PI / 2, 0, 0]}>
+              <cylinderGeometry args={[0.09, 0.09, 0.22, 16]} />
+              <meshStandardMaterial
+                color={s.color}
+                emissive={s.color}
+                emissiveIntensity={1.8}
+                toneMapped={false}
+                transparent
+              />
+            </mesh>
+          </group>
         ))}
       </group>
 
@@ -232,18 +333,22 @@ function VtolStation({ s }: { s: Station }) {
   const cone = useRef<THREE.Mesh>(null);
   useReveal(s, root, 0.9);
 
-  const arms: [number, number][] = [
-    [1.5, 1.5],
-    [-1.5, 1.5],
-    [1.5, -1.5],
-    [-1.5, -1.5],
+  // Lift rotors sit on twin booms fore and aft of the wing — the quadrotor
+  // layout this used to have was a multirotor, not a VTOL.
+  const lifts: [number, number][] = [
+    [1.85, -1.35],
+    [-1.85, -1.35],
+    [1.85, 1.5],
+    [-1.85, 1.5],
   ];
 
   useFrame((state, dt) => {
     const t = state.clock.elapsedTime;
     if (body.current) {
-      body.current.position.y = Math.sin(t * 1.1) * 0.12;
-      body.current.rotation.z = Math.sin(t * 0.8) * 0.05;
+      body.current.position.y = Math.sin(t * 1.1) * 0.1;
+      // gentle bank and yaw, like a machine holding a hover in wind
+      body.current.rotation.z = Math.sin(t * 0.8) * 0.055;
+      body.current.rotation.x = Math.sin(t * 0.6) * 0.03;
       body.current.rotation.y = t * 0.12;
     }
     if (rotors.current) {
@@ -261,51 +366,158 @@ function VtolStation({ s }: { s: Station }) {
     <group ref={root} position={s.pos} visible={false}>
       <StationLights color={s.color} />
       <group ref={body}>
-        {/* fuselage — carbon shell over a bright frame */}
-        <mesh>
-          <boxGeometry args={[1.1, 0.34, 1.5]} />
+        {/* fuselage — slender pod, nose forward (-Z) */}
+        <mesh rotation={[Math.PI / 2, 0, 0]}>
+          <capsuleGeometry args={[0.26, 1.7, 10, 24]} />
           <meshPhysicalMaterial
-            color="#23303c"
-            roughness={0.3}
-            metalness={0.75}
-            clearcoat={0.7}
-            clearcoatRoughness={0.2}
-            envMapIntensity={1.3}
+            color="#e8edf3"
+            roughness={0.32}
+            metalness={0.1}
+            clearcoat={0.9}
+            clearcoatRoughness={0.14}
+            envMapIntensity={1.2}
             transparent
           />
         </mesh>
-        <mesh position={[0, 0.19, 0]}>
-          <boxGeometry args={[0.9, 0.08, 1.25]} />
-          <meshStandardMaterial color="#9aa7b6" {...METAL} transparent />
+        {/* nose cone */}
+        <mesh position={[0, 0, -1.16]} rotation={[-Math.PI / 2, 0, 0]}>
+          <coneGeometry args={[0.26, 0.5, 24]} />
+          <meshPhysicalMaterial
+            color="#23303c"
+            roughness={0.22}
+            metalness={0.4}
+            clearcoat={1}
+            envMapIntensity={1.4}
+            transparent
+          />
         </mesh>
-        {/* arms */}
-        {arms.map(([x, z], i) => (
-          <mesh key={i} position={[x / 2, 0, z / 2]} rotation={[0, Math.atan2(x, z), 0]}>
-            <boxGeometry args={[0.11, 0.09, 2.0]} />
+
+        {/* main wing — a foam plank, matte, not a glossy composite */}
+        <mesh position={[0, 0.06, 0.1]}>
+          <boxGeometry args={[4.6, 0.07, 0.72]} />
+          <meshStandardMaterial
+            color="#eef1f5"
+            roughness={0.86}
+            metalness={0.02}
+            envMapIntensity={0.6}
+            transparent
+          />
+        </mesh>
+        {/* wing leading-edge accent */}
+        <mesh position={[0, 0.06, -0.24]}>
+          <boxGeometry args={[4.6, 0.075, 0.12]} />
+          <meshStandardMaterial
+            color={s.color}
+            emissive={s.color}
+            emissiveIntensity={0.9}
+            toneMapped={false}
+            transparent
+          />
+        </mesh>
+        {/* tape bands across the wing, like the real airframe */}
+        {[-1.5, -0.55, 0.55, 1.5].map((x) => (
+          <mesh key={x} position={[x, 0.075, 0.1]}>
+            <boxGeometry args={[0.26, 0.02, 0.74]} />
+            <meshStandardMaterial
+              color="#d9b25a"
+              roughness={0.8}
+              metalness={0.05}
+              transparent
+            />
+          </mesh>
+        ))}
+
+        {/* twin lift booms running fore-aft under the wing */}
+        {[-1.85, 1.85].map((x) => (
+          <mesh key={x} position={[x, 0.02, 0.08]}>
+            <boxGeometry args={[0.13, 0.13, 3.4]} />
             <meshStandardMaterial color="#5c677a" {...METAL} transparent />
           </mesh>
         ))}
-        {/* rotor discs */}
+
+        {/* tail boom + conventional tail */}
+        <mesh position={[0, 0.06, 1.55]}>
+          <boxGeometry args={[0.11, 0.11, 1.6]} />
+          <meshStandardMaterial color="#5c677a" {...METAL} transparent />
+        </mesh>
+        <mesh position={[0, 0.06, 2.3]}>
+          <boxGeometry args={[1.5, 0.05, 0.42]} />
+          <meshStandardMaterial color="#e8edf3" {...PAINTED} transparent />
+        </mesh>
+        <mesh position={[0, 0.42, 2.3]}>
+          <boxGeometry args={[0.05, 0.7, 0.42]} />
+          <meshStandardMaterial color="#e8edf3" {...PAINTED} transparent />
+        </mesh>
+
+        {/* exposed avionics tray on top of the wing */}
+        <mesh position={[0, 0.16, 0.42]}>
+          <boxGeometry args={[0.5, 0.16, 0.6]} />
+          <meshStandardMaterial color="#2a323d" roughness={0.6} metalness={0.4} transparent />
+        </mesh>
+        <mesh position={[0.16, 0.25, 0.42]}>
+          <boxGeometry args={[0.1, 0.03, 0.2]} />
+          <meshStandardMaterial
+            color={s.color}
+            emissive={s.color}
+            emissiveIntensity={2}
+            toneMapped={false}
+            transparent
+          />
+        </mesh>
+
+        {/* four lift rotors on the booms */}
         <group ref={rotors}>
-          {arms.map(([x, z], i) => (
+          {lifts.map(([x, z], i) => (
             <group key={i} position={[x, 0.16, z]}>
               <mesh rotation={[Math.PI / 2, 0, 0]}>
-                <ringGeometry args={[0.62, 0.72, 40]} />
+                <ringGeometry args={[0.6, 0.68, 40]} />
                 <meshBasicMaterial
                   color={s.color}
                   transparent
-                  opacity={0.45}
+                  opacity={0.4}
                   side={THREE.DoubleSide}
                   depthWrite={false}
                 />
               </mesh>
+              {/* two blades, so it reads as a prop rather than a bar */}
+              {[0, Math.PI / 2].map((r) => (
+                <mesh key={r} rotation={[0, r, 0]}>
+                  <boxGeometry args={[1.28, 0.018, 0.08]} />
+                  <meshStandardMaterial
+                    color="#aeb9c7"
+                    roughness={0.4}
+                    metalness={0.8}
+                    transparent
+                    opacity={0.65}
+                  />
+                </mesh>
+              ))}
               <mesh>
-                <boxGeometry args={[1.35, 0.02, 0.09]} />
-                <meshBasicMaterial color={s.color} transparent opacity={0.6} />
+                <cylinderGeometry args={[0.075, 0.075, 0.16, 14]} />
+                <meshStandardMaterial color="#5c677a" {...METAL} transparent />
               </mesh>
             </group>
           ))}
         </group>
+
+        {/* rear pusher prop — the cruise motor */}
+        <group position={[0, 0, 1.18]}>
+          <mesh rotation={[Math.PI / 2, 0, 0]}>
+            <cylinderGeometry args={[0.13, 0.13, 0.2, 16]} />
+            <meshStandardMaterial color="#5c677a" {...METAL} transparent />
+          </mesh>
+          <mesh position={[0, 0, 0.14]}>
+            <circleGeometry args={[0.52, 32]} />
+            <meshBasicMaterial
+              color={s.color}
+              transparent
+              opacity={0.16}
+              side={THREE.DoubleSide}
+              depthWrite={false}
+            />
+          </mesh>
+        </group>
+
         {/* thermal camera pod: gimbal housing + hot lens */}
         <mesh position={[0, -0.28, 0.35]}>
           <sphereGeometry args={[0.22, 20, 20]} />
