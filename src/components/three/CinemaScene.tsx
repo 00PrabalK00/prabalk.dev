@@ -942,7 +942,10 @@ function ThemeDriver() {
     const b = themeStore.blend;
 
     bg.copy(dark).lerp(light, b);
-    state.scene.background = bg;
+    // Clear colour, not scene.background: a background Color is pushed through
+    // ACES tone mapping, so it never matches the identical CSS colour behind
+    // the canvas and leaves a visible seam down any uncovered edge.
+    state.gl.setClearColor(bg, 1);
     const fog = state.scene.fog as THREE.FogExp2;
     if (fog) fog.color.copy(bg);
 
@@ -1012,7 +1015,7 @@ export default function CinemaScene() {
         gl.toneMappingExposure = STAGE.dark.exposure;
         gl.outputColorSpace = THREE.SRGBColorSpace;
 
-        scene.background = new THREE.Color(STAGE.dark.bg);
+        gl.setClearColor(new THREE.Color(STAGE.dark.bg), 1);
         scene.fog = new THREE.FogExp2(STAGE.dark.fog, 0.026);
 
         // Without an environment map, metalness renders black — this is the

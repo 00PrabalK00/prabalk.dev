@@ -300,7 +300,9 @@ export default function Cinema() {
       style={{ height: `${STAGE_VH}svh` }}
     >
       {/* pinned viewport */}
-      <div className="sticky top-0 h-[100svh] w-full overflow-hidden">
+      {/* bg-ink so any pixel the canvas doesn't cover is the same colour as
+          the clear colour, rather than showing the page through */}
+      <div className="sticky top-0 h-[100svh] w-full overflow-hidden bg-ink">
         <div ref={overlayRef} className="absolute inset-0">
           <div className="absolute inset-0">
             <CinemaScene />
@@ -346,10 +348,10 @@ export default function Cinema() {
                 style={{
                   background:
                     b.align === "left"
-                      ? "linear-gradient(to right, var(--c-ink) 0%, color-mix(in srgb, var(--c-ink) 82%, transparent) 34%, color-mix(in srgb, var(--c-ink) 40%, transparent) 58%, transparent 78%)"
+                      ? "linear-gradient(to right, color-mix(in srgb, var(--c-ink) var(--scrim-1), transparent) 0%, color-mix(in srgb, var(--c-ink) var(--scrim-2), transparent) 34%, color-mix(in srgb, var(--c-ink) var(--scrim-3), transparent) 58%, transparent 78%)"
                       : b.align === "right"
-                        ? "linear-gradient(to left, var(--c-ink) 0%, color-mix(in srgb, var(--c-ink) 82%, transparent) 34%, color-mix(in srgb, var(--c-ink) 40%, transparent) 58%, transparent 78%)"
-                        : "radial-gradient(ellipse 62% 58% at 50% 50%, color-mix(in srgb, var(--c-ink) 88%, transparent) 0%, color-mix(in srgb, var(--c-ink) 60%, transparent) 45%, transparent 80%)",
+                        ? "linear-gradient(to left, color-mix(in srgb, var(--c-ink) var(--scrim-1), transparent) 0%, color-mix(in srgb, var(--c-ink) var(--scrim-2), transparent) 34%, color-mix(in srgb, var(--c-ink) var(--scrim-3), transparent) 58%, transparent 78%)"
+                        : "radial-gradient(ellipse 62% 58% at 50% 50%, color-mix(in srgb, var(--c-ink) var(--scrim-1), transparent) 0%, color-mix(in srgb, var(--c-ink) var(--scrim-2), transparent) 45%, transparent 80%)",
                 }}
               />
 

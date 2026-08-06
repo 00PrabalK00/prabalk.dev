@@ -30,6 +30,15 @@
   /* Per-station accents are picked to glow on near-black. On a light surface
      they need darkening to stay legible — see the beat copy in the flight. */
   --accent-darken: 0%;
+
+  /* Flight scrim + vignette.
+     These exist to darken a busy 3D background so LIGHT text stays readable.
+     In light mode the text is dark and the stage is already pale, so the same
+     opacities just paint white over white and swallow the scene. */
+  --scrim-1: 100%;
+  --scrim-2: 82%;
+  --scrim-3: 40%;
+  --stage-vignette: 82%;
 }
 
 :root[data-theme="light"] {
@@ -54,6 +63,10 @@
   --shade-0: #e4eaf2;
   --grain: 0.012;
   --accent-darken: 34%;
+  --scrim-1: 58%;
+  --scrim-2: 34%;
+  --scrim-3: 12%;
+  --stage-vignette: 10%;
 }
 
 @media (prefers-color-scheme: light) {
@@ -79,6 +92,10 @@
     --shade-0: #e4eaf2;
     --grain: 0.012;
     --accent-darken: 34%;
+    --scrim-1: 58%;
+    --scrim-2: 34%;
+    --scrim-3: 12%;
+    --stage-vignette: 10%;
   }
 }
 
