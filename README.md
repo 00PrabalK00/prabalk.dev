@@ -1,36 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# prabalkhare.dev — portfolio
 
-## Getting Started
+Next.js 16 · React 19 · React Three Fiber · Tailwind v4.
 
-First, run the development server:
+## Run
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev      # http://localhost:3000
+npm run build    # production build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Where things live
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| What | File |
+|---|---|
+| **All content** — bio, experience, projects, patents, skills, honors | `src/lib/data.ts` |
+| Live GitHub aggregator | `src/app/api/github/route.ts` |
+| 3D hero scene | `src/components/three/Scene.tsx` |
+| Photos and video | `public/media/` — see `public/media/MANIFEST.md` |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Editing `src/lib/data.ts` changes the site. No component edits needed for content changes.
 
-## Learn More
+## Live GitHub panel
 
-To learn more about Next.js, take a look at the following resources:
+`/api/github` aggregates the REST API server-side and caches for 5 minutes.
+The client polls every 60 s and on tab refocus, so a push shows up within about a minute.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Works with no configuration. Add a token to unlock more:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+cp .env.example .env.local
+# set GITHUB_TOKEN=github_pat_...
+```
 
-## Deploy on Vercel
+| | No token | With token |
+|---|---|---|
+| Repos, stars, activity stream, languages | yes | yes |
+| Contribution heatmap | no (GraphQL needs auth) | yes |
+| Rate limit | 60 req/hr per IP | 5000 req/hr |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+For public data a classic token with `read:user` is enough. Never commit `.env.local`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Media
+
+Every image and video slot renders a labelled placeholder until the file exists —
+nothing breaks when the folder is empty. Drop files into `public/media/` using the
+exact filenames in `public/media/MANIFEST.md`.
+
+## Deploy
+
+Vercel: import the repo, set the root directory to `site/`, add `GITHUB_TOKEN` as an
+environment variable, deploy. Then point the domain and update `SITE` in
+`src/app/layout.tsx` and `src/app/page.tsx`.
+
+## Performance notes
+
+- The WebGL scene is `dynamic(..., { ssr: false })`, so first paint never waits on three.js.
+- `PerformanceMonitor` + `AdaptiveDpr` drop the pixel ratio when the frame budget slips.
+- All animation honors `prefers-reduced-motion`.
