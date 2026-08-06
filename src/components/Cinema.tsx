@@ -178,7 +178,10 @@ export default function Cinema() {
       : new Lenis({ duration: 1.15, wheelMultiplier: 0.9, touchMultiplier: 1.4 });
 
     // Route programmatic jumps through Lenis so they share the same easing.
-    if (lenis) cinema.scrollTo = (px) => lenis.scrollTo(px, { duration: 1.6 });
+    if (lenis) {
+      cinema.scrollTo = (px) => lenis.scrollTo(px, { duration: 1.6 });
+      cinema.setPageScroll = (enabled) => (enabled ? lenis.start() : lenis.stop());
+    }
 
     let raf = 0;
     const frame = (time: number) => {
@@ -219,6 +222,7 @@ export default function Cinema() {
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", sizeStage);
+      cinema.setPageScroll = () => {};
       lenis?.destroy();
     };
   }, []);

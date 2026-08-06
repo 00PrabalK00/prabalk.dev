@@ -760,6 +760,14 @@ export const mediaSlots: MediaSlot[] = [
     group: "Patents",
   },
   {
+    file: "VTOL.jpeg",
+    type: "image",
+    caption:
+      "VTOL search-and-rescue quadplane — plank wing, four lift rotors, exposed avionics",
+    group: "UAV",
+    span: "hero",
+  },
+  {
     file: "DNT_Team_Pic.jpeg",
     type: "image",
     caption: "Dreadnought Robotics — 120 members, 4 departments",
@@ -784,7 +792,6 @@ export const mediaSlots: MediaSlot[] = [
 
   { file: "transform-drone.mp4", type: "video", caption: "Ground-to-air transition", group: "Patents", span: "wide" },
 
-  { file: "vtol-uav.jpg", type: "image", caption: "VTOL search-and-rescue airframe", group: "UAV", span: "wide" },
   { file: "vtol-flight.mp4", type: "video", caption: "VTOL flight test", group: "UAV", span: "wide" },
 
   { file: "kurat-robot.jpg", type: "image", caption: "Kurat companion robot", group: "Kurat", span: "tall" },
@@ -809,4 +816,5 @@ export const SHIPPED_MEDIA = new Set([
   "thermobottle.jpg",
   "DNT_Team_Pic.jpeg",
   "portrait.jpg",
+  "VTOL.jpeg",
 ]);

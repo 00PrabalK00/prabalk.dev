@@ -31,7 +31,7 @@ function Heatmap({ days }: { days: ContribDay[] }) {
   }, [days]);
 
   return (
-    <div className="overflow-x-auto pb-1">
+    <div data-lenis-prevent className="overflow-x-auto pb-1">
       <div className="flex min-w-max gap-[3px]">
         {weeks.map((week, wi) => (
           <div key={wi} className="flex flex-col gap-[3px]">
@@ -53,7 +53,7 @@ function Heatmap({ days }: { days: ContribDay[] }) {
 /** Shown when no GITHUB_TOKEN is configured (calendar is GraphQL-only). */
 function HeatmapPlaceholder() {
   return (
-    <div className="relative overflow-x-auto pb-1">
+    <div data-lenis-prevent className="relative overflow-x-auto pb-1">
       <div className="flex min-w-max gap-[3px] opacity-25">
         {Array.from({ length: 53 }).map((_, wi) => (
           <div key={wi} className="flex flex-col gap-[3px]">
@@ -231,7 +231,7 @@ export default function GithubLive() {
             <span className="text-accent">{data?.events.length ?? 0}</span>
           </div>
 
-          <ol className="max-h-[440px] overflow-y-auto pr-2">
+          <ol data-lenis-prevent className="max-h-[440px] overflow-y-auto pr-2">
             {(data?.events ?? []).map((e) => (
               <li
                 key={e.id}

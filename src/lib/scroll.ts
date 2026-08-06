@@ -11,9 +11,16 @@ export const cinema: {
   progress: number;
   /** Set by the stage once Lenis is live, so jumps use the same easing. */
   scrollTo: (px: number) => void;
+  /**
+   * Pauses Lenis entirely. Overlays that own the viewport call this — Lenis
+   * hijacks wheel and touch globally, so a modal's own scroll container is
+   * dead until the page scroller stands down.
+   */
+  setPageScroll: (enabled: boolean) => void;
 } = {
   progress: 0,
   scrollTo: (px) => window.scrollTo({ top: px, behavior: "smooth" }),
+  setPageScroll: () => {},
 };
 
 /** Smoothstep — soft in, soft out. */

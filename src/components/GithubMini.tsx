@@ -168,7 +168,7 @@ export default function GithubMini({
       ) : null}
 
       {/* recent activity */}
-      <ol className="max-h-[190px] overflow-y-auto">
+      <ol data-lenis-prevent className="max-h-[190px] overflow-y-auto">
         {(data?.events ?? []).slice(0, 8).map((e) => (
           <li key={e.id} className="border-b border-line/50 px-4 py-2 last:border-0">
             <div className="flex items-baseline gap-2">

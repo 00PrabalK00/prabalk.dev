@@ -3,12 +3,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Activity,
+  ArrowLeft,
   Boxes,
   Briefcase,
   Cpu,
   FileDown,
   Images,
   Mail,
+  X,
   ScrollText,
   Terminal as TerminalIcon,
   Trophy,
@@ -16,6 +18,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { profile } from "@/lib/data";
+import { cinema } from "@/lib/scroll";
 import Smr300Section from "@/components/Smr300Section";
 import GithubLive from "@/components/GithubLive";
 import Timeline from "@/components/Timeline";
@@ -324,6 +327,13 @@ export default function Console() {
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
+  // Lenis owns wheel and touch for the whole document, so an overlay's own
+  // scroll container does nothing until the page scroller is paused.
+  useEffect(() => {
+    cinema.setPageScroll(!open);
+    return () => cinema.setPageScroll(true);
+  }, [open]);
+
   const complete = () => {
     const frag = input.trim().split(/\s+/).pop() ?? "";
     if (!frag) return;
@@ -492,6 +502,7 @@ export default function Console() {
 
             <div
               ref={logRef}
+              data-lenis-prevent
               onClick={() => inputRef.current?.focus()}
               className="mono flex-1 cursor-text overflow-y-auto px-4 py-3.5 text-[12px] leading-[1.8]"
             >
@@ -591,18 +602,20 @@ export default function Console() {
           aria-modal="true"
           aria-label={app.name}
         >
-          <div className="flex shrink-0 items-center gap-3 border-b border-line px-4 py-3 sm:px-6">
+          <div className="flex shrink-0 items-center gap-3 border-b border-line bg-ink-2/80 px-3 py-2.5 backdrop-blur-sm sm:px-5">
+            {/* Back is the primary action here, so it is a labelled control
+                rather than a 12px traffic-light dot. */}
             <button
               type="button"
               onClick={() => setOpen(null)}
-              aria-label="Close"
-              className="group/dot flex shrink-0 items-center gap-1.5"
+              className="mono group/back flex shrink-0 items-center gap-2 border border-line-2 bg-ink px-3 py-2 text-[11px] tracking-[0.14em] uppercase text-bone transition-all hover:border-accent hover:text-accent"
             >
-              <span className="grid h-3 w-3 place-items-center rounded-full bg-fault/80 text-[8px] leading-none text-ink transition-transform group-hover/dot:scale-125">
-                ×
-              </span>
-              <span className="h-3 w-3 rounded-full bg-line-2" />
-              <span className="h-3 w-3 rounded-full bg-line-2" />
+              <ArrowLeft
+                size={14}
+                strokeWidth={2}
+                className="transition-transform group-hover/back:-translate-x-0.5"
+              />
+              Back
             </button>
 
             <span className="mono flex min-w-0 items-center gap-2 truncate text-[12px]">
@@ -613,13 +626,19 @@ export default function Console() {
             <button
               type="button"
               onClick={() => setOpen(null)}
-              className="mono ml-auto shrink-0 text-[10px] tracking-[0.16em] uppercase text-mute transition-colors hover:text-accent"
+              aria-label="Close"
+              className="ml-auto grid h-9 w-9 shrink-0 place-items-center border border-line-2 bg-ink text-mute transition-all hover:border-fault hover:bg-fault/10 hover:text-fault"
             >
-              esc
+              <X size={16} strokeWidth={2} />
             </button>
           </div>
 
-          <div className="window-body flex-1 overflow-y-auto overscroll-contain">
+          {/* data-lenis-prevent keeps Lenis from eating this pane's wheel and
+              touch events, which is what made the window unscrollable. */}
+          <div
+            data-lenis-prevent
+            className="window-body flex-1 overflow-y-auto overscroll-contain"
+          >
             {app.render()}
           </div>
 
