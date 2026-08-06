@@ -24,6 +24,7 @@ import { Honors, Patents, Skills } from "@/components/Patents";
 import Media from "@/components/Media";
 import Contact from "@/components/Contact";
 import ThemeToggle from "@/components/ThemeToggle";
+import GithubMini from "@/components/GithubMini";
 import { LiveClock } from "@/components/ui";
 
 /* ------------------------------------------------------------------ */
@@ -478,8 +479,11 @@ export default function Console() {
             })}
           </div>
 
-          {/* terminal */}
-          <div className="flex min-h-[420px] flex-col border border-line bg-ink-2/80 backdrop-blur-sm xl:sticky xl:top-8 xl:max-h-[calc(100svh-4rem)]">
+          {/* live panel + terminal */}
+          <div className="flex flex-col gap-5 xl:sticky xl:top-8 xl:self-start">
+            <GithubMini onOpen={() => launch("github")} />
+
+            <div className="flex min-h-[300px] flex-col border border-line bg-ink-2/80 backdrop-blur-sm">
             <div className="mono flex items-center gap-2 border-b border-line px-4 py-2.5 text-[10px] tracking-[0.16em] uppercase text-mute">
               <TerminalIcon size={12} strokeWidth={1.8} />
               bash
@@ -574,6 +578,7 @@ export default function Console() {
                 ▋
               </span>
             </form>
+            </div>
           </div>
         </div>
       </div>
