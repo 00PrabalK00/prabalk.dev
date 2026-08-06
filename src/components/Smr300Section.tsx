@@ -167,18 +167,14 @@ export default function Smr300Section() {
         ))}
       </ul>
 
-      {/* media — asymmetric, full-bleed feel */}
-      <div className="mt-20 space-y-3">
-        <MediaSlot file="smr300-hero.jpg" aspect="aspect-[21/9]" />
-        <div className="grid gap-3 sm:grid-cols-3">
-          <MediaSlot file="smr300-docking.jpg" aspect="aspect-[4/3]" />
-          <MediaSlot file="smr300-rviz.jpg" aspect="aspect-[4/3]" />
-          <MediaSlot file="smr300-operator-ui.jpg" aspect="aspect-[4/3]" />
+      {/* media — the docking run leads, because it is the proof */}
+      <div className="mt-20 space-y-3 sm:space-y-4">
+        <MediaSlot file="Shelf_Docking_SMR300.mp4" aspect="aspect-[16/9]" />
+        <div className="grid gap-3 sm:gap-4 lg:grid-cols-2">
+          <MediaSlot file="SMR300_onFactoryFloor.jpeg" aspect="aspect-[16/10]" />
+          <MediaSlot file="UI_SMR300ControlPlane.jpeg" aspect="aspect-[16/10]" />
         </div>
-        <div className="grid gap-3 sm:grid-cols-[1fr_1.4fr]">
-          <MediaSlot file="smr300-nodered.jpg" aspect="aspect-[4/3]" />
-          <MediaSlot file="smr300-docking.mp4" aspect="aspect-[16/9]" />
-        </div>
+        <MediaSlot file="PGV_Mode_SMR300.mp4" aspect="aspect-[16/9]" />
       </div>
     </Section>
   );

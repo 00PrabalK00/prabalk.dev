@@ -1,10 +1,46 @@
 "use client";
 
-import { profile } from "@/lib/data";
+import { useMemo, useState } from "react";
+import { mediaSlots, profile, SHIPPED_MEDIA, type MediaSlot } from "@/lib/data";
 import { Reveal, Section } from "@/components/ui";
-import MediaSlot from "@/components/MediaSlot";
+import MediaSlotView from "@/components/MediaSlot";
+
+/** Grid footprint per span, at the sm breakpoint and up. */
+const SPAN_CLASS: Record<NonNullable<MediaSlot["span"]> | "default", string> = {
+  hero: "sm:col-span-2 lg:col-span-3",
+  wide: "sm:col-span-2",
+  tall: "row-span-2",
+  normal: "",
+  default: "",
+};
+
+const ASPECT: Record<NonNullable<MediaSlot["span"]> | "default", string> = {
+  hero: "aspect-[16/9]",
+  wide: "aspect-[16/10]",
+  tall: "aspect-[3/4]",
+  normal: "aspect-[4/3]",
+  default: "aspect-[4/3]",
+};
 
 export default function Media() {
+  const groups = useMemo(
+    () => [...new Set(mediaSlots.map((m) => m.group))],
+    []
+  );
+  const [group, setGroup] = useState<string>("All");
+  const [showEmpty, setShowEmpty] = useState(false);
+
+  const shown = useMemo(() => {
+    const byGroup =
+      group === "All" ? mediaSlots : mediaSlots.filter((m) => m.group === group);
+    return showEmpty ? byGroup : byGroup.filter((m) => SHIPPED_MEDIA.has(m.file));
+  }, [group, showEmpty]);
+
+  const shippedCount = (g: string) =>
+    mediaSlots.filter(
+      (m) => (g === "All" || m.group === g) && SHIPPED_MEDIA.has(m.file)
+    ).length;
+
   return (
     <Section
       id="media"
@@ -12,40 +48,55 @@ export default function Media() {
       title="From the field"
       kicker="Robots on real floors, sealed hulls in real water, boards on real benches."
     >
-      {/* asymmetric editorial layout, not an even grid */}
-      <div className="space-y-3 sm:space-y-4">
-        <div className="grid gap-3 sm:gap-4 lg:grid-cols-[1.6fr_1fr]">
-          <MediaSlot file="mira-auv.jpg" aspect="aspect-[16/10]" />
-          <MediaSlot file="mira-electronics.jpg" aspect="aspect-[16/10]" />
-        </div>
+      <Reveal>
+        <div className="mono mb-8 flex flex-wrap items-center gap-x-7 gap-y-3 text-[11px] tracking-[0.14em] uppercase">
+          {["All", ...groups].map((g) => {
+            const n = shippedCount(g);
+            const on = group === g;
+            return (
+              <button
+                key={g}
+                type="button"
+                onClick={() => setGroup(g)}
+                className={`transition-colors ${
+                  on ? "text-accent" : "text-mute hover:text-bone"
+                } ${n === 0 && !showEmpty ? "opacity-40" : ""}`}
+              >
+                {g}
+                <sup className="ml-1 text-[9px] opacity-60">{n}</sup>
+                {on && <span className="mt-1.5 block h-px bg-accent" />}
+              </button>
+            );
+          })}
 
-        <MediaSlot file="mira-norway.jpg" aspect="aspect-[21/9]" />
-
-        <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-[1.3fr_1fr]">
-          <MediaSlot file="transform-drone.mp4" aspect="aspect-video" />
-          <MediaSlot file="transform-drone.jpg" aspect="aspect-video" />
+          <button
+            type="button"
+            onClick={() => setShowEmpty((v) => !v)}
+            className="ml-auto text-mute/60 transition-colors hover:text-accent"
+            title="Show the slots that are still waiting on a file"
+          >
+            {showEmpty ? "hide empty slots" : "show empty slots"}
+          </button>
         </div>
+      </Reveal>
 
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
-          <MediaSlot file="kurat-robot.jpg" aspect="aspect-[3/4]" />
-          <MediaSlot file="vtol-uav.jpg" aspect="aspect-[3/4]" />
-          <MediaSlot file="pcb-animatronic.jpg" aspect="aspect-[3/4]" />
-          <MediaSlot file="pcb-rccar.jpg" aspect="aspect-[3/4]" />
-        </div>
-
-        <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
-          <MediaSlot file="vtol-flight.mp4" aspect="aspect-video" />
-          <MediaSlot file="mira-underwater.mp4" aspect="aspect-video" />
-          <MediaSlot file="robotdrawing-abb.mp4" aspect="aspect-video" />
-        </div>
-
-        <div className="grid gap-3 sm:gap-4 lg:grid-cols-[1.4fr_1fr]">
-          <MediaSlot file="workshop-kicad.jpg" aspect="aspect-[16/9]" />
-          <MediaSlot file="rosscope-ui.jpg" aspect="aspect-[16/9]" />
-        </div>
+      <div className="grid auto-rows-min grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
+        {shown.map((m, i) => {
+          const span = m.span ?? "default";
+          return (
+            <div key={m.file} className={SPAN_CLASS[span]}>
+              <MediaSlotView file={m.file} index={i} aspect={ASPECT[span]} />
+            </div>
+          );
+        })}
       </div>
 
-      {/* channel */}
+      {shown.length === 0 && (
+        <p className="mono py-10 text-[12px] text-mute">
+          Nothing here yet — drop files into /public/media.
+        </p>
+      )}
+
       <Reveal delay={80}>
         <a
           href={profile.youtube}

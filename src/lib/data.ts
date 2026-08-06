@@ -689,29 +689,80 @@ export type MediaSlot = {
   type: "image" | "video";
   caption: string;
   group: string;
+  /** Layout weight in the gallery grid. Hero spans the full row. */
+  span?: "hero" | "wide" | "normal" | "tall";
 };
 
 export const mediaSlots: MediaSlot[] = [
-  { file: "transform-drone.jpg", type: "image", caption: "Transformation Drone — rover mode, prop arms stowed", group: "Patents" },
-  { file: "transform-drone.mp4", type: "video", caption: "Transformation Drone — ground to air transition", group: "Patents" },
-  { file: "vtol-flight.mp4", type: "video", caption: "VTOL search-and-rescue flight test", group: "UAV" },
-  { file: "mira-underwater.mp4", type: "video", caption: "Project MIRA under test", group: "Project MIRA" },
-  { file: "robotdrawing-abb.mp4", type: "video", caption: "ABB IRB140 drawing a learned stroke route", group: "Hardware" },
-  { file: "rosscope-ui.jpg", type: "image", caption: "RosScope — engineer mode", group: "SMR300" },
-  { file: "smr300-hero.jpg", type: "image", caption: "SMR300 on the factory floor", group: "SMR300" },
-  { file: "smr300-docking.jpg", type: "image", caption: "Shelf docking approach", group: "SMR300" },
-  { file: "smr300-rviz.jpg", type: "image", caption: "Nav2 costmap in RViz", group: "SMR300" },
-  { file: "smr300-operator-ui.jpg", type: "image", caption: "Operator platform UI", group: "SMR300" },
+  /* ---------------- present in /public/media ---------------- */
+  {
+    file: "Shelf_Docking_SMR300.mp4",
+    type: "video",
+    caption: "Autonomous shelf docking — approach, align, lift",
+    group: "SMR300",
+    span: "hero",
+  },
+  {
+    file: "SMR300_onFactoryFloor.jpeg",
+    type: "image",
+    caption: "SMR300 on the factory floor, squaring up to a shelf",
+    group: "SMR300",
+    span: "wide",
+  },
+  {
+    file: "UI_SMR300ControlPlane.jpeg",
+    type: "image",
+    caption: "Operator control plane — live scan, path editor, safety groups",
+    group: "SMR300",
+    span: "wide",
+  },
+  {
+    file: "PGV_Mode_SMR300.mp4",
+    type: "video",
+    caption: "PGV mode — tag-referenced localization run",
+    group: "SMR300",
+    span: "wide",
+  },
+  {
+    file: "DNT_Team_Pic.jpeg",
+    type: "image",
+    caption: "Dreadnought Robotics — 120 members, 4 departments",
+    group: "Team",
+    span: "wide",
+  },
+
+  /* ---------------- wanted, still empty ---------------- */
+  { file: "smr300-rviz.jpg", type: "image", caption: "Nav2 costmap and planned path in RViz", group: "SMR300" },
   { file: "smr300-nodered.jpg", type: "image", caption: "Node-RED operator dashboard", group: "SMR300" },
-  { file: "smr300-docking.mp4", type: "video", caption: "Autonomous shelf docking run", group: "SMR300" },
-  { file: "mira-auv.jpg", type: "image", caption: "Project MIRA AUV", group: "Project MIRA" },
-  { file: "mira-electronics.jpg", type: "image", caption: "Sealed-hull electronics stack", group: "Project MIRA" },
-  { file: "mira-norway.jpg", type: "image", caption: "TAC Challenge Norway 2024", group: "Project MIRA" },
-  { file: "kurat-robot.jpg", type: "image", caption: "Kurat companion robot", group: "Kurat" },
-  { file: "vtol-uav.jpg", type: "image", caption: "VTOL search-and-rescue UAV", group: "UAV" },
-  { file: "transformation-drone.jpg", type: "image", caption: "Transformation Drone concept", group: "Patents" },
+  { file: "rosscope-ui.jpg", type: "image", caption: "RosScope — engineer mode", group: "SMR300" },
+
+  { file: "mira-auv.jpg", type: "image", caption: "Project MIRA, assembled", group: "Project MIRA", span: "wide" },
+  { file: "mira-electronics.jpg", type: "image", caption: "Sealed-hull electronics and power distribution", group: "Project MIRA" },
+  { file: "mira-underwater.mp4", type: "video", caption: "MIRA under test", group: "Project MIRA", span: "wide" },
+  { file: "mira-norway.jpg", type: "image", caption: "TAC Challenge Norway 2024 — 2nd place", group: "Project MIRA", span: "wide" },
+
+  { file: "transform-drone.jpg", type: "image", caption: "Transformation Drone — rover mode", group: "Patents", span: "wide" },
+  { file: "transform-drone.mp4", type: "video", caption: "Ground-to-air transition", group: "Patents", span: "wide" },
+  { file: "thermo-bottle.jpg", type: "image", caption: "Thermoregulating bottle — Peltier loop and pill dispenser", group: "Patents" },
+
+  { file: "vtol-uav.jpg", type: "image", caption: "VTOL search-and-rescue airframe", group: "UAV", span: "wide" },
+  { file: "vtol-flight.mp4", type: "video", caption: "VTOL flight test", group: "UAV", span: "wide" },
+
+  { file: "kurat-robot.jpg", type: "image", caption: "Kurat companion robot", group: "Kurat", span: "tall" },
+  { file: "robotdrawing-abb.mp4", type: "video", caption: "ABB IRB140 drawing a learned stroke route", group: "Hardware", span: "wide" },
   { file: "pcb-animatronic.jpg", type: "image", caption: "Animatronic head PCB", group: "Hardware" },
   { file: "pcb-rccar.jpg", type: "image", caption: "RC car control board", group: "Hardware" },
-  { file: "workshop-kicad.jpg", type: "image", caption: "KiCad workshop, 50 attendees", group: "Leadership" },
-  { file: "portrait.jpg", type: "image", caption: "Prabal Khare", group: "About" },
+  { file: "opendronekit-ui.jpg", type: "image", caption: "OpenDroneKit — defect analysis", group: "Hardware" },
+
+  { file: "workshop-kicad.jpg", type: "image", caption: "KiCad workshop — 50 attendees", group: "Team", span: "wide" },
+  { file: "portrait.jpg", type: "image", caption: "Prabal Khare", group: "Team", span: "tall" },
 ];
+
+/** Only the slots whose files actually exist should drive the default view. */
+export const SHIPPED_MEDIA = new Set([
+  "Shelf_Docking_SMR300.mp4",
+  "SMR300_onFactoryFloor.jpeg",
+  "UI_SMR300ControlPlane.jpeg",
+  "PGV_Mode_SMR300.mp4",
+  "DNT_Team_Pic.jpeg",
+]);
