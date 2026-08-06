@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, Space_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { THEME_SCRIPT } from "@/lib/theme";
 import "./globals.css";
 
@@ -76,7 +77,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         {/* Applies the stored theme before first paint — no flash. */}
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
       </head>
-      <body className="flex min-h-full flex-col">{children}</body>
+      <body className="flex min-h-full flex-col">
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }
