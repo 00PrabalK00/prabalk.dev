@@ -2,6 +2,21 @@
 
 import { honors, patents, skills } from "@/lib/data";
 import { Reveal, Section } from "@/components/ui";
+import MediaSlot from "@/components/MediaSlot";
+
+/** Photographs of the filed hardware, keyed by patent title prefix. */
+const PATENT_MEDIA: Record<string, string[]> = {
+  "Transformation Drone": [
+    "transformationdrone_rovermode.jpeg",
+    "transformationdrone_dronemode.jpeg",
+  ],
+  Thermoregulation: ["thermobottle.jpg"],
+};
+
+function mediaFor(title: string) {
+  const key = Object.keys(PATENT_MEDIA).find((k) => title.startsWith(k));
+  return key ? PATENT_MEDIA[key] : [];
+}
 
 export function Patents() {
   return (
@@ -40,6 +55,19 @@ export function Patents() {
                       </span>
                     ))}
                   </p>
+
+                  {/* the built hardware, where a photo exists */}
+                  {mediaFor(p.title).length > 0 && (
+                    <div
+                      className={`mt-8 grid gap-3 ${
+                        mediaFor(p.title).length > 1 ? "sm:grid-cols-2" : "sm:max-w-md"
+                      }`}
+                    >
+                      {mediaFor(p.title).map((f) => (
+                        <MediaSlot key={f} file={f} aspect="aspect-[16/10]" />
+                      ))}
+                    </div>
+                  )}
                 </div>
               </article>
             </li>

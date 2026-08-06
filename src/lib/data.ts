@@ -724,11 +724,54 @@ export const mediaSlots: MediaSlot[] = [
     span: "wide",
   },
   {
+    file: "MIRA_AUV.jpeg",
+    type: "image",
+    caption:
+      "Project MIRA — extruded aluminium frame, ducted thrusters, domed pressure housings",
+    group: "Project MIRA",
+    span: "hero",
+  },
+  {
+    file: "TAC_PhotowithThrophy.jpeg",
+    type: "image",
+    caption: "Second place, TAC Challenge Norway 2024 — Dreadnought Robotics",
+    group: "Project MIRA",
+    span: "wide",
+  },
+  {
+    file: "transformationdrone_rovermode.jpeg",
+    type: "image",
+    caption: "Transformation Drone — rover mode, driving on geared hubs",
+    group: "Patents",
+    span: "wide",
+  },
+  {
+    file: "transformationdrone_dronemode.jpeg",
+    type: "image",
+    caption: "Transformation Drone — flight mode, arms deployed",
+    group: "Patents",
+    span: "wide",
+  },
+  {
+    file: "thermobottle.jpg",
+    type: "image",
+    caption:
+      "Thermoregulating bottle — Peltier loop, sealed electronics bay, pill dispenser",
+    group: "Patents",
+  },
+  {
     file: "DNT_Team_Pic.jpeg",
     type: "image",
     caption: "Dreadnought Robotics — 120 members, 4 departments",
     group: "Team",
     span: "wide",
+  },
+  {
+    file: "portrait.jpg",
+    type: "image",
+    caption: "Prabal Khare",
+    group: "Team",
+    span: "tall",
   },
 
   /* ---------------- wanted, still empty ---------------- */
@@ -736,14 +779,10 @@ export const mediaSlots: MediaSlot[] = [
   { file: "smr300-nodered.jpg", type: "image", caption: "Node-RED operator dashboard", group: "SMR300" },
   { file: "rosscope-ui.jpg", type: "image", caption: "RosScope — engineer mode", group: "SMR300" },
 
-  { file: "mira-auv.jpg", type: "image", caption: "Project MIRA, assembled", group: "Project MIRA", span: "wide" },
   { file: "mira-electronics.jpg", type: "image", caption: "Sealed-hull electronics and power distribution", group: "Project MIRA" },
   { file: "mira-underwater.mp4", type: "video", caption: "MIRA under test", group: "Project MIRA", span: "wide" },
-  { file: "mira-norway.jpg", type: "image", caption: "TAC Challenge Norway 2024 — 2nd place", group: "Project MIRA", span: "wide" },
 
-  { file: "transform-drone.jpg", type: "image", caption: "Transformation Drone — rover mode", group: "Patents", span: "wide" },
   { file: "transform-drone.mp4", type: "video", caption: "Ground-to-air transition", group: "Patents", span: "wide" },
-  { file: "thermo-bottle.jpg", type: "image", caption: "Thermoregulating bottle — Peltier loop and pill dispenser", group: "Patents" },
 
   { file: "vtol-uav.jpg", type: "image", caption: "VTOL search-and-rescue airframe", group: "UAV", span: "wide" },
   { file: "vtol-flight.mp4", type: "video", caption: "VTOL flight test", group: "UAV", span: "wide" },
@@ -755,7 +794,6 @@ export const mediaSlots: MediaSlot[] = [
   { file: "opendronekit-ui.jpg", type: "image", caption: "OpenDroneKit — defect analysis", group: "Hardware" },
 
   { file: "workshop-kicad.jpg", type: "image", caption: "KiCad workshop — 50 attendees", group: "Team", span: "wide" },
-  { file: "portrait.jpg", type: "image", caption: "Prabal Khare", group: "Team", span: "tall" },
 ];
 
 /** Only the slots whose files actually exist should drive the default view. */
@@ -764,5 +802,11 @@ export const SHIPPED_MEDIA = new Set([
   "SMR300_onFactoryFloor.jpeg",
   "UI_SMR300ControlPlane.jpeg",
   "PGV_Mode_SMR300.mp4",
+  "MIRA_AUV.jpeg",
+  "TAC_PhotowithThrophy.jpeg",
+  "transformationdrone_rovermode.jpeg",
+  "transformationdrone_dronemode.jpeg",
+  "thermobottle.jpg",
   "DNT_Team_Pic.jpeg",
+  "portrait.jpg",
 ]);
