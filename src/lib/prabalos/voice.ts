@@ -37,8 +37,23 @@ export interface VoiceNote {
   played: boolean;
 }
 
+/**
+ * Whether blob storage can authenticate.
+ *
+ * Two modes, and checking only the first is what made a correct setup look
+ * broken:
+ *
+ *   BLOB_READ_WRITE_TOKEN  — classic stores, one long-lived token
+ *   BLOB_STORE_ID + OIDC   — newer private stores; Vercel injects
+ *                            VERCEL_OIDC_TOKEN into the runtime and the SDK
+ *                            pairs it with the store id
+ *
+ * A private store connected through the dashboard gets BLOB_STORE_ID and no
+ * read-write token, so gating on the token alone rejects a working setup
+ * before the SDK is ever asked to authenticate.
+ */
 export function blobConfigured(): boolean {
-  return Boolean(process.env.BLOB_READ_WRITE_TOKEN);
+  return Boolean(process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID);
 }
 
 /**

@@ -38,9 +38,7 @@ export async function POST(req: Request): Promise<Response> {
     return Response.json(
       {
         error:
-          seen.length > 0
-            ? `Blob token not found under BLOB_READ_WRITE_TOKEN. The runtime does see: ${seen.join(", ")}. Rename it, or connect the store to this project.`
-            : "No Blob variable reached the runtime at all. In Vercel: Storage > your Blob store > Connect to this project, then redeploy.",
+          "No Blob credentials reached the runtime. Connect the store to this project in Vercel (Storage > your store > Connect), then redeploy.",
         seen,
       },
       { status: 503, headers: { "Cache-Control": "no-store" } },
