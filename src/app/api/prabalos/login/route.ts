@@ -7,6 +7,7 @@ import {
   logAuth,
   loginFailures,
   noteLoginFailure,
+  storageConfigured,
 } from "@/lib/prabalos/store";
 
 /**
@@ -28,9 +29,26 @@ const LOCKOUT_WINDOW_S = 15 * 60;
 const GENERIC_ERROR = "Incorrect credentials.";
 
 export async function POST(req: Request): Promise<Response> {
+  // Anything that escapes here used to become a bare 500 with an empty body,
+  // which the login form then rendered as "Incorrect credentials." — a server
+  // outage disguised as a typo, and the single worst way to spend an evening.
+  // Storage problems are now reported as storage problems.
+  try {
+    return await handleLogin(req);
+  } catch (err) {
+    console.error("[prabalos] login failed with an unhandled error:", err);
+    return json({ error: "Sign-in is temporarily unavailable.", reason: "storage" }, 503);
+  }
+}
+
+async function handleLogin(req: Request): Promise<Response> {
   if (!authConfigured()) {
     console.error("[prabalos] login attempted but auth env vars are not configured");
-    return json({ error: "Not configured." }, 503);
+    return json({ error: "Sign-in is not configured.", reason: "config" }, 503);
+  }
+  if (!storageConfigured()) {
+    console.error("[prabalos] login attempted but Upstash env vars are not configured");
+    return json({ error: "Sign-in is not configured.", reason: "storage" }, 503);
   }
 
   const ip = clientIp(req);

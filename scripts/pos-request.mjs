@@ -49,8 +49,24 @@ const skew = Number(flag("skew", "0"));
 const fixedNonce = flag("nonce", null);
 
 const method = (argv[0] || "GET").toUpperCase();
-const path = argv[1] || "/api/prabalos/sync";
 const body = argv[2] ?? "";
+
+/**
+ * Undo MSYS path conversion.
+ *
+ * Git Bash on Windows rewrites any argument that looks like a Unix absolute
+ * path into a Windows one, so `/api/prabalos/sync` arrives as
+ * `C:/Program Files/Git/api/prabalos/sync` and fetch dies on an unparseable
+ * URL. Recovering the real path here beats telling everyone to remember
+ * MSYS_NO_PATHCONV=1.
+ */
+function normalizePath(raw) {
+  const p = raw || "/api/prabalos/sync";
+  const i = p.indexOf("/api/");
+  return i > 0 ? p.slice(i) : p;
+}
+
+const path = normalizePath(argv[1]);
 
 const origin = process.env.POS_ORIGIN || "http://localhost:3000";
 const deviceId = process.env.PRABALOS_DEVICE_ID;

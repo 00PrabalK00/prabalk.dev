@@ -41,15 +41,26 @@ export default function LoginForm({ next }: { next: string }) {
       }
 
       const data = (await res.json().catch(() => ({}))) as { error?: string; remaining?: number };
+
+      // Only a 401 means the credentials were wrong. Anything else is the
+      // server having a problem, and saying "Incorrect credentials." there
+      // sends you off rotating passwords that were never the issue.
+      if (!data.error) {
+        setError(
+          res.status >= 500
+            ? `Server error (${res.status}). Not your password — check the deployment logs.`
+            : `Request rejected (${res.status}).`,
+        );
+        return;
+      }
+
       const remaining = typeof data.remaining === "number" ? data.remaining : null;
       setError(
         remaining !== null && remaining <= 2
-          ? `${data.error ?? "Incorrect credentials."} ${remaining} attempt${
-              remaining === 1 ? "" : "s"
-            } left.`
-          : (data.error ?? "Incorrect credentials."),
+          ? `${data.error} ${remaining} attempt${remaining === 1 ? "" : "s"} left.`
+          : data.error,
       );
-      setCode("");
+      if (res.status === 401) setCode("");
     } catch {
       setError("Network error.");
     } finally {
