@@ -557,6 +557,30 @@ export async function clearLoginFailures(ip: string): Promise<void> {
   await redis().del(K.loginFail(ip));
 }
 
+/**
+ * Consumes one use of the emergency recovery code.
+ *
+ * Keyed by a fingerprint of the code, so generating a new one starts a fresh
+ * count and an exhausted code cannot be revived. Never expires: a recovery
+ * code that quietly came back to life after a week would defeat the cap.
+ *
+ * Returns the number of uses remaining after this one, or -1 if the code was
+ * already spent.
+ */
+export async function consumeRecoveryUse(fingerprint: string, maxUses: number): Promise<number> {
+  const key = `pos:recovery:${fingerprint}`;
+  const used = await redis().incr(key);
+  if (used > maxUses) return -1;
+  return maxUses - used;
+}
+
+/** Uses left without consuming one — for the dashboard. */
+export async function recoveryUsesLeft(fingerprint: string, maxUses: number): Promise<number> {
+  const v = await redis().get<number | string>(`pos:recovery:${fingerprint}`);
+  const used = typeof v === "number" ? v : Number(v ?? 0);
+  return Math.max(0, maxUses - (Number.isFinite(used) ? used : 0));
+}
+
 /* ------------------------------------------------------------------ */
 
 /** URL-safe random id. Uses the Web Crypto API so this works on any runtime. */

@@ -54,6 +54,52 @@ export async function verifyPassword(password: string): Promise<boolean> {
   return timingSafeEqual(derived, expected);
 }
 
+/**
+ * Emergency access when the authenticator is unavailable — a dead phone, a
+ * borrowed one, a lost device.
+ *
+ * This is a recovery code, not a second password, and the distinction matters:
+ * it is generated with 130 bits of entropy rather than chosen, so it cannot be
+ * guessed or reused from somewhere else. It replaces the TOTP factor only; the
+ * normal password is still required, so a written-down code found in a wallet
+ * is not by itself a way in.
+ *
+ * Use is capped. The counter is keyed by a fingerprint of the code itself, so
+ * generating a fresh code starts a fresh count automatically and an exhausted
+ * code can never be revived by clearing state.
+ */
+export const RECOVERY_MAX_USES = 5;
+
+export function recoveryConfigured(): boolean {
+  return Boolean(process.env.PRABALOS_RECOVERY_HASH && process.env.PRABALOS_RECOVERY_SALT);
+}
+
+/** Short, non-secret identifier for the configured code, used as a counter key. */
+export function recoveryFingerprint(): string {
+  const hash = process.env.PRABALOS_RECOVERY_HASH ?? "";
+  return hash.slice(0, 12);
+}
+
+/**
+ * Verifies a recovery code. Same scrypt parameters and the same constant-time
+ * comparison as the password; the only difference is what it replaces.
+ */
+export async function verifyRecoveryCode(code: string): Promise<boolean> {
+  const saltHex = process.env.PRABALOS_RECOVERY_SALT ?? "";
+  const hashHex = process.env.PRABALOS_RECOVERY_HASH ?? "";
+  const salt = Buffer.from(saltHex || "00".repeat(32), "hex");
+
+  // Accept the code with or without the grouping dashes it is printed with.
+  const cleaned = code.replace(/[\s-]/g, "").toUpperCase();
+
+  const derived = await scryptAsync(cleaned, salt);
+  if (!hashHex) return false;
+
+  const expected = Buffer.from(hashHex, "hex");
+  if (expected.length !== derived.length) return false;
+  return timingSafeEqual(derived, expected);
+}
+
 /** RFC 4648 base32 decode, no padding, case-insensitive. */
 function base32Decode(s: string): Buffer {
   const A = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";

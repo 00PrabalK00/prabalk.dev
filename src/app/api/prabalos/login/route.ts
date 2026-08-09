@@ -1,8 +1,17 @@
 import { cookies } from "next/headers";
-import { authConfigured, verifyPassword, verifyTotp } from "@/lib/prabalos/auth-user";
+import {
+  authConfigured,
+  RECOVERY_MAX_USES,
+  recoveryConfigured,
+  recoveryFingerprint,
+  verifyPassword,
+  verifyRecoveryCode,
+  verifyTotp,
+} from "@/lib/prabalos/auth-user";
 import { cookieOptions, issueSession, SESSION_COOKIE, SESSION_TTL_S } from "@/lib/prabalos/session";
 import {
   clearLoginFailures,
+  consumeRecoveryUse,
   createSession,
   logAuth,
   diagnoseStorage,
@@ -66,7 +75,7 @@ async function handleLogin(req: Request): Promise<Response> {
     return json({ error: "Too many attempts. Try again later." }, 429);
   }
 
-  let body: { password?: unknown; code?: unknown };
+  let body: { password?: unknown; code?: unknown; recovery?: unknown };
   try {
     body = (await req.json()) as typeof body;
   } catch {
@@ -75,19 +84,52 @@ async function handleLogin(req: Request): Promise<Response> {
 
   const password = typeof body.password === "string" ? body.password : "";
   const code = typeof body.code === "string" ? body.code : "";
+  const useRecovery = body.recovery === true;
 
   // Both checks always run. `verifyPassword` is the slow one (scrypt), and
   // running it unconditionally is what keeps the timing flat.
   const passwordOk = await verifyPassword(password);
-  const totpOk = verifyTotp(code);
 
-  if (!passwordOk || !totpOk) {
+  let secondFactorOk: boolean;
+  let recoveryLeft = -1;
+
+  if (useRecovery) {
+    if (!recoveryConfigured()) {
+      return json({ error: "No recovery code is configured." }, 400);
+    }
+    const codeOk = await verifyRecoveryCode(code);
+    if (codeOk && passwordOk) {
+      // Consumed only when the whole login would otherwise succeed. Burning a
+      // use on a wrong password would let anyone exhaust the codes.
+      recoveryLeft = await consumeRecoveryUse(recoveryFingerprint(), RECOVERY_MAX_USES);
+      secondFactorOk = recoveryLeft >= 0;
+      if (!secondFactorOk) {
+        await logAuth({ ok: false, ip, ua, reason: "recovery code exhausted" });
+        return json(
+          { error: "That recovery code is used up. Generate a new one on your PC." },
+          401,
+        );
+      }
+    } else {
+      secondFactorOk = codeOk;
+    }
+  } else {
+    secondFactorOk = verifyTotp(code);
+  }
+
+  if (!passwordOk || !secondFactorOk) {
     const count = await noteLoginFailure(ip, LOCKOUT_WINDOW_S);
     await logAuth({
       ok: false,
       ip,
       ua,
-      reason: !passwordOk && !totpOk ? "password+totp" : !passwordOk ? "password" : "totp",
+      reason: `${useRecovery ? "recovery" : "totp"}: ${
+        !passwordOk && !secondFactorOk
+          ? "password+code"
+          : !passwordOk
+            ? "password"
+            : "code"
+      }`,
     });
     const remaining = Math.max(0, MAX_FAILURES - count);
     return json({ error: GENERIC_ERROR, remaining }, 401);
@@ -96,12 +138,19 @@ async function handleLogin(req: Request): Promise<Response> {
   const { token, payload } = await issueSession();
   await createSession(payload.jti, SESSION_TTL_S);
   await clearLoginFailures(ip);
-  await logAuth({ ok: true, ip, ua, reason: "login" });
+  await logAuth({
+    ok: true,
+    ip,
+    ua,
+    reason: useRecovery ? `login via recovery code (${recoveryLeft} left)` : "login",
+  });
 
   const jar = await cookies();
   jar.set(SESSION_COOKIE, token, cookieOptions(isHttps(req), SESSION_TTL_S));
 
-  return json({ ok: true }, 200);
+  // recoveryLeft is surfaced so the login screen can warn how many emergency
+  // uses remain, rather than letting them run out silently.
+  return json(useRecovery ? { ok: true, recoveryLeft } : { ok: true }, 200);
 }
 
 /** Turns a diagnosis code into the actual next action. */

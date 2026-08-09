@@ -75,6 +75,53 @@ function base32(buf) {
   return out;
 }
 
+if (process.argv.includes("--recovery")) {
+  // Emergency access for when the authenticator is gone: a dead phone, a
+  // borrowed one. It replaces the TOTP factor only — the normal password is
+  // still required — and it is capped at five uses, after which this script
+  // must be run again on a trusted machine.
+  //
+  // Generated, never chosen. 130 bits from the system CSPRNG, printed in
+  // groups so it can be copied off a screen or written on paper without
+  // transcription errors. Crockford's alphabet: no I, L, O or U, so there is
+  // no confusing 1/I or 0/O when reading it back at a bad moment.
+  const ALPHABET = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
+  const raw = randomBytes(26);
+  let code = "";
+  for (let i = 0; i < 26; i++) code += ALPHABET[raw[i] % ALPHABET.length];
+  const grouped = code.match(/.{1,5}/g).join("-");
+
+  const rSalt = randomBytes(32);
+  const rHash = scryptSync(code, rSalt, KEYLEN, { N, r, p, maxmem: 128 * 1024 * 1024 });
+
+  console.log(`
+=====================================================================
+ EMERGENCY RECOVERY CODE
+
+ Write this down and keep it somewhere that is NOT your phone —
+ a wallet, a safe, a note at home. It is shown once and cannot be
+ recovered from Vercel afterwards.
+
+     ${grouped}
+
+ Use it on /login by choosing "Use a recovery code". It replaces the
+ 6-digit authenticator code; your normal password is still needed.
+
+ Good for ${5} sign-ins. After that, run this again on your PC:
+     node scripts/gen-credentials.mjs '<password>' --recovery
+
+ Generating a new code resets the count automatically, because the
+ counter is keyed to the code itself.
+=====================================================================
+ Add these two to Vercel, then redeploy. Everything else stays.
+
+PRABALOS_RECOVERY_SALT=${rSalt.toString("hex")}
+PRABALOS_RECOVERY_HASH=${rHash.toString("hex")}
+=====================================================================
+`);
+  process.exit(0);
+}
+
 if (process.argv.includes("--password-only")) {
   console.log(`
 =====================================================================

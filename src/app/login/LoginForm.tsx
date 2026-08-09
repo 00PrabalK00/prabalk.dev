@@ -17,6 +17,8 @@ export default function LoginForm({ next }: { next: string }) {
   const [code, setCode] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  /** Emergency mode: a recovery code replaces the authenticator's 6 digits. */
+  const [recovery, setRecovery] = useState(false);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -28,7 +30,7 @@ export default function LoginForm({ next }: { next: string }) {
       const res = await fetch("/api/prabalos/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password, code }),
+        body: JSON.stringify({ password, code, recovery }),
       });
 
       if (res.ok) {
@@ -85,20 +87,46 @@ export default function LoginForm({ next }: { next: string }) {
 
       <label className="flex flex-col gap-2">
         <span className="mono text-[11px] uppercase tracking-[0.18em] text-mute">
-          Authenticator code
+          {recovery ? "Recovery code" : "Authenticator code"}
         </span>
-        <input
-          type="text"
-          value={code}
-          onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
-          inputMode="numeric"
-          autoComplete="one-time-code"
-          pattern="\d{6}"
-          maxLength={6}
-          required
-          className="mono rounded-none border border-line bg-ink-3 px-3 py-2.5 text-[18px] tracking-[0.4em] text-bone outline-none transition-colors focus:border-accent"
-        />
+        {recovery ? (
+          <input
+            type="text"
+            value={code}
+            onChange={(e) => setCode(e.target.value.toUpperCase().slice(0, 40))}
+            autoComplete="off"
+            autoCapitalize="characters"
+            spellCheck={false}
+            required
+            placeholder="XXXXX-XXXXX-XXXXX-XXXXX"
+            className="mono rounded-none border border-amber-500/60 bg-ink-3 px-3 py-2.5 text-[15px] tracking-[0.12em] text-bone outline-none transition-colors focus:border-amber-400"
+          />
+        ) : (
+          <input
+            type="text"
+            value={code}
+            onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+            inputMode="numeric"
+            autoComplete="one-time-code"
+            pattern="\d{6}"
+            maxLength={6}
+            required
+            className="mono rounded-none border border-line bg-ink-3 px-3 py-2.5 text-[18px] tracking-[0.4em] text-bone outline-none transition-colors focus:border-accent"
+          />
+        )}
       </label>
+
+      <button
+        type="button"
+        onClick={() => {
+          setRecovery((r) => !r);
+          setCode("");
+          setError(null);
+        }}
+        className="mono -mt-2 self-start text-[10px] uppercase tracking-[0.16em] text-mute underline decoration-dotted underline-offset-4 transition-colors hover:text-bone"
+      >
+        {recovery ? "Use the authenticator instead" : "Lost your phone? Use a recovery code"}
+      </button>
 
       {error && (
         <p role="alert" className="mono text-[12px] leading-relaxed text-fault">
@@ -108,7 +136,7 @@ export default function LoginForm({ next }: { next: string }) {
 
       <button
         type="submit"
-        disabled={busy || password.length === 0 || code.length !== 6}
+        disabled={busy || password.length === 0 || (recovery ? code.length < 20 : code.length !== 6)}
         className="mono mt-1 border border-accent bg-accent/10 px-4 py-3 text-[12px] uppercase tracking-[0.22em] text-accent transition-colors hover:bg-accent/20 disabled:cursor-not-allowed disabled:border-line disabled:bg-transparent disabled:text-mute"
       >
         {busy ? "Checking..." : "Unlock"}
