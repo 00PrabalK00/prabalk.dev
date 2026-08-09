@@ -152,4 +152,6 @@ export interface SyncPayload {
   counters: { love: number; miss: number };
   /** Present only when there is undelivered love from Prabal. */
   incoming?: { kind: "love"; id: string };
+  /** Present only when an unplayed voice note is waiting. */
+  voice?: { id: string; secs: number };
 }

@@ -23,6 +23,7 @@ import {
   toDeviceText,
 } from "@/lib/prabalos/render";
 import type { SyncPayload } from "@/lib/prabalos/types";
+import { getVoiceNote } from "@/lib/prabalos/voice";
 
 /**
  * The device's only polling endpoint.
@@ -73,13 +74,14 @@ export async function GET(req: Request): Promise<Response> {
   const url = new URL(req.url);
   const msgLimit = clampInt(url.searchParams.get("msg_limit"), DEFAULT_MSG_LIMIT, 0, MAX_MSG_LIMIT);
 
-  const [version, state, music, messages, counters, incoming] = await Promise.all([
+  const [version, state, music, messages, counters, incoming, voice] = await Promise.all([
     getVersion(),
     getState(),
     getMusic(),
     listMessages(msgLimit),
     getCounters(),
     getIncoming(),
+    getVoiceNote().catch(() => null),
   ]);
 
   const etag = `"v${version}"`;
@@ -130,6 +132,7 @@ export async function GET(req: Request): Promise<Response> {
     })),
     counters: { love: counters.loveFromHome, miss: counters.missFromHome },
     ...(incoming ? { incoming: { kind: "love" as const, id: incoming.id } } : {}),
+    ...(voice && !voice.played ? { voice: { id: voice.id, secs: voice.secs } } : {}),
   };
 
   return Response.json(payload, {

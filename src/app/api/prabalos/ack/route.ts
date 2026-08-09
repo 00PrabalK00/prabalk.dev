@@ -1,5 +1,6 @@
 import { deviceUnauthorized, verifyDeviceRequest } from "@/lib/prabalos/auth-device";
 import { ackIncoming, markRead, rateLimit } from "@/lib/prabalos/store";
+import { markVoicePlayed } from "@/lib/prabalos/voice";
 
 /**
  * The device acknowledging something it has shown.
@@ -7,6 +8,7 @@ import { ackIncoming, markRead, rateLimit } from "@/lib/prabalos/store";
  * Two kinds:
  *   { "kind": "read",     "id": "m_9f" }  — a message was opened
  *   { "kind": "incoming", "id": "i_31" }  — the "Prabal sent love" screen was shown
+ *   { "kind": "voice",    "id": "v_9c" }  — a voice note finished playing
  *
  * Incoming love is acked by id rather than blindly cleared, so a device that
  * reboots mid-animation and re-acks an old id cannot wipe a newer one that
@@ -45,6 +47,7 @@ export async function POST(req: Request): Promise<Response> {
   let applied = false;
   if (body.kind === "read") applied = await markRead(id);
   else if (body.kind === "incoming") applied = await ackIncoming(id);
+  else if (body.kind === "voice") applied = await markVoicePlayed(id);
   else return new Response(null, { status: 400, headers: { "Cache-Control": "no-store" } });
 
   // `applied: false` means the id was already gone — stale, not an error. The

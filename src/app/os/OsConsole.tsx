@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CSRF_HEADER } from "@/lib/prabalos/constants";
 import type { Overview } from "@/lib/prabalos/overview";
+import VoiceRecorder from "./VoiceRecorder";
 import { STATUSES, type Status } from "@/lib/prabalos/types";
 
 /**
@@ -117,7 +118,7 @@ export default function OsConsole({ initial }: { initial: Overview }) {
       <main className="mx-auto grid max-w-[1180px] gap-4 px-4 py-6 md:grid-cols-2 xl:grid-cols-3">
         <Presence data={data} post={post} busy={busy} />
         <Compose data={data} post={post} busy={busy} />
-        <Music data={data} post={post} busy={busy} />
+        <Voice data={data} refresh={refresh} say={say} />
         <FromHome data={data} />
         <Device data={data} now={now} />
         <Security data={data} />
@@ -360,71 +361,24 @@ function Compose({ data, post, busy }: { data: Overview; post: Post; busy: strin
   );
 }
 
-function Music({ data, post, busy }: { data: Overview; post: Post; busy: string | null }) {
-  const [title, setTitle] = useState(data.music.title);
-  const [artist, setArtist] = useState(data.music.artist);
-  const [duration, setDuration] = useState(String(data.music.duration || ""));
-
+function Voice({
+  data,
+  refresh,
+  say,
+}: {
+  data: Overview;
+  refresh: () => void;
+  say: (msg: string) => void;
+}) {
   return (
-    <Panel title="Now playing">
-      <div className="flex flex-col gap-2">
-        <input
-          value={title}
-          maxLength={120}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="Apocalypse"
-          className="mono border border-line bg-ink-3 px-2.5 py-2 text-[13px] text-bone outline-none focus:border-accent"
-        />
-        <input
-          value={artist}
-          maxLength={120}
-          onChange={(e) => setArtist(e.target.value)}
-          placeholder="Cigarettes After Sex"
-          className="mono border border-line bg-ink-3 px-2.5 py-2 text-[13px] text-bone outline-none focus:border-accent"
-        />
-        <input
-          value={duration}
-          inputMode="numeric"
-          onChange={(e) => setDuration(e.target.value.replace(/\D/g, "").slice(0, 5))}
-          placeholder="length in seconds, e.g. 290"
-          className="mono border border-line bg-ink-3 px-2.5 py-2 text-[13px] text-bone outline-none focus:border-accent"
-        />
-      </div>
-
-      <div className="mt-2 grid grid-cols-2 gap-2">
-        <button
-          disabled={busy !== null || title.trim().length === 0}
-          onClick={() =>
-            post(
-              "/api/prabalos/admin/music",
-              {
-                playing: true,
-                title,
-                artist,
-                progress: 0,
-                duration: Number(duration) || 0,
-              },
-              "music",
-              "Playing",
-            )
-          }
-          className="mono border border-cyan px-3 py-2 text-[10px] uppercase tracking-[0.16em] text-cyan transition-colors hover:bg-cyan/10 disabled:border-line disabled:text-mute"
-        >
-          Play
-        </button>
-        <button
-          disabled={busy !== null}
-          onClick={() => post("/api/prabalos/admin/music", { playing: false }, "music", "Stopped")}
-          className="mono border border-line px-3 py-2 text-[10px] uppercase tracking-[0.16em] text-mute transition-colors hover:text-bone"
-        >
-          Stop
-        </button>
-      </div>
-
-      <p className="mono mt-3 text-[10px] leading-relaxed text-mute">
-        Metadata only — no audio leaves this machine. The device advances the progress bar itself
-        between polls, so this only needs pushing on a track change.
-      </p>
+    <Panel title="Voice note">
+      <VoiceRecorder
+        existing={
+          data.voice ? { id: data.voice.id, secs: data.voice.secs, played: data.voice.played } : null
+        }
+        onChanged={refresh}
+        onFlash={say}
+      />
     </Panel>
   );
 }
