@@ -36,7 +36,8 @@ export interface FirmwareRelease {
   version: string;
   sha256: string;
   bytes: number;
-  url: string;
+  /** Blob pathname; private blobs are read with the store token, not a URL. */
+  pathname: string;
   ts: number;
   /** Version the device last reported running, so /os can show progress. */
   installed: string;
@@ -51,7 +52,9 @@ export async function putFirmware(bin: ArrayBuffer, version: string): Promise<Fi
 
   const sha256 = createHash("sha256").update(Buffer.from(bin)).digest("hex");
   const blob = await put(`prabalos/fw-${version}-${sha256.slice(0, 8)}.bin`, bin, {
-    access: "public",
+    // Private: a firmware image readable by anyone with the URL is an
+    // executable handed out to the internet.
+    access: "private",
     contentType: "application/octet-stream",
     addRandomSuffix: true,
   });
@@ -60,7 +63,7 @@ export async function putFirmware(bin: ArrayBuffer, version: string): Promise<Fi
     version,
     sha256,
     bytes: bin.byteLength,
-    url: blob.url,
+    pathname: blob.pathname,
     ts: nowSec(),
     installed: previous?.installed ?? "",
   };
@@ -69,15 +72,15 @@ export async function putFirmware(bin: ArrayBuffer, version: string): Promise<Fi
     version: release.version,
     sha256: release.sha256,
     bytes: String(release.bytes),
-    url: release.url,
+    pathname: release.pathname,
     ts: String(release.ts),
     installed: release.installed,
   });
   await redis().incr("pos:ver");
 
-  if (previous?.url) {
+  if (previous?.pathname) {
     try {
-      await del(previous.url);
+      await del(previous.pathname);
     } catch {
       /* an orphaned blob is untidy; a failed upload would be worse */
     }
@@ -97,7 +100,7 @@ export async function getFirmware(): Promise<FirmwareRelease | null> {
     version: String(h.version),
     sha256: String(h.sha256 ?? ""),
     bytes: num(h.bytes),
-    url: String(h.url ?? ""),
+    pathname: String(h.pathname ?? ""),
     ts: num(h.ts),
     installed: String(h.installed ?? ""),
   };
@@ -117,9 +120,9 @@ export async function noteInstalledVersion(version: string): Promise<void> {
 
 export async function clearFirmware(): Promise<void> {
   const current = await getFirmware();
-  if (current?.url) {
+  if (current?.pathname) {
     try {
-      await del(current.url);
+      await del(current.pathname);
     } catch {
       /* ignore */
     }

@@ -1,5 +1,6 @@
 import { deviceUnauthorized, verifyDeviceRequest } from "@/lib/prabalos/auth-device";
 import { rateLimit } from "@/lib/prabalos/store";
+import { get } from "@vercel/blob";
 import { getVoiceNote } from "@/lib/prabalos/voice";
 
 /**
@@ -31,23 +32,26 @@ export async function GET(req: Request): Promise<Response> {
   if (!limited.ok) return deviceUnauthorized(429);
 
   const note = await getVoiceNote();
-  if (!note?.url) {
+  if (!note?.pathname) {
     return new Response(null, { status: 404, headers: { "Cache-Control": "no-store" } });
   }
 
-  const upstream = await fetch(note.url, { cache: "no-store" });
-  if (!upstream.ok || !upstream.body) {
-    console.error(`[prabalos] blob fetch failed: ${upstream.status}`);
+  // Read through the store with its token. Private blobs have no fetchable
+  // URL, which is the point: the audio cannot leave the store except through
+  // this route, and this route requires a valid device signature.
+  const result = await get(note.pathname, { access: "private" });
+  if (!result) {
+    console.error(`[prabalos] voice blob missing: ${note.pathname}`);
     return new Response(null, { status: 502, headers: { "Cache-Control": "no-store" } });
   }
 
-  const headers: Record<string, string> = {
-    "Content-Type": "audio/wav",
-    "Cache-Control": "no-store",
-    "X-POS-Voice-Id": note.id,
-  };
-  const len = upstream.headers.get("content-length");
-  if (len) headers["Content-Length"] = len;
-
-  return new Response(upstream.body, { headers });
+  return new Response(result.stream, {
+    headers: {
+      "Content-Type": "audio/wav",
+      "Cache-Control": "no-store",
+      "X-POS-Voice-Id": note.id,
+      // The firmware sizes its read loop from this.
+      "Content-Length": String(note.bytes),
+    },
+  });
 }

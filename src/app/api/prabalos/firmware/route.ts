@@ -1,5 +1,6 @@
 import { deviceUnauthorized, verifyDeviceRequest } from "@/lib/prabalos/auth-device";
 import { rateLimit } from "@/lib/prabalos/store";
+import { get } from "@vercel/blob";
 import { getFirmware } from "@/lib/prabalos/firmware";
 
 /**
@@ -31,24 +32,27 @@ export async function GET(req: Request): Promise<Response> {
   if (!limited.ok) return deviceUnauthorized(429);
 
   const release = await getFirmware();
-  if (!release?.url) {
+  if (!release?.pathname) {
     return new Response(null, { status: 404, headers: { "Cache-Control": "no-store" } });
   }
 
-  const upstream = await fetch(release.url, { cache: "no-store" });
-  if (!upstream.ok || !upstream.body) {
-    console.error(`[prabalos] firmware blob fetch failed: ${upstream.status}`);
+  // Private read, same as voice notes — and more important here: a firmware
+  // image reachable by URL is an executable published to the internet.
+  const result = await get(release.pathname, { access: "private" });
+  if (!result) {
+    console.error(`[prabalos] firmware blob missing: ${release.pathname}`);
     return new Response(null, { status: 502, headers: { "Cache-Control": "no-store" } });
   }
 
-  const headers: Record<string, string> = {
-    "Content-Type": "application/octet-stream",
-    "Cache-Control": "no-store",
-    "X-POS-FW-Version": release.version,
-    "X-POS-FW-Sha256": release.sha256,
-  };
-  const len = upstream.headers.get("content-length") ?? String(release.bytes);
-  if (len) headers["Content-Length"] = len;
-
-  return new Response(upstream.body, { headers });
+  return new Response(result.stream, {
+    headers: {
+      "Content-Type": "application/octet-stream",
+      "Cache-Control": "no-store",
+      "X-POS-FW-Version": release.version,
+      "X-POS-FW-Sha256": release.sha256,
+      // Content-Length matters: the OTA writer pre-sizes the partition write
+      // and shows real progress instead of a spinner.
+      "Content-Length": String(release.bytes),
+    },
+  });
 }

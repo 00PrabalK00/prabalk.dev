@@ -26,7 +26,9 @@ export const VOICE_MAX_BYTES = VOICE_MAX_SECONDS * VOICE_SAMPLE_RATE * 2 + 1024;
 
 export interface VoiceNote {
   id: string;
-  url: string;
+  /** Blob pathname. Private blobs have no fetchable URL — reads go through
+   *  get(pathname, { access: 'private' }) with the store token. */
+  pathname: string;
   /** Duration in whole seconds, for the device's UI. */
   secs: number;
   bytes: number;
@@ -51,18 +53,21 @@ export async function putVoiceNote(wav: ArrayBuffer, secs: number): Promise<Voic
   const previous = await getVoiceNote();
 
   const id = `v_${randomId(8)}`;
+  // Private, not public.
+  //
+  // A public blob is readable by anyone holding the URL — unguessable, but a
+  // bearer token in disguise. These are voice messages to someone's parents;
+  // private means the bytes cannot leave the store without the store token,
+  // and playback stays behind the same signed-request check as everything else.
   const blob = await put(`prabalos/${id}.wav`, wav, {
-    access: "public",
+    access: "private",
     contentType: "audio/wav",
-    // The URL is never handed to the device or the browser; playback is
-    // proxied through an authenticated route. addRandomSuffix keeps it
-    // unguessable anyway, as defence in depth rather than the control itself.
     addRandomSuffix: true,
   });
 
   const note: VoiceNote = {
     id,
-    url: blob.url,
+    pathname: blob.pathname,
     secs: Math.max(1, Math.round(secs)),
     bytes: wav.byteLength,
     ts: nowSec(),
@@ -71,7 +76,7 @@ export async function putVoiceNote(wav: ArrayBuffer, secs: number): Promise<Voic
 
   await redis().hset(KEY, {
     id: note.id,
-    url: note.url,
+    pathname: note.pathname,
     secs: String(note.secs),
     bytes: String(note.bytes),
     ts: String(note.ts),
@@ -79,10 +84,10 @@ export async function putVoiceNote(wav: ArrayBuffer, secs: number): Promise<Voic
   });
   await redis().incr("pos:ver");
 
-  if (previous?.url) {
-    // Best effort. A leaked blob is untidy; a failed upload would be worse.
+  if (previous?.pathname) {
+    // Best effort. An orphaned blob is untidy; a failed upload would be worse.
     try {
-      await del(previous.url);
+      await del(previous.pathname);
     } catch {
       /* ignore */
     }
@@ -100,7 +105,7 @@ export async function getVoiceNote(): Promise<VoiceNote | null> {
   };
   return {
     id: String(h.id),
-    url: String(h.url ?? ""),
+    pathname: String(h.pathname ?? ""),
     secs: num(h.secs, 1),
     bytes: num(h.bytes),
     ts: num(h.ts),
@@ -118,9 +123,9 @@ export async function markVoicePlayed(id: string): Promise<boolean> {
 
 export async function clearVoiceNote(): Promise<void> {
   const note = await getVoiceNote();
-  if (note?.url) {
+  if (note?.pathname) {
     try {
-      await del(note.url);
+      await del(note.pathname);
     } catch {
       /* ignore */
     }
