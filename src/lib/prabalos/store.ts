@@ -118,12 +118,25 @@ export async function diagnoseStorage(): Promise<string> {
   if (!url.startsWith("https://")) return "url-not-https";
 
   try {
-    const res = await fetch(`${url}/get/__prabalos_probe`, {
-      headers: { Authorization: `Bearer ${token}` },
+    // The probe writes, deliberately. A read-only token passes every GET and
+    // fails the first INCR with NOPERM, so a read probe reports a healthy
+    // database while nothing in this app can actually work. Upstash hands out
+    // both a full-access and a read-only token and they look identical.
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+      body: JSON.stringify(["SET", "__prabalos_probe", "1", "EX", "30"]),
       cache: "no-store",
     });
+
     if (res.status === 401 || res.status === 403) return "token-rejected";
     if (!res.ok) return `upstash-http-${res.status}`;
+
+    const payload = (await res.json().catch(() => null)) as { error?: string } | null;
+    const err = payload?.error ?? "";
+    if (/NOPERM|no permissions/i.test(err)) return "token-read-only";
+    if (err) return "upstash-error";
+
     return "reachable";
   } catch {
     return "unreachable";

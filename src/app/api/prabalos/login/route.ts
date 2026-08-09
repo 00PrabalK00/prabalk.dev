@@ -115,6 +115,10 @@ function storageHint(reason: string): string {
       return "UPSTASH_REDIS_REST_URL must start with https://.";
     case "token-rejected":
       return "Upstash rejected the token. Copy UPSTASH_REDIS_REST_TOKEN again without the surrounding quotes, then redeploy.";
+    case "token-read-only":
+      return "That is the read-only Upstash token. Use UPSTASH_REDIS_REST_TOKEN, not UPSTASH_REDIS_REST_READONLY_TOKEN, then redeploy.";
+    case "upstash-error":
+      return "Upstash refused the request. Check the deployment logs for the exact reply.";
     case "unreachable":
       return "Cannot reach Upstash. Check the database still exists and has not been paused.";
     default:
