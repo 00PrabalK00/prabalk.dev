@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { CSRF_HEADER } from "@/lib/prabalos/constants";
 import type { Overview } from "@/lib/prabalos/overview";
 import VoiceRecorder from "./VoiceRecorder";
+import FirmwarePanel from "./FirmwarePanel";
 import { STATUSES, type Status } from "@/lib/prabalos/types";
 
 /**
@@ -122,6 +123,14 @@ export default function OsConsole({ initial }: { initial: Overview }) {
         <FromHome data={data} />
         <Device data={data} now={now} />
         <Security data={data} />
+        <Panel title="Firmware">
+          <FirmwarePanel
+            firmware={data.firmware}
+            deviceFw={data.health?.fw ?? ""}
+            onChanged={refresh}
+            onFlash={say}
+          />
+        </Panel>
       </main>
     </div>
   );

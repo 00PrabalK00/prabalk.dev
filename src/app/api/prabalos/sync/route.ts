@@ -24,6 +24,7 @@ import {
 } from "@/lib/prabalos/render";
 import type { SyncPayload } from "@/lib/prabalos/types";
 import { getVoiceNote } from "@/lib/prabalos/voice";
+import { getFirmware, noteInstalledVersion } from "@/lib/prabalos/firmware";
 
 /**
  * The device's only polling endpoint.
@@ -74,7 +75,12 @@ export async function GET(req: Request): Promise<Response> {
   const url = new URL(req.url);
   const msgLimit = clampInt(url.searchParams.get("msg_limit"), DEFAULT_MSG_LIMIT, 0, MAX_MSG_LIMIT);
 
-  const [version, state, music, messages, counters, incoming, voice] = await Promise.all([
+  // The device reports its running version on every poll; recording it is what
+  // lets /os show an update landing, and stops the update being re-offered.
+  const runningVersion = req.headers.get("x-pos-fw") ?? "";
+  if (runningVersion) await noteInstalledVersion(runningVersion).catch(() => {});
+
+  const [version, state, music, messages, counters, incoming, voice, firmware] = await Promise.all([
     getVersion(),
     getState(),
     getMusic(),
@@ -82,6 +88,7 @@ export async function GET(req: Request): Promise<Response> {
     getCounters(),
     getIncoming(),
     getVoiceNote().catch(() => null),
+    getFirmware().catch(() => null),
   ]);
 
   const etag = `"v${version}"`;
@@ -133,6 +140,11 @@ export async function GET(req: Request): Promise<Response> {
     counters: { love: counters.loveFromHome, miss: counters.missFromHome },
     ...(incoming ? { incoming: { kind: "love" as const, id: incoming.id } } : {}),
     ...(voice && !voice.played ? { voice: { id: voice.id, secs: voice.secs } } : {}),
+    // Offered only when it differs from what the device reports running, so a
+    // device that has already updated is never told to update again.
+    ...(firmware && firmware.version !== runningVersion
+      ? { fw: { ver: firmware.version, sha: firmware.sha256, bytes: firmware.bytes } }
+      : {}),
   };
 
   return Response.json(payload, {

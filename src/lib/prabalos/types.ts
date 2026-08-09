@@ -154,4 +154,6 @@ export interface SyncPayload {
   incoming?: { kind: "love"; id: string };
   /** Present only when an unplayed voice note is waiting. */
   voice?: { id: string; secs: number };
+  /** Present only when published firmware differs from what the device runs. */
+  fw?: { ver: string; sha: string; bytes: number };
 }
