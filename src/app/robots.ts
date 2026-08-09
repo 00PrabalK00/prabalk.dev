@@ -7,8 +7,9 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        // the aggregator has no crawlable content and costs an upstream call
-        disallow: "/api/",
+        // the aggregator has no crawlable content and costs an upstream call;
+        // /login and /os are the private PrabalOS half and are unlinked anyway
+        disallow: ["/api/", "/login", "/os"],
       },
     ],
     sitemap: `${SITE_URL}/sitemap.xml`,

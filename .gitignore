@@ -42,3 +42,23 @@ next-env.d.ts
 
 # keep the template, it holds no real values
 !.env.example
+
+# PrabalOS firmware + device secrets.
+# The sketch tree lives at ../PrabalOS, outside this repo, so it is already
+# unreachable from here — this entry only matters if the repo root is ever
+# moved up a level. The device HMAC key must never reach a public remote.
+#
+# The leading slash is load-bearing. Unanchored, `PrabalOS/` matches a
+# directory of that name at ANY depth, and git is case-insensitive on Windows
+# and macOS — which silently excluded src/lib/prabalos/ and
+# src/app/api/prabalos/, i.e. the entire backend, from every commit.
+/PrabalOS/
+secrets.h
+*.secrets.h
+partitions.local.csv
+
+# Stray vendor installers that land in public/ are served to the internet
+# verbatim if committed. Nothing executable belongs in a static asset folder.
+/public/**/*.exe
+/public/**/*.msi
+/public/**/*.dmg
