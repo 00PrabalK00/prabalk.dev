@@ -60,10 +60,28 @@ let client: Redis | null = null;
  * build graph does, transitively, through the /os route) never throws at build
  * time when the env vars are absent.
  */
+/**
+ * Strips surrounding quotes and whitespace from an environment value.
+ *
+ * The Upstash console presents credentials in `.env` form, quoted:
+ *
+ *     UPSTASH_REDIS_REST_TOKEN="AXXXaSQg..."
+ *
+ * A dashboard field, unlike a `.env` file, has no shell to remove those
+ * quotes, so pasting the line verbatim yields a token that literally begins
+ * and ends with `"`. Upstash then answers WRONGPASS and the client throws
+ * somewhere far away from the cause. Neither a URL nor a base64 token can
+ * legitimately contain a quote or an edge space, so removing them is free.
+ */
+function cleanEnv(value: string | undefined): string {
+  if (!value) return "";
+  return value.trim().replace(/^['"]|['"]$/g, "").trim();
+}
+
 export function redis(): Redis {
   if (client) return client;
-  const url = process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  const url = cleanEnv(process.env.UPSTASH_REDIS_REST_URL);
+  const token = cleanEnv(process.env.UPSTASH_REDIS_REST_TOKEN);
   if (!url || !token) {
     throw new Error(
       "PrabalOS storage is not configured: set UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN.",
@@ -74,7 +92,42 @@ export function redis(): Redis {
 }
 
 export function storageConfigured(): boolean {
-  return Boolean(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN);
+  return Boolean(
+    cleanEnv(process.env.UPSTASH_REDIS_REST_URL) &&
+      cleanEnv(process.env.UPSTASH_REDIS_REST_TOKEN),
+  );
+}
+
+/**
+ * Classifies a storage failure without revealing any value.
+ *
+ * Reports the *shape* of the configuration and the result of one live probe,
+ * so a misconfiguration names itself instead of surfacing as a generic 500.
+ * Safe to return to the browser: every branch is a fixed string.
+ */
+export async function diagnoseStorage(): Promise<string> {
+  const rawUrl = process.env.UPSTASH_REDIS_REST_URL;
+  const rawToken = process.env.UPSTASH_REDIS_REST_TOKEN;
+
+  if (!rawUrl || !rawToken) return "env-missing";
+
+  const url = cleanEnv(rawUrl);
+  const token = cleanEnv(rawToken);
+
+  if (url.startsWith("redis://") || url.startsWith("rediss://")) return "url-is-tcp-not-rest";
+  if (!url.startsWith("https://")) return "url-not-https";
+
+  try {
+    const res = await fetch(`${url}/get/__prabalos_probe`, {
+      headers: { Authorization: `Bearer ${token}` },
+      cache: "no-store",
+    });
+    if (res.status === 401 || res.status === 403) return "token-rejected";
+    if (!res.ok) return `upstash-http-${res.status}`;
+    return "reachable";
+  } catch {
+    return "unreachable";
+  }
 }
 
 /* ------------------------------------------------------------------ */

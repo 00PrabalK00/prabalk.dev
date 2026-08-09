@@ -5,6 +5,7 @@ import {
   clearLoginFailures,
   createSession,
   logAuth,
+  diagnoseStorage,
   loginFailures,
   noteLoginFailure,
   storageConfigured,
@@ -37,7 +38,11 @@ export async function POST(req: Request): Promise<Response> {
     return await handleLogin(req);
   } catch (err) {
     console.error("[prabalos] login failed with an unhandled error:", err);
-    return json({ error: "Sign-in is temporarily unavailable.", reason: "storage" }, 503);
+    // Name the failure. `diagnoseStorage` reports the shape of the config and
+    // the result of one probe — never a value — so the fix is obvious from the
+    // login screen instead of requiring a trip through the deployment logs.
+    const reason = await diagnoseStorage().catch(() => "unknown");
+    return json({ error: storageHint(reason), reason }, 503);
   }
 }
 
@@ -97,6 +102,24 @@ async function handleLogin(req: Request): Promise<Response> {
   jar.set(SESSION_COOKIE, token, cookieOptions(isHttps(req), SESSION_TTL_S));
 
   return json({ ok: true }, 200);
+}
+
+/** Turns a diagnosis code into the actual next action. */
+function storageHint(reason: string): string {
+  switch (reason) {
+    case "env-missing":
+      return "Storage is not configured. Set UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN, then redeploy.";
+    case "url-is-tcp-not-rest":
+      return "UPSTASH_REDIS_REST_URL is the redis:// connection string. Use the https:// REST URL from the Upstash REST API tab.";
+    case "url-not-https":
+      return "UPSTASH_REDIS_REST_URL must start with https://.";
+    case "token-rejected":
+      return "Upstash rejected the token. Copy UPSTASH_REDIS_REST_TOKEN again without the surrounding quotes, then redeploy.";
+    case "unreachable":
+      return "Cannot reach Upstash. Check the database still exists and has not been paused.";
+    default:
+      return "Sign-in is temporarily unavailable.";
+  }
 }
 
 function json(body: unknown, status: number): Response {
