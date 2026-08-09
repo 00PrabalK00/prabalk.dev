@@ -2,22 +2,31 @@
 /**
  * One-off credential generator for PrabalOS.
  *
- *   node scripts/gen-credentials.mjs "your-password-here"
+ *   node scripts/gen-credentials.mjs 'your-password-here'
+ *   node scripts/gen-credentials.mjs 'new-password' --password-only
  *
  * Prints the environment lines to paste into the Vercel project settings and
  * the `otpauth://` URI to enrol an authenticator app. It writes nothing to
  * disk on purpose — the only copies of these secrets should be in Vercel, in
  * your password manager, and in the ESP32's NVS.
  *
+ * `--password-only` regenerates just the password salt and hash. Use it to fix
+ * a mistyped or shell-mangled password without invalidating the authenticator
+ * enrolment, every active session, and the key already flashed to the device.
+ *
  * Run it locally. Never run it in CI, never paste the output into a chat, a
  * commit, or an issue.
  */
 
-import { randomBytes, scryptSync } from "node:crypto";
+import { createHash, randomBytes, scryptSync } from "node:crypto";
 
 const password = process.argv[2];
 if (!password) {
-  console.error("usage: node scripts/gen-credentials.mjs \"<password>\"");
+  console.error("usage: node scripts/gen-credentials.mjs '<password>'");
+  console.error("");
+  console.error("Use SINGLE quotes in PowerShell. Double quotes expand $variables");
+  console.error("and backticks, so the script would hash something other than what");
+  console.error("you typed — and login would then fail forever with no clue why.");
   process.exit(1);
 }
 if (password.length < 12) {
@@ -35,6 +44,18 @@ const KEYLEN = 64;
 
 const salt = randomBytes(32);
 const hash = scryptSync(password, salt, KEYLEN, { N, r, p, maxmem: 128 * 1024 * 1024 });
+
+/**
+ * Fingerprint of the string the shell actually delivered.
+ *
+ * This exists because the failure it catches is otherwise invisible: PowerShell
+ * expands `$name` and backticks inside double quotes, so `"Pa$$w0rd"` arrives as
+ * `Pa`, gets hashed, and every subsequent login attempt with the real password
+ * fails with a generic error that looks like a server bug. Eight hex characters
+ * of a SHA-256 is enough to compare against what you meant to type and reveals
+ * nothing about the password itself.
+ */
+const fingerprint = createHash("sha256").update(password, "utf8").digest("hex").slice(0, 8);
 
 /* RFC 4648 base32, no padding — what authenticator apps expect. */
 function base32(buf) {
@@ -54,6 +75,27 @@ function base32(buf) {
   return out;
 }
 
+if (process.argv.includes("--password-only")) {
+  console.log(`
+=====================================================================
+ PASSWORD ONLY
+
+ The shell handed this script a password of ${password.length} characters,
+ fingerprint ${fingerprint}. If that length is wrong, your shell mangled
+ it — use single quotes — and these values are for the wrong string.
+
+ Replace ONLY these two in Vercel, then redeploy. Your authenticator
+ enrolment, active sessions and the device key are untouched.
+=====================================================================
+
+PRABALOS_PW_SALT=${salt.toString("hex")}
+PRABALOS_PW_HASH=${hash.toString("hex")}
+
+=====================================================================
+`);
+  process.exit(0);
+}
+
 const totpSecret = base32(randomBytes(20)); // 160-bit, the RFC 4226 recommendation
 const sessionKey = randomBytes(32).toString("hex");
 const deviceKey = randomBytes(32).toString("hex");
@@ -65,6 +107,15 @@ const uri =
   `?secret=${totpSecret}&issuer=${encodeURIComponent(issuer)}&algorithm=SHA1&digits=6&period=30`;
 
 console.log(`
+=====================================================================
+ CHECK THIS FIRST
+
+ The shell handed this script a password of ${password.length} characters,
+ fingerprint ${fingerprint}.
+
+ If that length is not what you typed, your shell mangled it — use
+ single quotes — and the hash below is for the wrong string. Nothing
+ will ever log in. Re-run before pasting anything into Vercel.
 =====================================================================
  Vercel -> Project -> Settings -> Environment Variables (Production)
  Do NOT prefix any of these with NEXT_PUBLIC_.
