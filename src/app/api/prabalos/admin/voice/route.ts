@@ -28,10 +28,20 @@ export async function POST(req: Request): Promise<Response> {
   if (!gate.ok) return gate.response;
 
   if (!blobConfigured()) {
+    // Report which BLOB-ish variable NAMES the runtime can see. Names only,
+    // never values. "I added it and it still says it is missing" is otherwise
+    // unfalsifiable from the outside, and it is almost always a name that does
+    // not match — Vercel's Blob integration injects BLOB_READ_WRITE_TOKEN, but
+    // a hand-typed variable or a second store gets a suffix.
+    const seen = Object.keys(process.env).filter((k) => k.includes("BLOB"));
+    console.error(`[prabalos] blob not configured; BLOB-ish env keys: ${seen.join(", ") || "none"}`);
     return Response.json(
       {
         error:
-          "Voice notes need Vercel Blob. Create a Blob store and add BLOB_READ_WRITE_TOKEN, then redeploy.",
+          seen.length > 0
+            ? `Blob token not found under BLOB_READ_WRITE_TOKEN. The runtime does see: ${seen.join(", ")}. Rename it, or connect the store to this project.`
+            : "No Blob variable reached the runtime at all. In Vercel: Storage > your Blob store > Connect to this project, then redeploy.",
+        seen,
       },
       { status: 503, headers: { "Cache-Control": "no-store" } },
     );
