@@ -134,6 +134,10 @@ export interface SyncPayload {
   online: boolean;
   ny_time: string;
   ny_day: string;
+  /** Minutes east of UTC for the away zone, DST included. The device keeps its
+   *  own clock and applies this, so the time on screen advances every second
+   *  instead of only when a poll lands. */
+  ny_off: number;
   home_time: string;
   home_day: string;
   music: {

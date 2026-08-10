@@ -6,6 +6,7 @@ import { CSRF_HEADER } from "@/lib/prabalos/constants";
 import type { Overview } from "@/lib/prabalos/overview";
 import VoiceRecorder from "./VoiceRecorder";
 import FirmwarePanel from "./FirmwarePanel";
+import DrawingPanel from "./DrawingPanel";
 import { STATUSES, type Status } from "@/lib/prabalos/types";
 
 /**
@@ -155,6 +156,9 @@ export default function OsConsole({ initial }: { initial: Overview }) {
         <FromHome data={data} />
         <Device data={data} now={now} />
         <Security data={data} />
+        <Panel title="Drawing from home">
+          <DrawingPanel drawing={data.drawing} onChanged={refresh} onFlash={say} />
+        </Panel>
         <Panel title="Firmware">
           <FirmwarePanel
             firmware={data.firmware}

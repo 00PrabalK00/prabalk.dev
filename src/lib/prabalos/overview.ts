@@ -11,6 +11,7 @@ import {
 } from "./store";
 import { getVoiceNote } from "./voice";
 import { getFirmware } from "./firmware";
+import { getDrawing } from "./drawing";
 
 /**
  * Everything the dashboard shows, gathered in one pass.
@@ -23,7 +24,8 @@ import { getFirmware } from "./firmware";
 export async function overview() {
   const deviceId = process.env.PRABALOS_DEVICE_ID || "PRABALOS_HOME_01";
 
-  const [state, music, messages, events, counters, incoming, health, authLog, voice, firmware] =
+  const [state, music, messages, events, counters, incoming, health, authLog, voice, firmware,
+    drawing] =
     await Promise.all([
     getState(),
     getMusic(),
@@ -35,6 +37,7 @@ export async function overview() {
     listAuthLog(10),
       getVoiceNote().catch(() => null),
       getFirmware().catch(() => null),
+      getDrawing().catch(() => null),
     ]);
 
   return {
@@ -52,6 +55,7 @@ export async function overview() {
     deviceId,
     voice,
     firmware,
+    drawing,
     /** Server clock, so "last seen 4s ago" does not depend on the viewer's
      *  device being set correctly — and so the component never has to read
      *  Date.now() during render. */

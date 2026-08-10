@@ -68,6 +68,38 @@ export function toDeviceText(text: string): string {
 interface Clock {
   time: string;
   day: string;
+  /** Minutes east of UTC, including DST. The device keeps its own clock from
+   *  SNTP and applies this, so the displayed time is second-accurate rather
+   *  than as fresh as the last poll. */
+  offsetMinutes: number;
+}
+
+/**
+ * Offset of a zone from UTC right now, in minutes.
+ *
+ * Derived by formatting the same instant in the target zone and in UTC and
+ * differencing, which is the only way to get this from Intl without shipping
+ * a timezone database. Handles DST for free, because Intl already knows.
+ */
+function zoneOffsetMinutes(zone: string, at: Date): number {
+  const local = new Intl.DateTimeFormat("en-US", {
+    timeZone: zone,
+    hour12: false,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  }).formatToParts(at);
+
+  const get = (type: string) => Number(local.find((p) => p.type === type)?.value ?? 0);
+  // Intl renders midnight as hour 24 in some locales; normalise it.
+  const hour = get("hour") % 24;
+
+  const asUtc = Date.UTC(get("year"), get("month") - 1, get("day"), hour, get("minute"),
+                         get("second"));
+  return Math.round((asUtc - at.getTime()) / 60000);
 }
 
 /**
@@ -100,9 +132,9 @@ export function clockFor(zone: string, at: Date = new Date()): Clock {
       weekday: "short",
     }).format(at);
 
-    return { time, day };
+    return { time, day, offsetMinutes: zoneOffsetMinutes(zone, at) };
   } catch {
-    return { time: "--:-- --", day: "---" };
+    return { time: "--:-- --", day: "---", offsetMinutes: 0 };
   }
 }
 

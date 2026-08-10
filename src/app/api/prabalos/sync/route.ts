@@ -141,6 +141,7 @@ export async function GET(req: Request): Promise<Response> {
     online: state.online,
     ny_time: away.time,
     ny_day: away.day,
+    ny_off: away.offsetMinutes,
     home_time: home.time,
     home_day: home.day,
     music: {
