@@ -77,19 +77,32 @@ interface Clock {
  */
 export function clockFor(zone: string, at: Date = new Date()): Clock {
   try {
-    const time = new Intl.DateTimeFormat("en-GB", {
+    // 12-hour with a meridiem, e.g. "8:42 PM".
+    //
+    // The device splits this on the space and draws the digits large with the
+    // AM/PM small beside them, so the shape is load-bearing: one ASCII space,
+    // no leading zero on the hour.
+    const raw = new Intl.DateTimeFormat("en-US", {
       timeZone: zone,
-      hour: "2-digit",
+      hour: "numeric",
       minute: "2-digit",
-      hour12: false,
+      hour12: true,
     }).format(at);
+
+    // Node emits a narrow no-break space (U+202F) before AM/PM on newer ICU
+    // versions, and some runtimes use U+00A0. Neither is an ASCII space, so the
+    // device's split would fail and the meridiem would vanish — and the font
+    // cannot draw either character anyway.
+    const time = raw.replace(/[  \s]+/g, " ").trim();
+
     const day = new Intl.DateTimeFormat("en-US", {
       timeZone: zone,
       weekday: "short",
     }).format(at);
+
     return { time, day };
   } catch {
-    return { time: "--:--", day: "---" };
+    return { time: "--:-- --", day: "---" };
   }
 }
 
