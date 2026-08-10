@@ -1,5 +1,6 @@
 import {
   getCounters,
+  getVersion,
   getDeviceHealth,
   getIncoming,
   getMusic,
@@ -37,6 +38,9 @@ export async function overview() {
     ]);
 
   return {
+    /** Bumped by every write; the dashboard sends it back so an unchanged poll
+     *  costs two reads instead of a dozen. */
+    version: await getVersion(),
     state,
     music,
     messages,

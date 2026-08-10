@@ -26,7 +26,7 @@ import { STATUSES, type Status } from "@/lib/prabalos/types";
 // This panel used to poll every 5 s regardless, and each poll is ~8 Redis
 // commands. A tab left open in a background window overnight was quietly
 // spending more of the monthly quota than the device itself.
-const POLL_MS = 10000;
+const POLL_MS = 15000;
 
 export default function OsConsole({ initial }: { initial: Overview }) {
   const router = useRouter();
@@ -38,6 +38,8 @@ export default function OsConsole({ initial }: { initial: Overview }) {
      would make the component non-idempotent. Seed it from the server render
      and advance it from a timer instead. */
   const [now, setNow] = useState(initial.now);
+  /** Last version seen, echoed to the server so it can answer "unchanged". */
+  const versionRef = useRef(initial.version);
 
   useEffect(() => {
     const id = setInterval(() => setNow(Math.floor(Date.now() / 1000)), 1000);
@@ -52,7 +54,9 @@ export default function OsConsole({ initial }: { initial: Overview }) {
 
   const refresh = useCallback(async () => {
     try {
-      const res = await fetch("/api/prabalos/admin/overview", {
+      // Send the version we already have; the server answers "unchanged" for
+      // two reads instead of re-fetching everything.
+      const res = await fetch(`/api/prabalos/admin/overview?v=${versionRef.current}`, {
         headers: { [CSRF_HEADER]: "1" },
         cache: "no-store",
       });
@@ -60,7 +64,21 @@ export default function OsConsole({ initial }: { initial: Overview }) {
         router.replace("/login");
         return;
       }
-      if (res.ok) setData((await res.json()) as Overview);
+      if (!res.ok) return;
+
+      const payload = (await res.json()) as
+        | (Overview & { unchanged?: false })
+        | { unchanged: true; version: number; health: Overview["health"]; now: number };
+
+      if ("unchanged" in payload && payload.unchanged) {
+        // Only telemetry moved. Merge it rather than replacing state, so the
+        // panels do not re-render for nothing.
+        setData((prev) => ({ ...prev, health: payload.health, now: payload.now }));
+        return;
+      }
+
+      versionRef.current = payload.version;
+      setData(payload);
     } catch {
       /* a dropped poll is not worth surfacing; the next one will land */
     }
