@@ -152,8 +152,14 @@ export interface SyncPayload {
   counters: { love: number; miss: number };
   /** Present only when there is undelivered love from Prabal. */
   incoming?: { kind: "love"; id: string };
-  /** Present only when an unplayed voice note is waiting. */
-  voice?: { id: string; secs: number };
+  /**
+   * Present whenever a voice note exists, played or not.
+   *
+   * `played` is what tells the device whether to play it on arrival. The note
+   * itself stays available for replay until it is removed from /os — a
+   * message you can only hear once is a worse version of a message.
+   */
+  voice?: { id: string; secs: number; played: boolean };
   /** Present only when published firmware differs from what the device runs. */
   fw?: { ver: string; sha: string; bytes: number };
 }

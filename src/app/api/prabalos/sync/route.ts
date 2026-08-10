@@ -160,7 +160,9 @@ export async function GET(req: Request): Promise<Response> {
     })),
     counters: { love: counters.loveFromHome, miss: counters.missFromHome },
     ...(incoming ? { incoming: { kind: "love" as const, id: incoming.id } } : {}),
-    ...(voice && !voice.played ? { voice: { id: voice.id, secs: voice.secs } } : {}),
+    // Offered whether or not it has been played: the device auto-plays an
+    // unplayed one and keeps a replay button for the rest.
+    ...(voice ? { voice: { id: voice.id, secs: voice.secs, played: voice.played } } : {}),
     // Offered only when it differs from what the device reports running, so a
     // device that has already updated is never told to update again.
     ...(firmware && firmware.version !== runningVersion
