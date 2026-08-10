@@ -6,7 +6,6 @@ import {
   getState,
   getVersion,
   listMessages,
-  rateLimit,
   touchDevice,
 } from "@/lib/prabalos/store";
 import {
@@ -46,8 +45,11 @@ export const dynamic = "force-dynamic";
 const DEFAULT_MSG_LIMIT = 8;
 const MAX_MSG_LIMIT = 12;
 /** 30/min leaves headroom over the nominal 12/min (5 s) poll for retries. */
-const RATE_LIMIT = 30;
-const RATE_WINDOW_S = 60;
+// Rate limiting was removed from this route deliberately. Every request is
+// already HMAC-signed with a device key and carries a single-use nonce, so an
+// unauthenticated flood cannot get this far, and the INCR was costing a Redis
+// command on every poll to defend against a device that would have to be
+// compromised first.
 
 export async function GET(req: Request): Promise<Response> {
   const auth = await verifyDeviceRequest(req);
@@ -56,32 +58,59 @@ export async function GET(req: Request): Promise<Response> {
     return deviceUnauthorized(auth.status);
   }
 
-  const limited = await rateLimit(`sync:${auth.deviceId}`, RATE_LIMIT, RATE_WINDOW_S);
-  if (!limited.ok) return deviceUnauthorized(429);
+  // ---------------------------------------------------------------------
+  // Cheap path first.
+  //
+  // This route used to read state, music, messages, counters, incoming, voice
+  // and firmware — about fifteen Redis commands — and only then compare the
+  // ETag and usually return 304. At a poll every few seconds that is roughly
+  // 260,000 commands a day for a device whose state changes a handful of times
+  // an hour, which exhausts a 500k/month plan in under two days.
+  //
+  // The version counter alone decides whether anything changed, so an unchanged
+  // poll now costs one GET.
+  // ---------------------------------------------------------------------
+  const version = await getVersion();
+  const etag = `"v${version}"`;
 
-  // Telemetry rides on headers rather than a body so the request stays a GET.
-  // It is deliberately outside the signed canonical string: these values are
-  // cosmetic dashboard readouts, and widening the signature to cover optional
-  // headers would give the firmware more ways to sign the wrong thing.
-  await touchDevice(auth.deviceId, {
-    fw: req.headers.get("x-pos-fw") ?? undefined,
-    rssi: numHeader(req, "x-pos-rssi"),
-    heap: numHeader(req, "x-pos-heap"),
-    largestBlock: numHeader(req, "x-pos-block"),
-    queue: numHeader(req, "x-pos-queue"),
-    ip: clientIp(req),
-  });
+  if (req.headers.get("if-none-match") === etag) {
+    // Telemetry is skipped here too. The device only sends it every few polls
+    // (see POS_TELEMETRY_EVERY in the firmware), and writing it on every
+    // request was a Redis command per poll for numbers nobody was watching.
+    if (req.headers.get("x-pos-heap")) {
+      await touchDevice(auth.deviceId, {
+        fw: req.headers.get("x-pos-fw") ?? undefined,
+        rssi: numHeader(req, "x-pos-rssi"),
+        heap: numHeader(req, "x-pos-heap"),
+        largestBlock: numHeader(req, "x-pos-block"),
+        queue: numHeader(req, "x-pos-queue"),
+        ip: clientIp(req),
+      });
+    }
+    return new Response(null, {
+      status: 304,
+      headers: { ETag: etag, "Cache-Control": "no-store" },
+    });
+  }
+
+  // Something changed. Now it is worth reading everything.
+  if (req.headers.get("x-pos-heap")) {
+    await touchDevice(auth.deviceId, {
+      fw: req.headers.get("x-pos-fw") ?? undefined,
+      rssi: numHeader(req, "x-pos-rssi"),
+      heap: numHeader(req, "x-pos-heap"),
+      largestBlock: numHeader(req, "x-pos-block"),
+      queue: numHeader(req, "x-pos-queue"),
+      ip: clientIp(req),
+    });
+  }
 
   const url = new URL(req.url);
   const msgLimit = clampInt(url.searchParams.get("msg_limit"), DEFAULT_MSG_LIMIT, 0, MAX_MSG_LIMIT);
 
-  // The device reports its running version on every poll; recording it is what
-  // lets /os show an update landing, and stops the update being re-offered.
   const runningVersion = req.headers.get("x-pos-fw") ?? "";
-  if (runningVersion) await noteInstalledVersion(runningVersion).catch(() => {});
 
-  const [version, state, music, messages, counters, incoming, voice, firmware] = await Promise.all([
-    getVersion(),
+  const [state, music, messages, counters, incoming, voice, firmware] = await Promise.all([
     getState(),
     getMusic(),
     listMessages(msgLimit),
@@ -91,17 +120,9 @@ export async function GET(req: Request): Promise<Response> {
     getFirmware().catch(() => null),
   ]);
 
-  const etag = `"v${version}"`;
-
-  // The 304 shortcut is skipped while music is playing. The track position
-  // advances between polls without any write bumping the version, so honouring
-  // If-None-Match there would freeze the progress bar on the panel — which is
-  // exactly the moment the screen is being looked at.
-  if (!music.playing && req.headers.get("if-none-match") === etag) {
-    return new Response(null, {
-      status: 304,
-      headers: { ETag: etag, "Cache-Control": "no-store" },
-    });
+  // Recorded from the firmware we just fetched, rather than fetching it again.
+  if (runningVersion && firmware && firmware.installed !== runningVersion) {
+    await noteInstalledVersion(runningVersion).catch(() => {});
   }
 
   const now = Math.floor(Date.now() / 1000);

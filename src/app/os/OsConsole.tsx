@@ -21,7 +21,12 @@ import { STATUSES, type Status } from "@/lib/prabalos/types";
  * polling is free.
  */
 
-const POLL_MS = 5000;
+// 10 s, and paused while the tab is hidden.
+//
+// This panel used to poll every 5 s regardless, and each poll is ~8 Redis
+// commands. A tab left open in a background window overnight was quietly
+// spending more of the monthly quota than the device itself.
+const POLL_MS = 10000;
 
 export default function OsConsole({ initial }: { initial: Overview }) {
   const router = useRouter();
@@ -62,8 +67,17 @@ export default function OsConsole({ initial }: { initial: Overview }) {
   }, [router]);
 
   useEffect(() => {
-    const id = setInterval(refresh, POLL_MS);
-    return () => clearInterval(id);
+    const tick = () => {
+      // A backgrounded tab tells you nothing and costs the same as a visible
+      // one. Refresh immediately on return so it never looks stale.
+      if (document.visibilityState === "visible") void refresh();
+    };
+    const id = setInterval(tick, POLL_MS);
+    document.addEventListener("visibilitychange", tick);
+    return () => {
+      clearInterval(id);
+      document.removeEventListener("visibilitychange", tick);
+    };
   }, [refresh]);
 
   const post = useCallback(
@@ -155,8 +169,9 @@ function Header({
 }) {
   const seen = health?.lastSeen ?? 0;
   const age = seen ? now - seen : Infinity;
-  // Two missed polls is noise; three means something is wrong. 20 s.
-  const live = age < 20;
+  // The device reports telemetry every few polls rather than every one, to
+  // keep Redis writes down, so liveness is judged over a wider window.
+  const live = age < 150;
 
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-ink/95 backdrop-blur">
