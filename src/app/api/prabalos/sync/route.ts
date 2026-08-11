@@ -144,6 +144,7 @@ export async function GET(req: Request): Promise<Response> {
     ny_off: away.offsetMinutes,
     home_time: home.time,
     home_day: home.day,
+    home_off: home.offsetMinutes,
     music: {
       playing: music.playing,
       title: clamp(toDeviceText(music.title), TITLE_MAX),

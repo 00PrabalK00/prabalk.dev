@@ -140,6 +140,19 @@ export interface SyncPayload {
   ny_off: number;
   home_time: string;
   home_day: string;
+  /**
+   * Minutes east of UTC where the device physically is.
+   *
+   * Sent so the device can work out its own local hour and dim the backlight
+   * overnight without asking. A flag computed here would have been simpler, but
+   * it would stop being true the moment the device is offline or a poll is
+   * missed — and the hours it has to be right for are exactly the hours nobody
+   * is awake to notice it stuck bright.
+   *
+   * Thailand has no DST, so in practice this is a constant +420. It is sent
+   * rather than hard-coded because the device should not care where it is.
+   */
+  home_off: number;
   music: {
     playing: boolean;
     title: string;
