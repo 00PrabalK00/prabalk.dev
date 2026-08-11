@@ -1,4 +1,6 @@
+import { after } from "next/server";
 import { deviceUnauthorized, verifyDeviceRequest } from "@/lib/prabalos/auth-device";
+import { notifyEvent } from "@/lib/prabalos/notify";
 import { claimEventId, rateLimit, recordEvent } from "@/lib/prabalos/store";
 import { isEventType } from "@/lib/prabalos/types";
 
@@ -58,6 +60,14 @@ export async function POST(req: Request): Promise<Response> {
 
   const queued = body.queued === true || body.queued === 1;
   const ev = await recordEvent(body.type, eventId, auth.deviceId, queued);
+
+  // After the response, not before it. The device is waiting on this request
+  // with a timeout, and Discord being slow is not the ESP32's problem.
+  //
+  // Safe against duplicates for free: the claimEventId() guard above has
+  // already returned 409 for a replay, so a retried press notifies once.
+  const type = body.type;
+  after(() => notifyEvent(type, queued));
 
   return Response.json(
     { ok: true, id: ev.id, ts: ev.ts },

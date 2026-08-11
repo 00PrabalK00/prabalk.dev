@@ -1,4 +1,6 @@
+import { after } from "next/server";
 import { deviceUnauthorized, verifyDeviceRequest } from "@/lib/prabalos/auth-device";
+import { notifyDrawing } from "@/lib/prabalos/notify";
 import { rateLimit } from "@/lib/prabalos/store";
 import { DRAWING_MAX_BYTES, drawingConfigured, putDrawing } from "@/lib/prabalos/drawing";
 
@@ -45,6 +47,9 @@ export async function POST(req: Request): Promise<Response> {
   }
 
   const drawing = await putDrawing(strokes);
+
+  after(() => notifyDrawing());
+
   return Response.json(
     { ok: true, id: drawing.id, bytes: drawing.bytes },
     { headers: { "Cache-Control": "no-store" } },
