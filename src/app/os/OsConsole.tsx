@@ -22,12 +22,19 @@ import { STATUSES, type Status } from "@/lib/prabalos/types";
  * polling is free.
  */
 
-// 10 s, and paused while the tab is hidden.
+// 60 s, and paused while the tab is hidden.
 //
 // This panel used to poll every 5 s regardless, and each poll is ~8 Redis
 // commands. A tab left open in a background window overnight was quietly
-// spending more of the monthly quota than the device itself.
-const POLL_MS = 15000;
+// spending more of the monthly quota than the device itself — at 15 s it was
+// still ~480 commands an hour against the device's ~60, so the dashboard was
+// roughly 90% of the bill.
+//
+// 60 s is affordable now that button presses and drawings push to Discord.
+// Nothing arrives unannounced any more, so this poll no longer has to be the
+// thing that catches events — it only has to refresh a page already being
+// looked at, and a minute is quick enough for that.
+const POLL_MS = 60000;
 
 export default function OsConsole({ initial }: { initial: Overview }) {
   const router = useRouter();
