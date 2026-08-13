@@ -378,17 +378,28 @@ function Compose({ data, post, busy }: { data: Overview; post: Post; busy: strin
         Send message
       </button>
 
-      <button
-        disabled={busy !== null}
-        onClick={() => post("/api/prabalos/admin/love", {}, "love", "Love sent home")}
-        className="mono mt-2 w-full border border-fault bg-fault/10 px-3 py-4 text-[13px] uppercase tracking-[0.2em] text-fault transition-colors hover:bg-fault/20 disabled:opacity-50"
-      >
-        ♥ Send love home
-      </button>
+      {/* Side by side, and the same size. They are the same gesture in two
+          directions, and making love the big one would quietly rank them. */}
+      <div className="mt-2 grid grid-cols-2 gap-2">
+        <button
+          disabled={busy !== null}
+          onClick={() => post("/api/prabalos/admin/love", { kind: "love" }, "love", "Love sent home")}
+          className="mono border border-fault bg-fault/10 px-3 py-4 text-[13px] uppercase tracking-[0.2em] text-fault transition-colors hover:bg-fault/20 disabled:opacity-50"
+        >
+          ♥ I love you
+        </button>
+        <button
+          disabled={busy !== null}
+          onClick={() => post("/api/prabalos/admin/love", { kind: "miss" }, "love", "Sent home")}
+          className="mono border border-accent bg-accent/10 px-3 py-4 text-[13px] uppercase tracking-[0.2em] text-accent transition-colors hover:bg-accent/20 disabled:opacity-50"
+        >
+          ♥ I miss you
+        </button>
+      </div>
 
       {data.incoming && (
         <p className="mono mt-2 text-[10px] uppercase tracking-[0.14em] text-amber-400">
-          Waiting for the device to show it
+          Waiting for the device to show the {data.incoming.kind === "miss" ? "miss" : "love"}
         </p>
       )}
 
@@ -442,7 +453,11 @@ function FromHome({ data }: { data: Overview }) {
       <div className="mb-4 flex gap-6">
         <Counter label="I love you" value={data.counters.loveFromHome} tone="text-fault" />
         <Counter label="I miss you" value={data.counters.missFromHome} tone="text-accent" />
-        <Counter label="Sent by you" value={data.counters.loveFromPrabal} tone="text-cyan" />
+        <Counter
+          label="Sent by you"
+          value={data.counters.loveFromPrabal + data.counters.missFromPrabal}
+          tone="text-cyan"
+        />
       </div>
 
       <ul className="flex max-h-[240px] flex-col gap-1.5 overflow-y-auto">
@@ -453,8 +468,11 @@ function FromHome({ data }: { data: Overview }) {
             >
               ♥
             </span>
+            {/* Events recorded before the buttons could tell them apart carry no
+                sender; those were all the red button, which is Mumma's. */}
             <span className="mono text-[12px] text-bone">
-              {e.type === "love" ? "I love you" : "I miss you"}
+              {e.from === "papa" ? "Papa" : "Mumma"}{" "}
+              {e.type === "love" ? "loves you" : "misses you"}
             </span>
             {e.queued && (
               <span

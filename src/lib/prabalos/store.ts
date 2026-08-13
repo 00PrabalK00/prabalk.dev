@@ -2,8 +2,9 @@ import { Redis } from "@upstash/redis";
 import type {
   DeviceEvent,
   DeviceHealth,
+  EventSender,
   EventType,
-  IncomingLove,
+  IncomingFeeling,
   Message,
   MusicState,
   PresenceState,
@@ -351,15 +352,21 @@ export async function claimEventId(eventId: string): Promise<boolean> {
 
 export async function recordEvent(
   type: EventType,
+  from: EventSender,
   eventId: string,
   device: string,
   queued: boolean,
 ): Promise<DeviceEvent> {
-  const ev: DeviceEvent = { id: eventId, type, ts: nowSec(), queued, device };
+  const ev: DeviceEvent = { id: eventId, type, from, ts: nowSec(), queued, device };
   const p = redis().pipeline();
   p.lpush(K.events, JSON.stringify(ev));
   p.ltrim(K.events, 0, EVENT_CAP - 1);
+  // Two counters, not four. The per-person split is answerable from the event
+  // list, and the combined totals are the ones on the device's own screen —
+  // resetting those to zero to gain a breakdown would be a poor trade for a
+  // number that has been climbing since this thing was switched on.
   p.hincrby(K.counters, type === "love" ? "love_from_home" : "miss_from_home", 1);
+  p.hincrby(K.counters, `${type === "love" ? "love" : "miss"}_from_${from}`, 1);
   p.incr(K.version);
   await p.exec();
   return ev;
@@ -385,35 +392,56 @@ export async function getCounters(): Promise<{
   loveFromHome: number;
   missFromHome: number;
   loveFromPrabal: number;
+  missFromPrabal: number;
+  loveFromMumma: number;
+  missFromMumma: number;
+  loveFromPapa: number;
+  missFromPapa: number;
 }> {
   const h = await redis().hgetall(K.counters);
   return {
     loveFromHome: int(h, "love_from_home"),
     missFromHome: int(h, "miss_from_home"),
     loveFromPrabal: int(h, "love_from_prabal"),
+    missFromPrabal: int(h, "miss_from_prabal"),
+    loveFromMumma: int(h, "love_from_mumma"),
+    missFromMumma: int(h, "miss_from_mumma"),
+    loveFromPapa: int(h, "love_from_papa"),
+    missFromPapa: int(h, "miss_from_papa"),
   };
 }
 
 /* ------------------------------------------------------------------ */
-/* Love in the other direction                                         */
+/* The other direction                                                 */
 /* ------------------------------------------------------------------ */
 
-/** Set by /os. Delivered once via sync, cleared by the device's ack. */
-export async function sendLoveHome(): Promise<IncomingLove> {
-  const love: IncomingLove = { id: `i_${randomId(6)}`, kind: "love", ts: nowSec() };
+/**
+ * Set by /os or a Discord command. Delivered once via sync, cleared by the
+ * device's ack.
+ *
+ * Only one is held undelivered at a time, so sending love and then miss while
+ * the device is offline shows the miss when it reconnects — the newer feeling
+ * wins rather than queueing an animation they have to sit through twice. Both
+ * still count.
+ */
+export async function sendFeelingHome(kind: "love" | "miss" = "love"): Promise<IncomingFeeling> {
+  const feeling: IncomingFeeling = { id: `i_${randomId(6)}`, kind, ts: nowSec() };
   const p = redis().pipeline();
-  p.hset(K.incoming, { id: love.id, ts: String(love.ts) });
-  p.hincrby(K.counters, "love_from_prabal", 1);
+  p.hset(K.incoming, { id: feeling.id, kind, ts: String(feeling.ts) });
+  p.hincrby(K.counters, kind === "love" ? "love_from_prabal" : "miss_from_prabal", 1);
   p.incr(K.version);
   await p.exec();
-  return love;
+  return feeling;
 }
 
-export async function getIncoming(): Promise<IncomingLove | null> {
+export async function getIncoming(): Promise<IncomingFeeling | null> {
   const h = await redis().hgetall(K.incoming);
   const id = str(h, "id");
   if (!id) return null;
-  return { id, kind: "love", ts: int(h, "ts") };
+  // Written without a kind before the miss button existed, when love was the
+  // only thing that could be waiting here.
+  const kind = str(h, "kind", "love") === "miss" ? "miss" : "love";
+  return { id, kind, ts: int(h, "ts") };
 }
 
 /** Acked by id so a stale ack from a rebooting device cannot clear a newer one. */

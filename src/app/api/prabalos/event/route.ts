@@ -2,7 +2,7 @@ import { after } from "next/server";
 import { deviceUnauthorized, verifyDeviceRequest } from "@/lib/prabalos/auth-device";
 import { notifyEvent } from "@/lib/prabalos/notify";
 import { claimEventId, rateLimit, recordEvent } from "@/lib/prabalos/store";
-import { isEventType } from "@/lib/prabalos/types";
+import { isEventSender, isEventType } from "@/lib/prabalos/types";
 
 /**
  * The red and blue buttons.
@@ -41,10 +41,19 @@ export async function POST(req: Request): Promise<Response> {
     return new Response(null, { status: 400, headers: { "Cache-Control": "no-store" } });
   }
 
-  const body = parsed as { type?: unknown; event_id?: unknown; queued?: unknown };
+  const body = parsed as {
+    type?: unknown;
+    from?: unknown;
+    event_id?: unknown;
+    queued?: unknown;
+  };
   if (!isEventType(body.type)) {
     return new Response(null, { status: 400, headers: { "Cache-Control": "no-store" } });
   }
+  // Absent from firmware older than the double-tap buttons, where the red
+  // button was the only one that could send love. Defaulting rather than
+  // rejecting means a press queued in NVS across the update still lands.
+  const from = isEventSender(body.from) ? body.from : "mumma";
   const eventId = typeof body.event_id === "string" ? body.event_id : "";
   if (!EVENT_ID_RE.test(eventId)) {
     return new Response(null, { status: 400, headers: { "Cache-Control": "no-store" } });
@@ -59,7 +68,7 @@ export async function POST(req: Request): Promise<Response> {
   }
 
   const queued = body.queued === true || body.queued === 1;
-  const ev = await recordEvent(body.type, eventId, auth.deviceId, queued);
+  const ev = await recordEvent(body.type, from, eventId, auth.deviceId, queued);
 
   // After the response, not before it. The device is waiting on this request
   // with a timeout, and Discord being slow is not the ESP32's problem.
@@ -67,7 +76,7 @@ export async function POST(req: Request): Promise<Response> {
   // Safe against duplicates for free: the claimEventId() guard above has
   // already returned 409 for a replay, so a retried press notifies once.
   const type = body.type;
-  after(() => notifyEvent(type, queued));
+  after(() => notifyEvent(type, from, queued));
 
   return Response.json(
     { ok: true, id: ev.id, ts: ev.ts },

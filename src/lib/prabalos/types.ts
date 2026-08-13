@@ -32,13 +32,27 @@ export function isStatus(v: unknown): v is Status {
   return typeof v === "string" && (STATUSES as readonly string[]).includes(v);
 }
 
-/** Events the physical buttons produce. `love` is red (GPIO33), `miss_you` is
- *  blue (GPIO32). */
+/**
+ * What a press means, and who made it.
+ *
+ * Kept as two fields rather than four type strings. The enclosure is sealed and
+ * has two buttons, so the device distinguishes the four messages by tap count —
+ * red (GPIO33) is Mum's, blue (GPIO32) is Dad's, one tap says love and two say
+ * miss. Splitting it this way means the stored events and the counters written
+ * before the device could tell them apart still mean exactly what they meant.
+ */
 export const EVENT_TYPES = ["love", "miss_you"] as const;
 export type EventType = (typeof EVENT_TYPES)[number];
 
 export function isEventType(v: unknown): v is EventType {
   return typeof v === "string" && (EVENT_TYPES as readonly string[]).includes(v);
+}
+
+export const EVENT_SENDERS = ["mumma", "papa"] as const;
+export type EventSender = (typeof EVENT_SENDERS)[number];
+
+export function isEventSender(v: unknown): v is EventSender {
+  return typeof v === "string" && (EVENT_SENDERS as readonly string[]).includes(v);
 }
 
 /** What Prabal publishes about himself. */
@@ -86,6 +100,9 @@ export interface Message {
 export interface DeviceEvent {
   id: string;
   type: EventType;
+  /** Absent on events recorded before the buttons could tell them apart, which
+   *  were all Mum's red button. Readers should default accordingly. */
+  from?: EventSender;
   /** Epoch seconds, as recorded by the server on receipt. */
   ts: number;
   /** True when the event sat in the device's NVS queue before delivery. */
@@ -93,10 +110,10 @@ export interface DeviceEvent {
   device: string;
 }
 
-/** Love sent the other way — Prabal to home. Delivered once, then acked. */
-export interface IncomingLove {
+/** Sent the other way — Prabal to home. Delivered once, then acked. */
+export interface IncomingFeeling {
   id: string;
-  kind: "love";
+  kind: "love" | "miss";
   ts: number;
 }
 
@@ -167,8 +184,9 @@ export interface SyncPayload {
   unread: number;
   msgs: SyncMessage[];
   counters: { love: number; miss: number };
-  /** Present only when there is undelivered love from Prabal. */
-  incoming?: { kind: "love"; id: string };
+  /** Present only when something from Prabal is undelivered. `kind` is absent
+   *  on servers older than the miss button, where it could only be love. */
+  incoming?: { kind: "love" | "miss"; id: string };
   /**
    * Present whenever a voice note exists, played or not.
    *

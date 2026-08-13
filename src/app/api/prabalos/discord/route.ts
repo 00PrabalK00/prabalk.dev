@@ -4,7 +4,7 @@ import {
   getDeviceHealth,
   getState,
   nowSec,
-  sendLoveHome,
+  sendFeelingHome,
   setState,
   unreadCount,
 } from "@/lib/prabalos/store";
@@ -95,8 +95,13 @@ async function runCommand(name: string, options: Option[] | undefined): Promise<
     }
 
     case "love": {
-      await sendLoveHome();
+      await sendFeelingHome("love");
       return reply("❤️  Sent home. It will show on the device at the next poll.");
+    }
+
+    case "miss": {
+      await sendFeelingHome("miss");
+      return reply("💙  Sent home. It will show on the device at the next poll.");
     }
 
     case "state": {

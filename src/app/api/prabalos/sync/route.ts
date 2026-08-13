@@ -161,7 +161,7 @@ export async function GET(req: Request): Promise<Response> {
       read: m.read,
     })),
     counters: { love: counters.loveFromHome, miss: counters.missFromHome },
-    ...(incoming ? { incoming: { kind: "love" as const, id: incoming.id } } : {}),
+    ...(incoming ? { incoming: { kind: incoming.kind, id: incoming.id } } : {}),
     // Offered whether or not it has been played: the device auto-plays an
     // unplayed one and keeps a replay button for the rest.
     ...(voice ? { voice: { id: voice.id, secs: voice.secs, played: voice.played } } : {}),

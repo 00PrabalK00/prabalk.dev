@@ -1,4 +1,4 @@
-import type { EventType } from "./types";
+import type { EventSender, EventType } from "./types";
 
 /**
  * Push notifications for device events, over a Discord webhook.
@@ -76,22 +76,32 @@ async function post(content: string): Promise<void> {
   }
 }
 
-const EVENT_TEXT: Record<EventType, string> = {
-  love: "❤️  **I LOVE YOU**  — the red button, from home",
-  miss_you: "💙  **I MISS YOU**  — the blue button, from home",
-};
+const SENDER_TEXT: Record<EventSender, string> = { mumma: "Mumma", papa: "Papa" };
 
 /**
  * A button press.
+ *
+ * Who sent it leads the message, because that is the part worth being notified
+ * about — the two of them share one object, and a notification that says only
+ * which colour was pressed makes you work out the rest.
  *
  * `queued` marks a press that sat in the device's NVS queue while the WiFi was
  * down and only reached the server later. Worth saying out loud, because the
  * notification arriving now does not mean they pressed it now, and that
  * distinction is the whole point of the offline queue.
  */
-export async function notifyEvent(type: EventType, queued: boolean): Promise<void> {
+export async function notifyEvent(
+  type: EventType,
+  from: EventSender,
+  queued: boolean,
+): Promise<void> {
+  const who = SENDER_TEXT[from] ?? "Home";
+  const line =
+    type === "love"
+      ? `❤️  **${who} loves you**`
+      : `💙  **${who} misses you**`;
   const suffix = queued ? "\n_(sent earlier — the device was offline at the time)_" : "";
-  await post(EVENT_TEXT[type] + suffix);
+  await post(line + suffix);
 }
 
 /** A drawing. Only the most recent one is kept, so this is also the only

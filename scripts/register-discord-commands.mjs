@@ -101,6 +101,7 @@ const commands = [
     ],
   },
   { name: "love", description: "Send love to the device" },
+  { name: "miss", description: "Tell them you miss them" },
   { name: "state", description: "What the device is showing, and its health" },
 ];
 
