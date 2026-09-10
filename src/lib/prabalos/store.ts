@@ -395,6 +395,8 @@ export async function getCounters(): Promise<{
   missFromPrabal: number;
   loveFromMumma: number;
   missFromMumma: number;
+  loveFromDadi: number;
+  missFromDadi: number;
   loveFromPapa: number;
   missFromPapa: number;
 }> {
@@ -406,6 +408,8 @@ export async function getCounters(): Promise<{
     missFromPrabal: int(h, "miss_from_prabal"),
     loveFromMumma: int(h, "love_from_mumma"),
     missFromMumma: int(h, "miss_from_mumma"),
+    loveFromDadi: int(h, "love_from_dadi"),
+    missFromDadi: int(h, "miss_from_dadi"),
     loveFromPapa: int(h, "love_from_papa"),
     missFromPapa: int(h, "miss_from_papa"),
   };

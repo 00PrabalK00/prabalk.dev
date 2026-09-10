@@ -7,7 +7,7 @@ import type { Overview } from "@/lib/prabalos/overview";
 import VoiceRecorder from "./VoiceRecorder";
 import FirmwarePanel from "./FirmwarePanel";
 import DrawingPanel from "./DrawingPanel";
-import { STATUSES, type Status } from "@/lib/prabalos/types";
+import { SENDER_NAMES, STATUSES, type Status } from "@/lib/prabalos/types";
 
 /**
  * The control panel.
@@ -471,7 +471,7 @@ function FromHome({ data }: { data: Overview }) {
             {/* Events recorded before the buttons could tell them apart carry no
                 sender; those were all the red button, which is Mumma's. */}
             <span className="mono text-[12px] text-bone">
-              {e.from === "papa" ? "Papa" : "Mumma"}{" "}
+              {(e.from && SENDER_NAMES[e.from]) || "Mumma"}{" "}
               {e.type === "love" ? "loves you" : "misses you"}
             </span>
             {e.queued && (

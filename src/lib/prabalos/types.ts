@@ -35,11 +35,12 @@ export function isStatus(v: unknown): v is Status {
 /**
  * What a press means, and who made it.
  *
- * Kept as two fields rather than four type strings. The enclosure is sealed and
- * has two buttons, so the device distinguishes the four messages by tap count —
- * red (GPIO33) is Mum's, blue (GPIO32) is Dad's, one tap says love and two say
- * miss. Splitting it this way means the stored events and the counters written
- * before the device could tell them apart still mean exactly what they meant.
+ * Kept as two fields rather than six type strings. The enclosure is sealed and
+ * has two buttons, so the device distinguishes six messages by which buttons
+ * and how many taps — red (GPIO33) is Mumma, blue (GPIO32) is Dadi, the two
+ * pressed together are Papa, one tap says love and two say miss. Splitting it
+ * this way means the stored events and the counters written before the device
+ * could tell them apart still mean exactly what they meant.
  */
 export const EVENT_TYPES = ["love", "miss_you"] as const;
 export type EventType = (typeof EVENT_TYPES)[number];
@@ -48,8 +49,15 @@ export function isEventType(v: unknown): v is EventType {
   return typeof v === "string" && (EVENT_TYPES as readonly string[]).includes(v);
 }
 
-export const EVENT_SENDERS = ["mumma", "papa"] as const;
+export const EVENT_SENDERS = ["mumma", "dadi", "papa"] as const;
 export type EventSender = (typeof EVENT_SENDERS)[number];
+
+/** How each sender is written where a person reads it. */
+export const SENDER_NAMES: Record<EventSender, string> = {
+  mumma: "Mumma",
+  dadi: "Dadi",
+  papa: "Papa",
+};
 
 export function isEventSender(v: unknown): v is EventSender {
   return typeof v === "string" && (EVENT_SENDERS as readonly string[]).includes(v);

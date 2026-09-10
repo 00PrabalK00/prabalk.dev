@@ -1,3 +1,4 @@
+import { SENDER_NAMES } from "./types";
 import type { EventSender, EventType } from "./types";
 
 /**
@@ -76,7 +77,6 @@ async function post(content: string): Promise<void> {
   }
 }
 
-const SENDER_TEXT: Record<EventSender, string> = { mumma: "Mumma", papa: "Papa" };
 
 /**
  * A button press.
@@ -95,7 +95,7 @@ export async function notifyEvent(
   from: EventSender,
   queued: boolean,
 ): Promise<void> {
-  const who = SENDER_TEXT[from] ?? "Home";
+  const who = SENDER_NAMES[from] ?? "Home";
   const line =
     type === "love"
       ? `❤️  **${who} loves you**`
