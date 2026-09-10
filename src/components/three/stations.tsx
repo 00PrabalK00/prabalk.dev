@@ -83,9 +83,9 @@ const PAINTED = {
 function StationLights({ color }: { color: string }) {
   return (
     <>
-      <pointLight position={[4, 4.5, 5]} intensity={38} distance={18} color="#eaf2ff" />
+      <pointLight position={[4, 4.5, 5]} intensity={38} distance={18} color="#f4fdfd" />
       <pointLight position={[-4.5, -1.5, -3]} intensity={26} distance={16} color={color} />
-      <pointLight position={[0, -3.5, 3]} intensity={12} distance={12} color="#8fa4bd" />
+      <pointLight position={[0, -3.5, 3]} intensity={12} distance={12} color="#bfa4ac" />
     </>
   );
 }
@@ -526,8 +526,8 @@ function VtolStation({ s }: { s: Station }) {
         <mesh position={[0, -0.36, 0.47]} rotation={[Math.PI / 2, 0, 0]}>
           <cylinderGeometry args={[0.1, 0.1, 0.06, 20]} />
           <meshStandardMaterial
-            color="#ff5c5c"
-            emissive="#ff5c5c"
+            color="#e8899b"
+            emissive="#e8899b"
             emissiveIntensity={2.4}
             toneMapped={false}
             transparent
@@ -539,7 +539,7 @@ function VtolStation({ s }: { s: Station }) {
       <mesh ref={cone} position={[0, -3.2, 0.35]} rotation={[Math.PI, 0, 0]}>
         <coneGeometry args={[2.1, 5.6, 32, 1, true]} />
         <meshBasicMaterial
-          color="#f87171"
+          color="#e8899b"
           transparent
           opacity={0.12}
           side={THREE.DoubleSide}
@@ -884,7 +884,7 @@ function CloudStation({ s }: { s: Station }) {
         <group ref={cracks}>
           {crackLines.map((g, i) => (
             <lineSegments key={i} geometry={g}>
-              <lineBasicMaterial color="#f87171" transparent opacity={0.8} />
+              <lineBasicMaterial color="#e8899b" transparent opacity={0.8} />
             </lineSegments>
           ))}
         </group>

@@ -20,7 +20,7 @@ const SHADE = [
   "rgba(255,176,32,0.24)",
   "rgba(255,176,32,0.46)",
   "rgba(255,176,32,0.72)",
-  "#4da6ff",
+  "#51e2f5",
 ];
 
 function Heatmap({ days }: { days: ContribDay[] }) {

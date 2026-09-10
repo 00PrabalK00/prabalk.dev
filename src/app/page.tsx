@@ -105,12 +105,24 @@ function DoorCard({
   return (
     <Link
       href={href}
-      className={`group relative flex flex-1 flex-col justify-between overflow-hidden border p-7 transition-colors sm:p-10 ${
+      /*
+       * Solid panels on a tinted ground, not translucent ones over it. A card
+       * filled with 4% of its own accent is a glass effect: it takes its colour
+       * from whatever is behind it and reads as a smudge rather than an object.
+       * White with a coloured edge and a top rule reads as a card.
+       */
+      className={`group relative flex flex-1 flex-col justify-between overflow-hidden border bg-ink-2 p-7 transition-[border-color,transform] sm:p-10 ${
         accent
-          ? "border-accent/35 bg-accent/[0.04] hover:border-accent hover:bg-accent/[0.09]"
-          : "border-line bg-bone/[0.03] hover:border-bone/60 hover:bg-bone/[0.07]"
+          ? "border-line-2 hover:-translate-y-0.5 hover:border-accent"
+          : "border-line hover:-translate-y-0.5 hover:border-mute"
       }`}
     >
+      {/* The palette, used as a colour rather than a tint. */}
+      <span
+        aria-hidden
+        className="absolute inset-x-0 top-0 h-1"
+        style={{ background: accent ? "var(--c-blue)" : "var(--c-pink)" }}
+      />
       <div>
         <div className="flex items-baseline justify-between gap-3">
           <span

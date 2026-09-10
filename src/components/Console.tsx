@@ -33,7 +33,6 @@ import Projects from "@/components/Projects";
 import { Honors, Patents, Skills } from "@/components/Patents";
 import Media from "@/components/Media";
 import Contact from "@/components/Contact";
-import ThemeToggle from "@/components/ThemeToggle";
 import GithubMini from "@/components/GithubMini";
 import { LiveClock } from "@/components/ui";
 
@@ -79,7 +78,7 @@ const APPS: App[] = [
     desc: "The 300 kg AMR — full autonomy stack, 300 logged trials",
     meta: "flagship",
     Icon: Truck,
-    accent: "#4da6ff",
+    accent: "#51e2f5",
     render: () => <Smr300Section />,
   },
   {
@@ -89,7 +88,7 @@ const APPS: App[] = [
     desc: "Real-time activity straight off the GitHub API",
     meta: "live",
     Icon: Activity,
-    accent: "#3ddc97",
+    accent: "#4ecfc2",
     render: () => <GithubLive />,
   },
   {
@@ -99,7 +98,7 @@ const APPS: App[] = [
     desc: "Underwater, airborne, robotic arms, developer tooling",
     meta: "15 builds",
     Icon: Boxes,
-    accent: "#ff9d5c",
+    accent: "#e0c94a",
     render: () => <Projects />,
   },
   {
@@ -109,7 +108,7 @@ const APPS: App[] = [
     desc: "Five roles, two degrees, $15K of hardware managed",
     meta: "2023 — now",
     Icon: Briefcase,
-    accent: "#a78bfa",
+    accent: "#a28089",
     render: () => <Timeline />,
   },
   {
@@ -119,7 +118,7 @@ const APPS: App[] = [
     desc: "A vehicle that flies and drives, and two more filings",
     meta: "3 filed",
     Icon: ScrollText,
-    accent: "#22d3ee",
+    accent: "#7fd9e8",
     render: () => <Patents />,
   },
   {
@@ -129,7 +128,7 @@ const APPS: App[] = [
     desc: "Everything I've had to debug at 2 a.m. on a floor",
     meta: "5 groups",
     Icon: Cpu,
-    accent: "#ff6b9d",
+    accent: "#ffa8b6",
     render: () => <Skills />,
   },
   {
@@ -139,7 +138,7 @@ const APPS: App[] = [
     desc: "2nd in Norway, two national hackathons, 150+ taught",
     meta: "6 records",
     Icon: Trophy,
-    accent: "#7fe3d4",
+    accent: "#9df9ef",
     render: () => <Honors />,
   },
   {
@@ -149,7 +148,7 @@ const APPS: App[] = [
     desc: "Footage and photos from real floors and real water",
     meta: "gallery",
     Icon: Images,
-    accent: "#4da6ff",
+    accent: "#51e2f5",
     render: () => <Media />,
   },
   {
@@ -159,7 +158,7 @@ const APPS: App[] = [
     desc: "Email, links, and the résumé as a PDF",
     meta: "reach me",
     Icon: Mail,
-    accent: "#3ddc97",
+    accent: "#4ecfc2",
     render: () => <Contact />,
   },
 ];
@@ -451,7 +450,7 @@ export default function Console() {
 
       <div className="relative mx-auto w-full max-w-[1720px] px-4 pt-6 pb-16 sm:px-8 sm:pt-8 sm:pb-20">
         {/* title bar */}
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-3 border border-line bg-ink-2/70 px-4 py-3 backdrop-blur-sm">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-3 border border-line bg-ink-2 px-4 py-3">
           <span className="flex shrink-0 items-center gap-1.5">
             <span className="h-2.5 w-2.5 rounded-full bg-fault/80" />
             <span className="h-2.5 w-2.5 rounded-full bg-[#ffb020]/70" />
@@ -488,7 +487,6 @@ export default function Console() {
             >
               <FileDown size={13} strokeWidth={1.8} /> résumé
             </a>
-            <ThemeToggle className="tap-target" />
           </span>
         </div>
 
@@ -583,7 +581,7 @@ export default function Console() {
               <GithubMini onOpen={() => launch("github")} />
             </div>
 
-            <div className="flex h-[380px] min-h-0 flex-col border border-line bg-ink-2/80 backdrop-blur-sm sm:h-[420px] xl:h-auto xl:flex-1">
+            <div className="flex h-[380px] min-h-0 flex-col border border-line bg-ink-2 sm:h-[420px] xl:h-auto xl:flex-1">
             <div className="mono flex items-center gap-2 border-b border-line px-4 py-2.5 text-[10px] tracking-[0.16em] uppercase text-mute">
               <TerminalIcon size={12} strokeWidth={1.8} />
               bash
@@ -700,7 +698,7 @@ export default function Console() {
           aria-modal="true"
           aria-label={app.name}
         >
-          <div className="flex shrink-0 items-center gap-3 border-b border-line bg-ink-2/80 px-3 py-2.5 backdrop-blur-sm sm:px-5">
+          <div className="flex shrink-0 items-center gap-3 border-b border-line bg-ink-2 px-3 py-2.5 sm:px-5">
             {/* Back is the primary action here, so it is a labelled control
                 rather than a 12px traffic-light dot. */}
             <button

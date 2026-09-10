@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, Space_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { THEME_SCRIPT } from "@/lib/theme";
 import { SITE_URL as SITE } from "@/lib/site";
 import "./globals.css";
 
@@ -61,11 +60,10 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: dark)", color: "#0a0d12" },
-    { media: "(prefers-color-scheme: light)", color: "#f4f6f9" },
-  ],
-  colorScheme: "light dark",
+  // One theme. Declaring a dark variant here would let the browser paint the
+  // chrome dark around a page that is permanently light.
+  themeColor: "#f2fbfb",
+  colorScheme: "light",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -75,10 +73,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       suppressHydrationWarning
       className={`${grotesk.variable} ${mono.variable} h-full antialiased`}
     >
-      <head>
-        {/* Applies the stored theme before first paint — no flash. */}
-        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
-      </head>
       <body className="flex min-h-full flex-col">
         {children}
         <Analytics />

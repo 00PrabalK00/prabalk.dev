@@ -77,10 +77,10 @@ export default function GithubMini({
     return out.slice(-18);
   }, [data]);
 
-  const shade = ["#171d26", "rgba(77,166,255,0.28)", "rgba(77,166,255,0.5)", "rgba(77,166,255,0.75)", "#4da6ff"];
+  const shade = ["#e4f8f6", "rgba(81,226,245,0.30)", "rgba(81,226,245,0.55)", "rgba(81,226,245,0.80)", "#2bb8d4"];
 
   return (
-    <div className="flex flex-col border border-line bg-ink-2/80 backdrop-blur-sm">
+    <div className="flex flex-col border border-line bg-ink-2">
       {/* header */}
       <div className="mono flex items-center gap-2 border-b border-line px-4 py-2.5 text-[10px] tracking-[0.16em] uppercase text-mute">
         <Activity size={12} strokeWidth={1.8} />

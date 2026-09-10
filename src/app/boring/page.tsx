@@ -1,9 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import {
+  SHIPPED_MEDIA,
   education,
   experience,
   honors,
+  mediaSlots,
   patents,
   profile,
   projects,
@@ -20,8 +22,10 @@ import { SITE_URL } from "@/lib/site";
  * one: the promise on the door is that this version is faster, and the only
  * honest way to keep it is to not import any of that here.
  *
- * Colours are literal rather than theme tokens. The tokens follow the site's
- * light/dark toggle, and this page is supposed to be white in both.
+ * Colours are literal rather than theme tokens. The site palette is warm and
+ * tinted; this page is meant to be the plain one, so it stays on white with the
+ * Soft Beach blue carrying links and rules — enough to belong to the same site,
+ * not enough to stop looking like a CV.
  */
 
 const personSchema = {
@@ -52,6 +56,7 @@ export default function Boring() {
           <About />
           <Experience />
           <Projects />
+          <Gallery />
           <Patents />
           <Skills />
           <Education />
@@ -72,11 +77,11 @@ export default function Boring() {
  */
 function EscapeHatch() {
   return (
-    <div className="sticky top-0 z-50 border-b border-zinc-200 bg-white/90 backdrop-blur-sm">
+    <div className="sticky top-0 z-50 border-b border-zinc-200 bg-white">
       <div className="mx-auto flex max-w-3xl items-center justify-between gap-4 px-6 py-3">
         <Link
           href="/cool-kids"
-          className="group inline-flex items-center gap-2 text-[13px] font-medium text-blue-700 underline-offset-4 hover:underline"
+          className="group inline-flex items-center gap-2 text-[13px] font-medium text-[#087d8c] underline-offset-4 hover:underline"
         >
           <span aria-hidden className="transition-transform group-hover:-translate-x-0.5">
             ←
@@ -103,7 +108,7 @@ function Header() {
         width={128}
         height={128}
         priority
-        className="h-32 w-32 shrink-0 rounded-full object-cover ring-1 ring-zinc-200"
+        className="h-32 w-32 shrink-0 rounded-full object-cover ring-2 ring-[#9df9ef]"
       />
 
       <div>
@@ -118,7 +123,7 @@ function Header() {
           <li>
             <a
               href={`mailto:${profile.email}`}
-              className="text-blue-700 underline-offset-4 hover:underline"
+              className="text-[#087d8c] underline-offset-4 hover:underline"
             >
               {profile.email}
             </a>
@@ -133,7 +138,7 @@ function Header() {
                 href={l.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-700 underline-offset-4 hover:underline"
+                className="text-[#087d8c] underline-offset-4 hover:underline"
               >
                 {l.label}
               </a>
@@ -182,7 +187,7 @@ function Experience() {
               {job.bullets.map((b) => (
                 <li
                   key={b}
-                  className="relative pl-5 text-[14px] leading-[1.65] text-zinc-700 before:absolute before:top-[9px] before:left-0 before:h-1 before:w-1 before:rounded-full before:bg-zinc-400"
+                  className="relative pl-5 text-[14px] leading-[1.65] text-zinc-700 before:absolute before:top-[9px] before:left-0 before:h-1 before:w-1 before:rounded-full before:bg-[#51e2f5]"
                 >
                   {b}
                 </li>
@@ -196,7 +201,7 @@ function Experience() {
                 href={job.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-2.5 inline-block text-[13px] text-blue-700 underline-offset-4 hover:underline"
+                className="mt-2.5 inline-block text-[13px] text-[#087d8c] underline-offset-4 hover:underline"
               >
                 Repository ↗
               </a>
@@ -228,7 +233,7 @@ function Projects() {
               {p.bullets.map((b) => (
                 <li
                   key={b}
-                  className="relative pl-5 text-[14px] leading-[1.6] text-zinc-600 before:absolute before:top-[9px] before:left-0 before:h-1 before:w-1 before:rounded-full before:bg-zinc-400"
+                  className="relative pl-5 text-[14px] leading-[1.6] text-zinc-600 before:absolute before:top-[9px] before:left-0 before:h-1 before:w-1 before:rounded-full before:bg-[#51e2f5]"
                 >
                   {b}
                 </li>
@@ -242,12 +247,81 @@ function Projects() {
                 href={p.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-2.5 inline-block text-[13px] text-blue-700 underline-offset-4 hover:underline"
+                className="mt-2.5 inline-block text-[13px] text-[#087d8c] underline-offset-4 hover:underline"
               >
                 {p.linkLabel ?? "Link"} ↗
               </a>
             )}
           </article>
+        ))}
+      </div>
+    </Section>
+  );
+}
+
+/**
+ * The photographs, grouped the way they were captioned.
+ *
+ * Filtered through SHIPPED_MEDIA, which is the set of slots whose files are
+ * actually in /public/media — the list also carries placeholders for shots that
+ * do not exist yet, and rendering those would produce broken frames.
+ *
+ * Videos are included but load nothing until played: `preload="none"` means the
+ * browser fetches metadata and bytes only on interaction. Four clips at several
+ * megabytes each would otherwise undo the whole point of this route being the
+ * light one.
+ */
+function Gallery() {
+  const shipped = mediaSlots.filter((m) => SHIPPED_MEDIA.has(m.file));
+
+  const groups: { group: string; items: typeof shipped }[] = [];
+  for (const m of shipped) {
+    // The portrait already leads the page; a second copy in the grid reads as
+    // a mistake.
+    if (m.file === "portrait.jpg") continue;
+    const found = groups.find((g) => g.group === m.group);
+    if (found) found.items.push(m);
+    else groups.push({ group: m.group, items: [m] });
+  }
+
+  return (
+    <Section title="Photos">
+      <div className="space-y-9">
+        {groups.map((g) => (
+          <div key={g.group}>
+            <h3 className="mb-3 text-[14px] font-semibold">{g.group}</h3>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {g.items.map((m) => (
+                <figure key={m.file} className="min-w-0">
+                  <div className="overflow-hidden rounded border border-zinc-200 bg-zinc-50">
+                    {m.type === "video" ? (
+                      <video
+                        src={`/media/${m.file}`}
+                        controls
+                        preload="none"
+                        playsInline
+                        muted
+                        className="aspect-video w-full bg-black object-cover"
+                      />
+                    ) : (
+                      <Image
+                        src={`/media/${m.file}`}
+                        alt={m.caption}
+                        width={640}
+                        height={420}
+                        sizes="(min-width: 640px) 320px, 100vw"
+                        loading="lazy"
+                        className="aspect-[3/2] w-full object-cover"
+                      />
+                    )}
+                  </div>
+                  <figcaption className="mt-1.5 text-[12px] leading-[1.5] text-zinc-500">
+                    {m.caption}
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+          </div>
         ))}
       </div>
     </Section>
@@ -338,7 +412,7 @@ function Footer() {
         Reach me at{" "}
         <a
           href={`mailto:${profile.email}`}
-          className="text-blue-700 underline-offset-4 hover:underline"
+          className="text-[#087d8c] underline-offset-4 hover:underline"
         >
           {profile.email}
         </a>
@@ -347,7 +421,7 @@ function Footer() {
       <p className="mt-4 text-[14px]">
         <Link
           href="/cool-kids"
-          className="text-blue-700 underline-offset-4 hover:underline"
+          className="text-[#087d8c] underline-offset-4 hover:underline"
         >
           Made a bad decision? Go to Cool Kids →
         </Link>
@@ -361,7 +435,7 @@ function Footer() {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="mt-14">
-      <h2 className="mb-5 border-b border-zinc-200 pb-2 text-[12px] font-semibold tracking-[0.14em] text-zinc-500 uppercase">
+      <h2 className="mb-5 border-b-2 border-[#9df9ef] pb-2 text-[12px] font-semibold tracking-[0.14em] text-[#7d646d] uppercase">
         {title}
       </h2>
       {children}
@@ -376,7 +450,7 @@ function TagRow({ items }: { items: readonly string[] }) {
       {items.map((t) => (
         <li
           key={t}
-          className="rounded border border-zinc-200 bg-zinc-50 px-2 py-0.5 text-[12px] text-zinc-600"
+          className="rounded border border-[#c4ebee] bg-[#f2fbfb] px-2 py-0.5 text-[12px] text-[#5c4850]"
         >
           {t}
         </li>

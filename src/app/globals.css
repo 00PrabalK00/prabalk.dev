@@ -1,102 +1,75 @@
 @import "tailwindcss";
 
 /* ------------------------------------------------------------------ */
-/* Palette — ice blue + steel.                                         */
-/* Values live in CSS variables so light/dark can swap them at runtime;*/
-/* `@theme inline` makes Tailwind emit var() references, not literals. */
+/* Palette — Soft Beach.                                               */
+/*                                                                     */
+/*   Bright blue  #51e2f5    Blue green  #9df9ef                       */
+/*   "Dusty white" #edf756   Pink sand   #ffa8b6   Dark sand  #a28089  */
+/*                                                                     */
+/* One theme, light. There is no dark counterpart and no toggle: these */
+/* five are beach colours and every one of them dies on near-black.    */
+/*                                                                     */
+/* Two of the five cannot be used as given, and pretending otherwise   */
+/* would just make the site unreadable:                                */
+/*                                                                     */
+/*   - #edf756 is labelled "dusty white" and is in fact a fluorescent  */
+/*     yellow-green. As a page ground it is unusable; it earns its keep */
+/*     as a highlight, where it is genuinely great.                     */
+/*   - #51e2f5 on white is 1.5:1. Beautiful as a fill, invisible as    */
+/*     text. So the vivid values drive fills, washes and rules, and each */
+/*     has a sibling that keeps the hue and drops the lightness until it */
+/*     clears 4.5:1 — measured, not eyeballed. A flat multiply toward    */
+/*     black was tried first and turns every one of them to mud.         */
+/*                                                                     */
+/* The ground is a near-white pulled a few degrees toward the blue      */
+/* green, so white surfaces sitting on it read as raised rather than as */
+/* the same sheet of paper.                                             */
 /* ------------------------------------------------------------------ */
-:root,
-:root[data-theme="dark"] {
-  color-scheme: dark;
-
-  --c-ink: #0a0d12;
-  --c-ink-2: #141a22;
-  --c-ink-3: #1c2430;
-  --c-line: #232c38;
-  --c-line-2: #33404f;
-  --c-mute: #7a8798;
-  --c-bone: #e6edf5;
-
-  --c-accent: #4da6ff;
-  --c-accent-soft: rgba(77, 166, 255, 0.16);
-  --c-accent-dim: #1c4f80;
-  --c-cyan: #7fe3d4;
-  --c-pass: #3ddc97;
-  --c-fault: #ff5c5c;
-  --c-violet: #a78bfa;
-
-  --shade-0: #171d26;
-  --grain: 0.022;
-  /* Per-station accents are picked to glow on near-black. On a light surface
-     they need darkening to stay legible — see the beat copy in the flight. */
-  --accent-darken: 0%;
-
-  /* Flight scrim + vignette.
-     These exist to darken a busy 3D background so LIGHT text stays readable.
-     In light mode the text is dark and the stage is already pale, so the same
-     opacities just paint white over white and swallow the scene. */
-  --scrim-1: 100%;
-  --scrim-2: 82%;
-  --scrim-3: 40%;
-  --stage-vignette: 82%;
-}
-
-:root[data-theme="light"] {
+:root {
   color-scheme: light;
 
-  --c-ink: #f4f6f9;
-  --c-ink-2: #ffffff;
-  --c-ink-3: #edf1f6;
-  --c-line: #dde3eb;
-  --c-line-2: #c3ccd8;
-  --c-mute: #5a6472;
-  --c-bone: #0d1218;
+  /* ---- vivid, as given ---- */
+  --c-blue: #51e2f5;
+  --c-blue-green: #9df9ef;
+  --c-highlight: #edf756;
+  --c-pink: #ffa8b6;
+  --c-sand: #a28089;
 
-  --c-accent: #0b6bcb;
-  --c-accent-soft: rgba(11, 107, 203, 0.12);
-  --c-accent-dim: #8fbde9;
-  --c-cyan: #0e9384;
-  --c-pass: #087a4a;
-  --c-fault: #d92d20;
-  --c-violet: #6532e0;
+  /* ---- surfaces ---- */
+  --c-ink: #f2fbfb; /* page ground */
+  --c-ink-2: #ffffff; /* raised panel */
+  --c-ink-3: #e4f8f6; /* sunken wash */
+  --c-line: #c4ebee;
+  --c-line-2: #9bdbe2;
 
-  --shade-0: #e4eaf2;
-  --grain: 0.012;
-  --accent-darken: 34%;
-  --scrim-1: 58%;
-  --scrim-2: 34%;
-  --scrim-3: 12%;
-  --stage-vignette: 10%;
-}
+  /* ---- type ---- */
+  /* Dark sand taken down until it carries body copy: 12.4:1 on the ground. */
+  --c-bone: #3b2d32;
+  /* Dark sand itself, nudged darker to clear 4.5:1 for secondary copy. */
+  --c-mute: #7d646d;
 
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme]) {
-    color-scheme: light;
+  /* ---- accents that have to be legible ---- */
+  --c-accent: #087d8c; /* bright blue, hue kept, lightness dropped — 4.6:1 */
+  --c-accent-soft: rgba(81, 226, 245, 0.22);
+  --c-accent-dim: #51e2f5;
+  --c-cyan: #008072; /* blue green, same treatment — 4.6:1 */
+  --c-pass: #008072;
+  --c-fault: #b8455f; /* pink sand, darkened — 4.9:1 */
+  --c-violet: #8d6771; /* dark sand, darkened — 4.6:1 */
 
-    --c-ink: #f4f6f9;
-    --c-ink-2: #ffffff;
-    --c-ink-3: #edf1f6;
-    --c-line: #dde3eb;
-    --c-line-2: #c3ccd8;
-    --c-mute: #5a6472;
-    --c-bone: #0d1218;
+  --shade-0: #e4f8f6;
+  --grain: 0.01;
 
-    --c-accent: #0b6bcb;
-    --c-accent-soft: rgba(11, 107, 203, 0.12);
-    --c-accent-dim: #8fbde9;
-    --c-cyan: #0e9384;
-    --c-pass: #087a4a;
-    --c-fault: #d92d20;
-    --c-violet: #6532e0;
+  /* Station accents are authored vivid; beat copy darkens them to sit on a
+     pale stage. */
+  --accent-darken: 30%;
 
-    --shade-0: #e4eaf2;
-    --grain: 0.012;
-    --accent-darken: 34%;
-    --scrim-1: 58%;
-    --scrim-2: 34%;
-    --scrim-3: 12%;
-    --stage-vignette: 10%;
-  }
+  /* Flight scrim + vignette. The stage is pale and the copy is dark, so these
+     stay low — the dark-theme values painted the scene out entirely. */
+  --scrim-1: 62%;
+  --scrim-2: 36%;
+  --scrim-3: 13%;
+  --stage-vignette: 8%;
 }
 
 @theme inline {
@@ -113,6 +86,13 @@
   --color-pass: var(--c-pass);
   --color-fault: var(--c-fault);
   --color-violet: var(--c-violet);
+
+  /* The five as given, for fills and rules rather than type. */
+  --color-blue: var(--c-blue);
+  --color-blue-green: var(--c-blue-green);
+  --color-highlight: var(--c-highlight);
+  --color-pink: var(--c-pink);
+  --color-sand: var(--c-sand);
 
   --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-space-mono), ui-monospace, "SF Mono", monospace;
@@ -141,9 +121,6 @@ body {
   font-synthesis-weight: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  transition:
-    background-color 0.4s ease,
-    color 0.4s ease;
 }
 
 ::selection {
@@ -189,8 +166,8 @@ body {
   pointer-events: none;
   background: repeating-linear-gradient(
     to bottom,
-    rgba(160, 190, 230, var(--grain)) 0px,
-    rgba(160, 190, 230, var(--grain)) 1px,
+    rgba(59, 45, 50, var(--grain)) 0px,
+    rgba(59, 45, 50, var(--grain)) 1px,
     transparent 1px,
     transparent 3px
   );
@@ -287,14 +264,20 @@ body {
 }
 
 /* ---------- effects ---------- */
+/*
+ * Was a neon bloom, which is a dark-theme idea: a glow reads as light spilling
+ * off a bright thing onto a dark ground, and on a pale ground it only reads as
+ * a smudge. Replaced by a flat drop and a solid rule, which is how something
+ * sits above paper.
+ */
 .glow-accent {
   box-shadow:
-    0 0 0 1px var(--c-accent-soft),
-    0 0 34px -8px var(--c-accent);
+    0 0 0 1px var(--c-line-2),
+    0 8px 20px -12px rgba(59, 45, 50, 0.32);
 }
 
 .text-glow {
-  text-shadow: 0 0 28px var(--c-accent-soft);
+  text-shadow: none;
 }
 
 @keyframes sweep {

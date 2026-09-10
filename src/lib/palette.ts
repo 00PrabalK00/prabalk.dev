@@ -1,34 +1,44 @@
 /**
- * Colours shared by the WebGL scene. Deliberately chosen to read against both
- * the dark (#0A0D12) and light (#E4EAF2) stage backgrounds, so the 3D act
- * doesn't need a second colourway when the theme flips.
+ * Colours shared by the WebGL scene — Soft Beach.
+ *
+ * The stage is permanently pale now, which inverts what these have to do. The
+ * old set was picked to glow against near-black; against a bright sweep the
+ * same values wash out, so the structural greys warm up into the sand family
+ * and darken, and the accents keep their hue while dropping enough value to
+ * still read as objects rather than as haze.
  */
 export const P = {
-  accent: "#4da6ff",
-  accentHot: "#8ac6ff",
-  teal: "#7fe3d4",
-  pass: "#3ddc97",
-  fault: "#ff5c5c",
-  violet: "#a78bfa",
+  accent: "#2bb8d4", // bright blue, held back from #51e2f5 so edges survive
+  accentHot: "#51e2f5", // the vivid one, for emissives and highlights
+  teal: "#4ecfc2", // blue green
+  pass: "#4ecfc2",
+  fault: "#e8899b", // pink sand
+  violet: "#a28089", // dark sand
 
-  steel: "#39424f",
-  steelLight: "#5b6878",
-  steelDark: "#1d242e",
-  rubber: "#14181e",
-  deck: "#4a5566",
+  /* Structure. Warm, because everything they sit against is warm now. */
+  steel: "#6e5a61",
+  steelLight: "#9c848c",
+  steelDark: "#4a3b40",
+  rubber: "#33282c",
+  deck: "#7d666e",
 } as const;
 
 /**
- * Stage background + fog, per theme.
+ * Stage background + fog.
  *
- * Light mode is a studio sweep, not a white void: a cool mid-grey gives the
- * chrome something to reflect and stops pale geometry disappearing. Exposure
- * comes DOWN in light — pushing it up was blowing every highlight to paper
- * white and flattening the whole scene.
+ * `dark` is retained as the far end of the blend the scene still lerps across,
+ * but nothing selects it any more — the theme is pinned light. It is kept a
+ * touch deeper than the page ground rather than at the old near-black so that,
+ * if the blend is ever eased from something other than 1, it passes through a
+ * colour that belongs to this palette.
+ *
+ * The light sweep is a soft blue-green rather than a white void: pale chrome
+ * on white has nothing to reflect and vanishes. Exposure stays below 1 —
+ * pushing it up blows every highlight to paper and flattens the scene.
  */
 export const STAGE = {
-  dark: { bg: "#0a0d12", fog: "#0a0d12", exposure: 1.0 },
-  light: { bg: "#c9d2dd", fog: "#c9d2dd", exposure: 0.92 },
+  dark: { bg: "#7fb6bd", fog: "#7fb6bd", exposure: 1.0 },
+  light: { bg: "#d8f3f2", fog: "#d8f3f2", exposure: 0.9 },
 } as const;
 
 /**

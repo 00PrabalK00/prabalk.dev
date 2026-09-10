@@ -203,7 +203,7 @@ function Header({
   const live = age < 150;
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-ink/95 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-line bg-ink">
       <div className="mx-auto flex max-w-[1180px] items-center gap-4 px-4 py-3">
         <h1 className="font-display text-[17px] font-semibold tracking-tight">
           Prabal<span className="text-accent">OS</span>

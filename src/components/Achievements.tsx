@@ -27,7 +27,7 @@ export default function Achievements() {
   // One greeting for anyone who opens DevTools — which, on a robotics
   // portfolio, is most of the people worth reaching.
   useEffect(() => {
-    const head = "color:#4da6ff;font-weight:700;font-family:monospace";
+    const head = "color:#087d8c;font-weight:700;font-family:monospace";
     const body = "color:#7a8798;font-family:monospace";
     const link = "color:#e6edf5;font-family:monospace";
     console.log(
@@ -57,7 +57,7 @@ export default function Achievements() {
       {toasts.map((t) => (
         <div
           key={t.key}
-          className="glow-accent flex items-center gap-3 border border-accent/40 bg-ink-2/95 px-4 py-3 backdrop-blur-sm"
+          className="glow-accent flex items-center gap-3 border border-line-2 bg-ink-2 px-4 py-3"
           style={{ animation: "toast-in 0.45s cubic-bezier(0.16,1,0.3,1)" }}
         >
           <span className="text-accent">◆</span>

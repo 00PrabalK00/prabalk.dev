@@ -6,7 +6,6 @@ import Lenis from "lenis";
 import { cinema, deriveFades, isSmallScreen, window01 } from "@/lib/scroll";
 import { ACT1_END, OUTRO, STATIONS } from "@/lib/cinema";
 import { profile } from "@/lib/data";
-import ThemeToggle from "@/components/ThemeToggle";
 import { eggState, unlock, watchKonami } from "@/lib/eggs";
 
 const CinemaScene = dynamic(() => import("@/components/three/CinemaScene"), {
@@ -130,7 +129,7 @@ const BEATS: Beat[] = [
       "Thermoregulation System for Portable Water Containers · pending",
       "IMU Calibration and Sensor Fusion Module · pending",
     ],
-    accent: "#4da6ff",
+    accent: "#51e2f5",
   },
   {
     from: OUTRO.handoff.from,
@@ -523,7 +522,6 @@ export default function Cinema() {
                   {l.label}
                 </a>
               ))}
-              <ThemeToggle className="tap-target" />
             </div>
           </div>
 
@@ -544,7 +542,7 @@ function StationIndex() {
   const items = useRef<(HTMLButtonElement | null)[]>([]);
 
   const legs = [
-    { id: "smr300", label: "SMR300", from: 0, to: ACT1_END, color: "#4da6ff" },
+    { id: "smr300", label: "SMR300", from: 0, to: ACT1_END, color: "#51e2f5" },
     ...STATIONS.map((s) => ({
       id: s.id,
       label: s.kicker.split(" · ")[0],
@@ -557,7 +555,7 @@ function StationIndex() {
       label: "Patents",
       from: OUTRO.patents.from,
       to: OUTRO.patents.to,
-      color: "#4da6ff",
+      color: "#51e2f5",
     },
   ];
 

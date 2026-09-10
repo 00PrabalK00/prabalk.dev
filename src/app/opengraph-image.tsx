@@ -10,7 +10,7 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 const INK = "#0a0d12";
-const ACCENT = "#4da6ff";
+const ACCENT = "#087d8c";
 const BONE = "#e6edf5";
 const MUTE = "#7a8798";
 const LINE = "#232c38";
@@ -51,7 +51,7 @@ export default function OpengraphImage() {
               width: 12,
               height: 12,
               borderRadius: 9999,
-              background: "#3ddc97",
+              background: "#4ecfc2",
             }}
           />
           <div

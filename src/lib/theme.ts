@@ -1,38 +1,25 @@
-export type Theme = "light" | "dark";
-
-export const THEME_KEY = "pk-theme";
-
 /**
- * Inlined into <head> before paint so the page never flashes the wrong theme.
- * Kept as a string because it must run before React hydrates.
+ * There is one theme now.
+ *
+ * The Soft Beach palette has no dark counterpart — the five colours are beach
+ * colours and every one of them dies on near-black — so the toggle, the stored
+ * preference and the prefers-color-scheme branch are all gone.
+ *
+ * This module survives because the WebGL scene reads `themeStore.blend` every
+ * frame to decide how far to push its materials toward the light-stage
+ * treatment. Pinning it to 1 keeps that path live and constant rather than
+ * threading a removal through the whole scene graph, where the same constant
+ * would end up hard-coded in a dozen useFrame callbacks instead of one place.
  */
-export const THEME_SCRIPT = `(function(){try{
-var s=localStorage.getItem('${THEME_KEY}');
-if(s==='light'||s==='dark'){document.documentElement.setAttribute('data-theme',s);}
-}catch(e){}})();`;
 
-/** Module store so the WebGL scene can read the theme every frame. */
+export type Theme = "light";
+
+/** 0 = dark stage, 1 = light stage. Fixed: there is no other stage. */
 export const themeStore: { current: Theme; blend: number } = {
-  current: "dark",
-  blend: 0, // 0 = dark, 1 = light; eased for the 3D crossfade
+  current: "light",
+  blend: 1,
 };
 
 export function resolveTheme(): Theme {
-  if (typeof document === "undefined") return "dark";
-  const attr = document.documentElement.getAttribute("data-theme");
-  if (attr === "light" || attr === "dark") return attr;
-  return window.matchMedia("(prefers-color-scheme: light)").matches
-    ? "light"
-    : "dark";
-}
-
-export function applyTheme(theme: Theme) {
-  document.documentElement.setAttribute("data-theme", theme);
-  try {
-    localStorage.setItem(THEME_KEY, theme);
-  } catch {
-    /* private mode — the in-memory store still works for this session */
-  }
-  themeStore.current = theme;
-  window.dispatchEvent(new CustomEvent("pk-theme", { detail: theme }));
+  return "light";
 }

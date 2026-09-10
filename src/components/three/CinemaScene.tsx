@@ -920,25 +920,12 @@ function ThemeDriver() {
   // one Color, mutated in place — cloning per frame would allocate 60×/s
   const bg = useMemo(() => new THREE.Color(STAGE.dark.bg), []);
 
-  useEffect(() => {
-    themeStore.current = resolveTheme();
-    themeStore.blend = themeStore.current === "light" ? 1 : 0;
-
-    const onTheme = () => {
-      themeStore.current = resolveTheme();
-    };
-    window.addEventListener("pk-theme", onTheme);
-    const mq = window.matchMedia("(prefers-color-scheme: light)");
-    mq.addEventListener("change", onTheme);
-    return () => {
-      window.removeEventListener("pk-theme", onTheme);
-      mq.removeEventListener("change", onTheme);
-    };
-  }, []);
-
-  useFrame((state, dt) => {
-    const target = themeStore.current === "light" ? 1 : 0;
-    themeStore.blend = lerp(themeStore.blend, target, damp(dt, 0.02));
+  // No listener any more: there is one theme, and `themeStore.blend` is pinned
+  // to 1. The crossfade below still runs through `b` rather than being folded
+  // out, because `b` is threaded through every material in the scene and
+  // collapsing it would mean editing a dozen useFrame callbacks to inline the
+  // same constant.
+  useFrame((state) => {
     const b = themeStore.blend;
 
     bg.copy(dark).lerp(light, b);
