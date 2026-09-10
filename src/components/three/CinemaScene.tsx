@@ -15,9 +15,9 @@ import {
   smoothstep,
 } from "@/lib/scroll";
 import { ACT1_END, MONOLITH_Z, OUTRO, STATIONS } from "@/lib/cinema";
-import { Monoliths, StationObject } from "@/components/three/stations";
+import { Monoliths, StationObject, StationRig } from "@/components/three/stations";
 import { LIGHT_ADJUST, P, STAGE } from "@/lib/palette";
-import { resolveTheme, themeStore } from "@/lib/theme";
+import { themeStore } from "@/lib/theme";
 import { chirp, eggState, unlock } from "@/lib/eggs";
 
 const accent = P.accent;
@@ -973,35 +973,93 @@ function ThemeDriver() {
 }
 
 /**
- * Compiles every material up front, including the hidden ones.
+ * Pays every first-draw cost up front, for objects that are not on screen yet.
  *
  * Each station sits at `visible = false` until the camera reaches its slice of
- * the scroll. A material's GLSL program is not built when the material is
- * created — it is built the first time three actually draws it, which here is
- * the exact frame a station appears. Compiling and linking a PBR program is
- * milliseconds of synchronous GPU driver work, so every station entrance cost
- * one dropped frame. Six stations, six hitches, each landing precisely on the
- * transition it would be most visible on.
+ * the scroll, and three defers two separate pieces of work until the first
+ * frame an object is actually drawn:
  *
- * `compile()` initialises materials via `scene.traverse` rather than
- * `traverseVisible` (three.module.js:17427) — only its light gathering skips
- * invisible objects — so the hidden stations are compiled without being shown
- * and there is no flash to hide. `compileAsync` wraps that in
- * KHR_parallel_shader_compile where the driver supports it, which keeps the
- * work off the main thread; where it does not, this is the same stall that
- * used to be spread across the scroll, moved to load time where there is
- * nothing to interrupt.
+ *  1. Compiling and linking its GLSL program.
+ *  2. Uploading its geometry's attribute buffers to the GPU.
+ *
+ * Both land on the exact frame a station appears, which is why every entrance
+ * dropped a frame.
+ *
+ * `compileAsync` only covers the first. Its material pass walks the scene with
+ * `scene.traverse`, so it does reach hidden objects (three.module.js:17427) —
+ * but the buffer upload happens in `WebGLObjects.update()`, which is only
+ * called from `projectObject` while building a render list. No render, no
+ * upload. Shipping compileAsync alone therefore fixed half the hitch and left
+ * the visible half, which is exactly what it looked like.
+ *
+ * So this also renders one frame with everything forced visible. Two details
+ * make that safe:
+ *
+ *  - It renders into a 1x1 render target, so nothing reaches the screen and
+ *    there is no flash to hide. The fragment cost of a one-pixel viewport is
+ *    nil; the vertex and upload work is the point.
+ *  - `frustumCulled` is disabled for the pass. `projectObject` gates on
+ *    `!object.frustumCulled || _frustum.intersectsObject(object)`
+ *    (three.module.js:17877), and the stations are strung out far down a
+ *    corridor the camera is not pointing at yet — culled objects never reach
+ *    `objects.update()`, so without this the warm-up would skip precisely the
+ *    geometry it exists to upload.
+ *
+ * The visibility flip and the restore sit either side of a synchronous
+ * `render()` with no await between them, so `useReveal` — which sets
+ * `visible` every frame — cannot observe the scene mid-warm-up.
  */
-function PrecompileMaterials() {
+function WarmUpScene() {
   const gl = useThree((s) => s.gl);
   const scene = useThree((s) => s.scene);
   const camera = useThree((s) => s.camera);
 
   useEffect(() => {
-    // Deliberately not awaited and never surfaced: failing to precompile is a
-    // performance regression, not a broken page, and the scene renders either
-    // way.
-    void gl.compileAsync?.(scene, camera);
+    let cancelled = false;
+
+    const run = async () => {
+      // Programs first, in parallel where the driver supports
+      // KHR_parallel_shader_compile, so the synchronous pass below has less
+      // left to do.
+      try {
+        await gl.compileAsync?.(scene, camera);
+      } catch {
+        /* precompiling is an optimisation; the scene renders without it */
+      }
+      if (cancelled) return;
+
+      const hidden: THREE.Object3D[] = [];
+      const unculled: THREE.Object3D[] = [];
+      scene.traverse((o) => {
+        if (!o.visible) {
+          hidden.push(o);
+          o.visible = true;
+        }
+        if (o.frustumCulled) {
+          unculled.push(o);
+          o.frustumCulled = false;
+        }
+      });
+
+      const target = new THREE.WebGLRenderTarget(1, 1);
+      const previous = gl.getRenderTarget();
+      try {
+        gl.setRenderTarget(target);
+        gl.render(scene, camera);
+      } catch {
+        /* a failed warm-up costs a hitch later, never correctness */
+      } finally {
+        gl.setRenderTarget(previous);
+        for (const o of hidden) o.visible = false;
+        for (const o of unculled) o.frustumCulled = true;
+        target.dispose();
+      }
+    };
+
+    void run();
+    return () => {
+      cancelled = true;
+    };
   }, [gl, scene, camera]);
 
   return null;
@@ -1010,7 +1068,13 @@ function PrecompileMaterials() {
 export default function CinemaScene() {
   // Phones are fill-rate bound long before they're geometry bound, so the DPR
   // ceiling matters more than polygon count.
-  const [maxDpr, setMaxDpr] = useState(() => (isLowPower() ? 1.25 : 1.75));
+  // 1.75 was rendering just over three times the pixels of a CSS pixel on a
+  // retina laptop, with MSAA on top, for a scene that is fill-rate bound long
+  // before it is geometry bound. 1.5 is a quarter fewer fragments and the
+  // difference is not visible on this material vocabulary — flat panels, line
+  // work and matte PBR, none of which show aliasing the way a hard specular
+  // edge would.
+  const [maxDpr, setMaxDpr] = useState(() => (isLowPower() ? 1.15 : 1.5));
   const [paused, setPaused] = useState(false);
   /**
    * Gates the precompile until the environment map exists.
@@ -1063,7 +1127,10 @@ export default function CinemaScene() {
         setEnvReady(true);
       }}
     >
-      <PerformanceMonitor onDecline={() => setMaxDpr(0.85)} />
+      {/* 0.85 was a cliff — one bad second and the scene stayed visibly soft
+          for the rest of the session. 1.0 is still a real cut and remains a
+          sharp, if unsupersampled, image. */}
+      <PerformanceMonitor onDecline={() => setMaxDpr(1)} />
       <AdaptiveDpr pixelated={false} />
 
       {/* cool rim from behind keeps chassis edges legible on both themes */}
@@ -1083,6 +1150,9 @@ export default function CinemaScene() {
       <PlannedPath />
       <Robot />
 
+      {/* One rig for all six, so the scene's light count never changes. */}
+      <StationRig />
+
       {STATIONS.map((s) => (
         <StationObject key={s.id} s={s} />
       ))}
@@ -1096,7 +1166,7 @@ export default function CinemaScene() {
 
       {/* Last, so its effect runs after every station has attached itself to
           the scene graph — traverse only finds what is already there. */}
-      {envReady && <PrecompileMaterials />}
+      {envReady && <WarmUpScene />}
     </Canvas>
   );
 }

@@ -4,7 +4,7 @@ import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { cinema, isLowPower, range, smoothstep } from "@/lib/scroll";
-import type { Station } from "@/lib/cinema";
+import { STATIONS, type Station } from "@/lib/cinema";
 import { P } from "@/lib/palette";
 
 /** Seeded PRNG so every layout is identical on every render. */
@@ -39,30 +39,69 @@ function presence(p: number, s: Station) {
   return inn * out;
 }
 
+type RevealMaterial = THREE.Material & { opacity: number; depthWrite: boolean };
+
 /**
  * Applies presence to every material under a group and hides it when zero.
  *
  * `depthWrite` is re-enabled once a material is essentially opaque — leaving
  * transparent geometry writing no depth is what makes PBR objects look like
  * they're inside-out during the fade.
+ *
+ * The material list is gathered once and cached. This used to run a full
+ * `Object3D.traverse` of the station's subtree on every frame it was on
+ * screen — walking dozens of nodes and doing an `in` check on each, sixty
+ * times a second, to reach a set of materials that never changes. The
+ * subtrees are declared statically in JSX and gain no children at runtime, so
+ * the walk only ever produced the same answer.
+ *
+ * Writes are also gated on the value actually changing. Assigning
+ * `material.opacity` flags the material's uniforms for re-upload, and while a
+ * station is parked at full presence the value is a flat 1 for hundreds of
+ * consecutive frames.
  */
 function useReveal(s: Station, ref: React.RefObject<THREE.Group | null>, max = 1) {
+  const mats = useRef<RevealMaterial[] | null>(null);
+  const noDepth = useRef<boolean[]>([]);
+  /** Last presence written, quantised. -1 so the first frame always applies. */
+  const lastStep = useRef(-1);
+
   useFrame(() => {
     const g = ref.current;
     if (!g) return;
+
     const a = presence(cinema.progress, s);
-    g.visible = a > 0.008;
-    if (!g.visible) return;
+    const visible = a > 0.008;
+    if (g.visible !== visible) g.visible = visible;
+    if (!visible) return;
+
+    if (mats.current === null) {
+      const list: RevealMaterial[] = [];
+      const flags: boolean[] = [];
+      g.traverse((o) => {
+        const m = (o as THREE.Mesh).material;
+        if (!m || Array.isArray(m) || !("opacity" in m)) return;
+        list.push(m as RevealMaterial);
+        flags.push(Boolean(o.userData.noDepth));
+      });
+      mats.current = list;
+      noDepth.current = flags;
+    }
+
+    const target = a * max;
+    const step = Math.round(target * 200);
+    if (step === lastStep.current) return;
+    lastStep.current = step;
+
+    const value = step / 200;
+    const writeDepth = value > 0.9;
+
     g.scale.setScalar(0.86 + a * 0.14);
-    g.traverse((o) => {
-      const m = (o as THREE.Mesh).material as
-        | (THREE.Material & { opacity: number; depthWrite: boolean })
-        | undefined;
-      if (!m || !("opacity" in m)) return;
-      const target = a * max;
-      m.opacity = target;
-      if (!o.userData.noDepth) m.depthWrite = target > 0.9;
-    });
+    for (let i = 0; i < mats.current.length; i++) {
+      const m = mats.current[i];
+      m.opacity = value;
+      if (!noDepth.current[i]) m.depthWrite = writeDepth;
+    }
   });
 }
 
@@ -79,14 +118,81 @@ const PAINTED = {
   envMapIntensity: 1.05,
 } as const;
 
-/** Local key + rim so a station is lit even between the travelling lights. */
-function StationLights({ color }: { color: string }) {
+/**
+ * One key/rim/fill rig, moved to whichever station is currently on screen.
+ *
+ * This used to be three `<pointLight>`s per station, declared INSIDE the group
+ * whose `visible` is toggled — and that was the single most expensive thing in
+ * the flight.
+ *
+ * three bakes the scene's light counts into the shader as literals
+ * (`NUM_POINT_LIGHTS` is string-replaced into the GLSL source,
+ * three.module.js:6458) and hashes them into the program cache key
+ * (three.module.js:7846). A hidden object contributes no lights, because
+ * `projectObject` returns before `pushLight` for anything invisible. So every
+ * station appearing or disappearing changed the scene's point-light count,
+ * which invalidated the cached program for EVERY material in the scene and
+ * recompiled the lot mid-scroll. Measured at up to 367 ms on an Intel UHD —
+ * twenty-two dropped frames, in the middle of a camera move.
+ *
+ * Precompiling could not have fixed it: the variants needed during the flight
+ * are the ones with a single station lit, and a warm-up pass with everything
+ * visible compiles the eighteen-light variant that never actually occurs.
+ *
+ * Hoisted here, the count is fixed at three for the whole run. The rig moves to
+ * the most-present station and fades on its presence, which is nearly the same
+ * image — the windows barely overlap, so there is almost never a second station
+ * that wanted its own key light.
+ */
+export function StationRig() {
+  const group = useRef<THREE.Group>(null);
+  const key = useRef<THREE.PointLight>(null);
+  const rim = useRef<THREE.PointLight>(null);
+  const fill = useRef<THREE.PointLight>(null);
+
+  useFrame(() => {
+    const g = group.current;
+    if (!g) return;
+
+    let best: Station | null = null;
+    let bestA = 0;
+    for (const s of STATIONS) {
+      const a = presence(cinema.progress, s);
+      if (a > bestA) {
+        bestA = a;
+        best = s;
+      }
+    }
+
+    // Nothing on screen: leave the rig where it is and take it to black. Moving
+    // it would drag a dying highlight across the scene.
+    if (key.current) key.current.intensity = 38 * bestA;
+    if (rim.current) rim.current.intensity = 26 * bestA;
+    if (fill.current) fill.current.intensity = 12 * bestA;
+    if (!best || bestA <= 0.001) return;
+
+    g.position.set(best.pos[0], best.pos[1], best.pos[2]);
+    if (rim.current) rim.current.color.set(best.color);
+  });
+
   return (
-    <>
-      <pointLight position={[4, 4.5, 5]} intensity={38} distance={18} color="#f4fdfd" />
-      <pointLight position={[-4.5, -1.5, -3]} intensity={26} distance={16} color={color} />
-      <pointLight position={[0, -3.5, 3]} intensity={12} distance={12} color="#bfa4ac" />
-    </>
+    <group ref={group}>
+      <pointLight
+        ref={key}
+        position={[4, 4.5, 5]}
+        intensity={0}
+        distance={18}
+        color="#f4fdfd"
+      />
+      <pointLight ref={rim} position={[-4.5, -1.5, -3]} intensity={0} distance={16} />
+      <pointLight
+        ref={fill}
+        position={[0, -3.5, 3]}
+        intensity={0}
+        distance={12}
+        color="#bfa4ac"
+      />
+    </group>
   );
 }
 
@@ -185,7 +291,6 @@ function AuvStation({ s }: { s: Station }) {
 
   return (
     <group ref={root} position={s.pos} visible={false}>
-      <StationLights color={s.color} />
       <group ref={hull}>
         {/* space-frame */}
         {rails.map((r, i) => (
@@ -364,7 +469,6 @@ function VtolStation({ s }: { s: Station }) {
 
   return (
     <group ref={root} position={s.pos} visible={false}>
-      <StationLights color={s.color} />
       <group ref={body}>
         {/* fuselage — slender pod, nose forward (-Z) */}
         <mesh rotation={[Math.PI / 2, 0, 0]}>
@@ -578,7 +682,6 @@ function CompanionStation({ s }: { s: Station }) {
 
   return (
     <group ref={root} position={s.pos} visible={false}>
-      <StationLights color={s.color} />
       {/* body — soft matte shell, not another metal box */}
       <mesh position={[0, -1.15, 0]}>
         <cylinderGeometry args={[0.78, 1.05, 1.5, 40]} />
@@ -700,7 +803,6 @@ function ArmStation({ s }: { s: Station }) {
 
   return (
     <group ref={root} position={s.pos} visible={false}>
-      <StationLights color={s.color} />
       {/* base */}
       <mesh position={[0, 0.14, 0]}>
         <cylinderGeometry args={[0.85, 1.0, 0.28, 40]} />
@@ -856,7 +958,6 @@ function CloudStation({ s }: { s: Station }) {
 
   return (
     <group ref={root} position={s.pos} visible={false}>
-      <StationLights color={s.color} />
 
       {/*
         The volume turns with what is inside it.
@@ -957,7 +1058,6 @@ function GraphStation({ s }: { s: Station }) {
 
   return (
     <group ref={root} position={s.pos} visible={false}>
-      <StationLights color={s.color} />
       <group ref={spin}>
         <lineSegments geometry={edgeGeo}>
           <lineBasicMaterial color={s.color} transparent opacity={0.3} />
@@ -1010,6 +1110,11 @@ export function Monoliths({
   to: number;
 }) {
   const root = useRef<THREE.Group>(null);
+  /** Same caching as useReveal — one walk instead of one per slab per frame. */
+  const mats = useRef<{ m: THREE.Material & { opacity: number }; line: boolean }[] | null>(
+    null
+  );
+  const lastStep = useRef(-1);
 
   useFrame((state) => {
     const g = root.current;
@@ -1017,19 +1122,37 @@ export function Monoliths({
     const a =
       smoothstep(range(cinema.progress, from - 0.06, from + 0.01)) *
       (1 - smoothstep(range(cinema.progress, to + 0.01, to + 0.06)));
-    g.visible = a > 0.008;
-    if (!g.visible) return;
+
+    const visible = a > 0.008;
+    if (g.visible !== visible) g.visible = visible;
+    if (!visible) return;
+
+    // The slabs drift and turn continuously, so these do have to be written
+    // every frame — unlike the opacities below.
     const t = state.clock.elapsedTime;
     g.children.forEach((c, i) => {
       c.position.y = -0.4 + Math.sin(t * 0.5 + i * 1.3) * 0.16 + (1 - a) * -3;
       c.rotation.y = Math.sin(t * 0.25 + i) * 0.28;
-      c.traverse((o) => {
-        const m = (o as THREE.Mesh).material as
-          | (THREE.Material & { opacity: number })
-          | undefined;
-        if (m && "opacity" in m) m.opacity = a * (o.type === "LineSegments" ? 0.65 : 0.85);
-      });
     });
+
+    if (mats.current === null) {
+      const list: { m: THREE.Material & { opacity: number }; line: boolean }[] = [];
+      g.traverse((o) => {
+        const m = (o as THREE.Mesh).material;
+        if (!m || Array.isArray(m) || !("opacity" in m)) return;
+        list.push({
+          m: m as THREE.Material & { opacity: number },
+          line: o.type === "LineSegments",
+        });
+      });
+      mats.current = list;
+    }
+
+    const step = Math.round(a * 200);
+    if (step === lastStep.current) return;
+    lastStep.current = step;
+    const value = step / 200;
+    for (const { m, line } of mats.current) m.opacity = value * (line ? 0.65 : 0.85);
   });
 
   return (
