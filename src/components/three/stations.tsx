@@ -752,9 +752,26 @@ function ArmStation({ s }: { s: Station }) {
 /* ------------------------------------------------------------------ */
 /* OpenDroneKit — reconstructed structure, cracks lit in red           */
 /* ------------------------------------------------------------------ */
+/**
+ * The reconstruction volume, and everything inside it.
+ *
+ * Derived rather than written twice. The cloud, the cracks and the wireframe
+ * were three independent sets of hard-coded numbers, and nothing checked that
+ * the first two fitted inside the third — which is how the cracks ended up
+ * climbing out through the top face.
+ */
+const CLOUD_HALF_XZ = 1.3;
+const CLOUD_HALF_Y = 2.2;
+/** Margin between the scanned surface and the drawn volume. */
+const BOX_MARGIN = 0.15;
+const BOX_HALF_XZ = CLOUD_HALF_XZ + BOX_MARGIN;
+const BOX_HALF_Y = CLOUD_HALF_Y + BOX_MARGIN;
+/** Cracks sit just proud of the front face so they read as surface damage. */
+const CRACK_Z = CLOUD_HALF_XZ + 0.04;
+
 function CloudStation({ s }: { s: Station }) {
   const root = useRef<THREE.Group>(null);
-  const cloud = useRef<THREE.Points>(null);
+  const spin = useRef<THREE.Group>(null);
   const cracks = useRef<THREE.Group>(null);
   useReveal(s, root, 0.85);
 
@@ -765,22 +782,22 @@ function CloudStation({ s }: { s: Station }) {
     const pos = new Float32Array(n * 3);
     for (let i = 0; i < n; i++) {
       const face = Math.floor(rand() * 4);
-      const u = (rand() - 0.5) * 2.6;
-      const v = (rand() - 0.5) * 4.4;
+      const u = (rand() - 0.5) * 2 * CLOUD_HALF_XZ;
+      const v = (rand() - 0.5) * 2 * CLOUD_HALF_Y;
       if (face === 0) {
         pos[i * 3] = u;
         pos[i * 3 + 1] = v;
-        pos[i * 3 + 2] = 1.3;
+        pos[i * 3 + 2] = CLOUD_HALF_XZ;
       } else if (face === 1) {
         pos[i * 3] = u;
         pos[i * 3 + 1] = v;
-        pos[i * 3 + 2] = -1.3;
+        pos[i * 3 + 2] = -CLOUD_HALF_XZ;
       } else if (face === 2) {
-        pos[i * 3] = 1.3;
+        pos[i * 3] = CLOUD_HALF_XZ;
         pos[i * 3 + 1] = v;
         pos[i * 3 + 2] = u;
       } else {
-        pos[i * 3] = -1.3;
+        pos[i * 3] = -CLOUD_HALF_XZ;
         pos[i * 3 + 1] = v;
         pos[i * 3 + 2] = u;
       }
@@ -790,25 +807,45 @@ function CloudStation({ s }: { s: Station }) {
     return g;
   }, []);
 
+  /**
+   * Cracks that climb the front face without leaving it.
+   *
+   * The rise per step is now derived from the headroom actually left above the
+   * starting point and divided across the remaining segments, so a crack that
+   * starts high simply climbs more gently instead of running off the top. The
+   * previous version drew a fixed 0.16-0.28 per step from a start as high as
+   * +1.4, which reached y = 4.48 against a ceiling of 2.35.
+   *
+   * The jitter is kept — it is what makes these read as cracks rather than
+   * tally marks — but it multiplies the derived rise instead of adding to a
+   * constant, and both axes are clamped as a backstop.
+   */
   const crackLines = useMemo(() => {
     const rand = makeRand(0x2266aa);
+    const SEGMENTS = 12;
+    const TOP = CLOUD_HALF_Y - 0.12;
+    const SIDE = CLOUD_HALF_XZ - 0.1;
+
     return Array.from({ length: 5 }).map(() => {
       const pts: THREE.Vector3[] = [];
-      let x = (rand() - 0.5) * 2.2;
-      let y = -2.0 + rand() * 3.4;
-      for (let i = 0; i < 12; i++) {
-        pts.push(new THREE.Vector3(x, y, 1.34));
-        x += (rand() - 0.5) * 0.42;
-        y += 0.16 + rand() * 0.12;
+      let x = (rand() - 0.5) * 2 * SIDE * 0.85;
+      let y = -CLOUD_HALF_Y + 0.1 + rand() * 1.6;
+
+      // Spread whatever room is left over the segments that remain.
+      const rise = (TOP - y) / (SEGMENTS - 1);
+
+      for (let i = 0; i < SEGMENTS; i++) {
+        pts.push(new THREE.Vector3(x, y, CRACK_Z));
+        x = Math.max(-SIDE, Math.min(SIDE, x + (rand() - 0.5) * 0.42));
+        y = Math.min(TOP, y + rise * (0.7 + rand() * 0.6));
       }
       return segmentsFromPoints(pts);
     });
   }, []);
 
   useFrame((state, dt) => {
-    if (cloud.current) cloud.current.rotation.y += dt * 0.14;
+    if (spin.current) spin.current.rotation.y += dt * 0.14;
     if (cracks.current) {
-      cracks.current.rotation.y += dt * 0.14;
       const pulse = 0.45 + Math.abs(Math.sin(state.clock.elapsedTime * 1.6)) * 0.5;
       cracks.current.children.forEach((c) => {
         const m = (c as THREE.LineSegments).material as THREE.LineBasicMaterial;
@@ -820,30 +857,48 @@ function CloudStation({ s }: { s: Station }) {
   return (
     <group ref={root} position={s.pos} visible={false}>
       <StationLights color={s.color} />
-      <points ref={cloud} geometry={geo}>
-        <pointsMaterial
-          size={0.038}
-          color={s.color}
-          transparent
-          opacity={0.7}
-          sizeAttenuation
-          depthWrite={false}
-        />
-      </points>
 
-      <group ref={cracks}>
-        {crackLines.map((g, i) => (
-          <lineSegments key={i} geometry={g}>
-            <lineBasicMaterial color="#f87171" transparent opacity={0.8} />
-          </lineSegments>
-        ))}
+      {/*
+        The volume turns with what is inside it.
+
+        The cloud is a square tube of half-width 1.3, so its corners sit at
+        radius 1.84 — well outside the 1.45 half-width of the box. Spinning the
+        contents inside a fixed box therefore swept those corners out through
+        the walls twice per revolution. Rotating the box too keeps it wrapped
+        around the faces at every angle, and keeps the margin tight; the
+        alternative was a box a third wider that only ever looked correct at
+        45 degrees.
+      */}
+      <group ref={spin}>
+        <points geometry={geo}>
+          <pointsMaterial
+            size={0.038}
+            color={s.color}
+            transparent
+            opacity={0.7}
+            sizeAttenuation
+            depthWrite={false}
+          />
+        </points>
+
+        <group ref={cracks}>
+          {crackLines.map((g, i) => (
+            <lineSegments key={i} geometry={g}>
+              <lineBasicMaterial color="#f87171" transparent opacity={0.8} />
+            </lineSegments>
+          ))}
+        </group>
+
+        {/* bounding box of the reconstruction */}
+        <lineSegments>
+          <edgesGeometry
+            args={[
+              new THREE.BoxGeometry(BOX_HALF_XZ * 2, BOX_HALF_Y * 2, BOX_HALF_XZ * 2),
+            ]}
+          />
+          <lineBasicMaterial color={s.color} transparent opacity={0.22} />
+        </lineSegments>
       </group>
-
-      {/* bounding box of the reconstruction */}
-      <lineSegments>
-        <edgesGeometry args={[new THREE.BoxGeometry(2.9, 4.7, 2.9)]} />
-        <lineBasicMaterial color={s.color} transparent opacity={0.22} />
-      </lineSegments>
     </group>
   );
 }
