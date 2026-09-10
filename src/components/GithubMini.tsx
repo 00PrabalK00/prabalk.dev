@@ -95,7 +95,7 @@ export default function GithubMini({
             new activity
           </span>
         )}
-        <span className="ml-auto normal-case tracking-normal text-mute/50">
+        <span className="ml-auto normal-case tracking-normal text-mute/82">
           {data?.lastPushedAt && now ? relTime(data.lastPushedAt, now) : "—"}
         </span>
       </div>
@@ -114,7 +114,7 @@ export default function GithubMini({
             <div className="text-xl font-semibold tracking-tight tabular-nums text-bone">
               {s.value ?? <span className="text-line-2">—</span>}
             </div>
-            <div className="mono mt-0.5 text-[9.5px] tracking-[0.12em] uppercase text-mute/60">
+            <div className="mono mt-0.5 text-[9.5px] tracking-[0.12em] uppercase text-mute/88">
               {s.label}
             </div>
           </div>
@@ -154,7 +154,7 @@ export default function GithubMini({
               />
             ))}
           </div>
-          <div className="mono flex flex-wrap gap-x-3 gap-y-1 text-[9.5px] text-mute/70">
+          <div className="mono flex flex-wrap gap-x-3 gap-y-1 text-[9.5px] text-mute/92">
             {data.languages.slice(0, 4).map((l) => (
               <span key={l.name} className="flex items-center gap-1.5">
                 <span
@@ -184,11 +184,11 @@ export default function GithubMini({
               >
                 {e.repo.split("/")[1] ?? e.repo}
               </a>
-              <span className="mono ml-auto shrink-0 text-[9.5px] text-mute/50">
+              <span className="mono ml-auto shrink-0 text-[9.5px] text-mute/82">
                 {now ? relTime(e.createdAt, now) : ""}
               </span>
             </div>
-            <p className="mono mt-0.5 truncate pl-5 text-[10.5px] text-mute/70">
+            <p className="mono mt-0.5 truncate pl-5 text-[10.5px] text-mute/92">
               {e.summary}
               {e.detail ? ` — ${e.detail}` : ""}
             </p>
@@ -196,7 +196,7 @@ export default function GithubMini({
         ))}
 
         {!data && (
-          <li className="mono px-4 py-4 text-[11px] text-mute/60">
+          <li className="mono px-4 py-4 text-[11px] text-mute/88">
             establishing link<span className="blink">…</span>
           </li>
         )}
@@ -215,7 +215,7 @@ export default function GithubMini({
           href={profile.github}
           target="_blank"
           rel="noopener noreferrer"
-          className="ml-auto text-mute/60 transition-colors hover:text-accent"
+          className="ml-auto text-mute/88 transition-colors hover:text-accent"
         >
           @{profile.githubUser}
         </a>

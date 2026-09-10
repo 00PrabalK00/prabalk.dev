@@ -101,7 +101,7 @@ export default function Projects() {
                     </p>
                   </div>
 
-                  <span className="mono text-[11px] tracking-[0.1em] text-mute/60">
+                  <span className="mono text-[11px] tracking-[0.1em] text-mute/88">
                     {p.year}
                   </span>
 
@@ -123,7 +123,7 @@ export default function Projects() {
                         <p className="max-w-[50ch] text-[17px] leading-[1.6] text-bone/85">
                           {p.blurb}
                         </p>
-                        <p className="mono mt-8 max-w-[46ch] text-[11px] leading-relaxed tracking-[0.05em] text-mute/70">
+                        <p className="mono mt-8 max-w-[46ch] text-[11px] leading-relaxed tracking-[0.05em] text-mute/92">
                           {p.tech.map((t, ti) => (
                             <span key={t}>
                               {ti > 0 && <span className="text-line-2"> / </span>}
@@ -186,7 +186,7 @@ export default function Projects() {
                   <div className="mono text-[13px] text-bone transition-colors group-hover:text-accent">
                     {b.name}
                   </div>
-                  <div className="mono mt-1 text-[10px] text-mute/50">
+                  <div className="mono mt-1 text-[10px] text-mute/82">
                     {b.tech}
                   </div>
                 </div>

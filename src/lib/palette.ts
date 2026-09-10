@@ -38,7 +38,7 @@ export const P = {
  */
 export const STAGE = {
   dark: { bg: "#7fb6bd", fog: "#7fb6bd", exposure: 1.0 },
-  light: { bg: "#d8f3f2", fog: "#d8f3f2", exposure: 0.9 },
+  light: { bg: "#cfe9e8", fog: "#cfe9e8", exposure: 0.86 },
 } as const;
 
 /**
@@ -48,9 +48,9 @@ export const STAGE = {
  */
 export const LIGHT_ADJUST = {
   /** multiply surface colour by this at full light */
-  surface: 0.42,
+  surface: 0.34,
   /** multiply emissive colour by this at full light */
-  emissiveColor: 0.55,
+  emissiveColor: 0.48,
   /** scale emissiveIntensity by this at full light */
   emissiveIntensity: 0.3,
   /** additive blending is invisible on a light background */

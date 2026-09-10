@@ -18,8 +18,14 @@
 /*   - #51e2f5 on white is 1.5:1. Beautiful as a fill, invisible as    */
 /*     text. So the vivid values drive fills, washes and rules, and each */
 /*     has a sibling that keeps the hue and drops the lightness until it */
-/*     clears 4.5:1 — measured, not eyeballed. A flat multiply toward    */
+/*     clears ~6.5:1 — measured, not eyeballed. A flat multiply toward   */
 /*     black was tried first and turns every one of them to mud.         */
+/*                                                                       */
+/* These sat at the 4.5:1 AA floor at first and the page read as washed  */
+/* out: small caps, hairlines and the clocks all disappeared into the    */
+/* ground. AA is a floor for body text, not a target for 10 px letter-   */
+/* spaced labels on a tinted surface, so everything is now ~6.5-7:1 and  */
+/* the rules are dark enough to actually bound a card.                   */
 /*                                                                     */
 /* The ground is a near-white pulled a few degrees toward the blue      */
 /* green, so white surfaces sitting on it read as raised rather than as */
@@ -38,38 +44,45 @@
   /* ---- surfaces ---- */
   --c-ink: #f2fbfb; /* page ground */
   --c-ink-2: #ffffff; /* raised panel */
-  --c-ink-3: #e4f8f6; /* sunken wash */
-  --c-line: #c4ebee;
-  --c-line-2: #9bdbe2;
+  --c-ink-3: #ddf2f0; /* sunken wash */
+  --c-line: #a6c8cc;
+  --c-line-2: #6f9ba2;
 
   /* ---- type ---- */
-  /* Dark sand taken down until it carries body copy: 12.4:1 on the ground. */
-  --c-bone: #3b2d32;
+  /* Dark sand taken down until it carries body copy: 14.0:1 on the ground. */
+  --c-bone: #31252a;
   /* Dark sand itself, nudged darker to clear 4.5:1 for secondary copy. */
-  --c-mute: #7d646d;
+  --c-mute: #6a4e55;
 
   /* ---- accents that have to be legible ---- */
-  --c-accent: #087d8c; /* bright blue, hue kept, lightness dropped — 4.6:1 */
+  --c-accent: #06636f; /* bright blue, hue kept, lightness dropped — 6.6:1 */
   --c-accent-soft: rgba(81, 226, 245, 0.22);
   --c-accent-dim: #51e2f5;
-  --c-cyan: #008072; /* blue green, same treatment — 4.6:1 */
-  --c-pass: #008072;
-  --c-fault: #b8455f; /* pink sand, darkened — 4.9:1 */
-  --c-violet: #8d6771; /* dark sand, darkened — 4.6:1 */
+  --c-cyan: #06655b; /* blue green, same treatment — 6.6:1 */
+  --c-pass: #06655b;
+  --c-fault: #a83a52; /* pink sand, darkened — 5.9:1 */
+  --c-violet: #76565f; /* dark sand, darkened — 6.1:1 */
 
-  --shade-0: #e4f8f6;
+  --shade-0: #ddf2f0;
   --grain: 0.01;
 
   /* Station accents are authored vivid; beat copy darkens them to sit on a
      pale stage. */
-  --accent-darken: 30%;
+  --accent-darken: 46%;
 
-  /* Flight scrim + vignette. The stage is pale and the copy is dark, so these
-     stay low — the dark-theme values painted the scene out entirely. */
-  --scrim-1: 62%;
-  --scrim-2: 36%;
-  --scrim-3: 13%;
-  --stage-vignette: 8%;
+  /*
+   * Flight scrim + vignette.
+   *
+   * These lighten the stage under the beat copy, which is dark. They were set
+   * low on the assumption that a pale stage needed little help — but the
+   * station geometry is deliberately dark now, so dark copy crossing a hull or
+   * a monolith had nothing behind it. Raised until the text clears its own
+   * subject at every beat.
+   */
+  --scrim-1: 96%;
+  --scrim-2: 80%;
+  --scrim-3: 46%;
+  --stage-vignette: 16%;
 }
 
 @theme inline {

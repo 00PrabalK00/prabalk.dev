@@ -120,7 +120,7 @@ export default function Smr300Section() {
               /dock_shelf smr300_msgs/action/DockShelf
               <br />
               <span className="text-pass">→ SUCCEEDED</span>{" "}
-              <span className="text-mute/60">
+              <span className="text-mute/88">
                 residual: x 0.014 m · y 0.011 m · yaw 0.9°
               </span>
             </div>
@@ -151,13 +151,13 @@ export default function Smr300Section() {
                   <div className="mono text-[14px] text-bone transition-colors group-hover:text-accent">
                     {r.name}
                   </div>
-                  <div className="mono mt-1 text-[10px] tracking-[0.12em] uppercase text-mute/70">
+                  <div className="mono mt-1 text-[10px] tracking-[0.12em] uppercase text-mute/92">
                     {r.meta}
                   </div>
                 </div>
                 <p className="max-w-[58ch] text-[15px] leading-[1.7] text-mute">
                   {r.desc}
-                  <span className="mono ml-2 inline-block text-mute/50 transition-all group-hover:translate-x-1 group-hover:text-accent">
+                  <span className="mono ml-2 inline-block text-mute/82 transition-all group-hover:translate-x-1 group-hover:text-accent">
                     ↗
                   </span>
                 </p>

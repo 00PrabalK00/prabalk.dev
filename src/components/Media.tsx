@@ -72,7 +72,7 @@ export default function Media() {
           <button
             type="button"
             onClick={() => setShowEmpty((v) => !v)}
-            className="ml-auto text-mute/60 transition-colors hover:text-accent"
+            className="ml-auto text-mute/88 transition-colors hover:text-accent"
             title="Show the slots that are still waiting on a file"
           >
             {showEmpty ? "hide empty slots" : "show empty slots"}

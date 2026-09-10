@@ -176,7 +176,7 @@ export default function GithubLive() {
           )}
 
           {data?.fetchedAt && now && (
-            <span className="text-mute/60">
+            <span className="text-mute/88">
               synced {relTime(data.fetchedAt, now)}
             </span>
           )}
@@ -187,7 +187,7 @@ export default function GithubLive() {
           <button
             type="button"
             onClick={load}
-            className="tracking-[0.14em] uppercase text-mute/60 transition-colors hover:text-accent"
+            className="tracking-[0.14em] uppercase text-mute/88 transition-colors hover:text-accent"
           >
             refresh
           </button>
@@ -256,7 +256,7 @@ export default function GithubLive() {
                       </span>
                     </div>
                     {e.detail && (
-                      <p className="mt-1 truncate text-[12.5px] text-mute/70">
+                      <p className="mt-1 truncate text-[12.5px] text-mute/92">
                         {e.detailUrl ? (
                           <a
                             href={e.detailUrl}
@@ -272,7 +272,7 @@ export default function GithubLive() {
                       </p>
                     )}
                   </div>
-                  <span className="mono shrink-0 text-[10px] text-mute/50">
+                  <span className="mono shrink-0 text-[10px] text-mute/82">
                     {now ? relTime(e.createdAt, now) : ""}
                   </span>
                 </div>
@@ -317,7 +317,7 @@ export default function GithubLive() {
                   style={{ background: langColor(l.name) }}
                 />
                 {l.name}
-                <span className="text-mute/50">{l.bytesShare}%</span>
+                <span className="text-mute/82">{l.bytesShare}%</span>
               </span>
             ))}
           </div>
@@ -371,7 +371,7 @@ export default function GithubLive() {
               <p className="max-w-[60ch] text-[14px] leading-relaxed text-mute">
                 {r.description ?? "—"}
               </p>
-              <div className="mono flex shrink-0 gap-5 text-[10.5px] text-mute/60">
+              <div className="mono flex shrink-0 gap-5 text-[10.5px] text-mute/88">
                 <span>★ {r.stargazers_count}</span>
                 <span>{now ? relTime(r.pushed_at, now) : ""}</span>
               </div>

@@ -403,7 +403,14 @@ export default function Cinema() {
                       ? "linear-gradient(to right, color-mix(in srgb, var(--c-ink) var(--scrim-1), transparent) 0%, color-mix(in srgb, var(--c-ink) var(--scrim-2), transparent) 34%, color-mix(in srgb, var(--c-ink) var(--scrim-3), transparent) 58%, transparent 78%)"
                       : b.align === "right"
                         ? "linear-gradient(to left, color-mix(in srgb, var(--c-ink) var(--scrim-1), transparent) 0%, color-mix(in srgb, var(--c-ink) var(--scrim-2), transparent) 34%, color-mix(in srgb, var(--c-ink) var(--scrim-3), transparent) 58%, transparent 78%)"
-                        : "radial-gradient(ellipse 62% 58% at 50% 50%, color-mix(in srgb, var(--c-ink) var(--scrim-1), transparent) 0%, color-mix(in srgb, var(--c-ink) var(--scrim-2), transparent) 45%, transparent 80%)",
+                        : // 82% of the height, not 58%. The centred beats run
+                          // from the kicker down past a three-line fact list —
+                          // roughly 340 px — and a 58% ellipse has a vertical
+                          // radius of 232 px, so the bottom third of the copy
+                          // sat outside the scrim entirely and read straight
+                          // over whatever geometry was behind it. That was the
+                          // patents beat over the monoliths.
+                          "radial-gradient(ellipse 72% 82% at 50% 50%, color-mix(in srgb, var(--c-ink) var(--scrim-1), transparent) 0%, color-mix(in srgb, var(--c-ink) var(--scrim-2), transparent) 52%, transparent 88%)",
                 }}
               />
 
@@ -501,7 +508,7 @@ export default function Cinema() {
               phone viewport, which is what produced the mismatched strip down
               the left edge. */}
           <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 px-5 pb-6 sm:px-12 sm:pb-7">
-            <span className="mono shrink-0 text-[10px] tracking-[0.22em] uppercase text-mute/60">
+            <span className="mono shrink-0 text-[10px] tracking-[0.22em] uppercase text-mute/88">
               Scroll
             </span>
             <div className="pointer-events-auto flex min-w-0 items-center gap-4 sm:gap-6">

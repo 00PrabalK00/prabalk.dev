@@ -42,6 +42,41 @@ function presence(p: number, s: Station) {
 type RevealMaterial = THREE.Material & { opacity: number; depthWrite: boolean };
 
 /**
+ * Darkens and warms a station's surfaces, once, on first sight.
+ *
+ * The station materials were authored against a near-black stage — cool pale
+ * greys picked to catch a rim light out of the dark. On the Soft Beach sweep
+ * they are lighter than several parts of the background, so the objects read
+ * as fog rather than as hardware.
+ *
+ * `LIGHT_ADJUST` already does this for the warehouse act, but it is applied in
+ * CinemaScene and never reached anything in this file, so the stations were the
+ * only things on screen that never got the light-stage treatment.
+ *
+ * A multiply rather than a rewrite of the thirty-odd hex values: this is one
+ * tunable number applied uniformly, it preserves the relative values the
+ * modelling depends on, and it cannot silently miss a material. The tint is
+ * warm-biased so the greys drift toward the sand family instead of staying
+ * blue against a warm palette.
+ */
+const SURFACE_TINT = new THREE.Color(0.62, 0.575, 0.58);
+const EMISSIVE_TINT = new THREE.Color(0.72, 0.68, 0.69);
+
+function darkenForLightStage(m: THREE.Material) {
+  const mat = m as THREE.Material & {
+    color?: THREE.Color;
+    emissive?: THREE.Color;
+    userData: Record<string, unknown>;
+  };
+  // Guarded: these run inside a lazily-populated cache, and applying the
+  // multiply twice would take the surfaces to mud.
+  if (mat.userData.pkDarkened) return;
+  mat.userData.pkDarkened = true;
+  if (mat.color) mat.color.multiply(SURFACE_TINT);
+  if (mat.emissive) mat.emissive.multiply(EMISSIVE_TINT);
+}
+
+/**
  * Applies presence to every material under a group and hides it when zero.
  *
  * `depthWrite` is re-enabled once a material is essentially opaque — leaving
@@ -81,6 +116,7 @@ function useReveal(s: Station, ref: React.RefObject<THREE.Group | null>, max = 1
       g.traverse((o) => {
         const m = (o as THREE.Mesh).material;
         if (!m || Array.isArray(m) || !("opacity" in m)) return;
+        darkenForLightStage(m);
         list.push(m as RevealMaterial);
         flags.push(Boolean(o.userData.noDepth));
       });
@@ -1140,6 +1176,7 @@ export function Monoliths({
       g.traverse((o) => {
         const m = (o as THREE.Mesh).material;
         if (!m || Array.isArray(m) || !("opacity" in m)) return;
+        darkenForLightStage(m);
         list.push({
           m: m as THREE.Material & { opacity: number },
           line: o.type === "LineSegments",

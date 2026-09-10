@@ -51,14 +51,14 @@ export default function MediaSlot({
       {failed && (
         <div className="absolute inset-0 grid place-items-center p-6">
           <div className="text-center">
-            <div className="mono text-[10px] tracking-[0.2em] uppercase text-mute/40">
+            <div className="mono text-[10px] tracking-[0.2em] uppercase text-mute/78">
               {isVideo ? "video" : "image"}
             </div>
             <div className="mono mt-3 text-[11.5px] text-accent/60">
               /media/{file}
             </div>
             {meta?.caption && (
-              <div className="mx-auto mt-2 max-w-[24ch] text-[12px] leading-snug text-mute/50">
+              <div className="mx-auto mt-2 max-w-[24ch] text-[12px] leading-snug text-mute/82">
                 {meta.caption}
               </div>
             )}

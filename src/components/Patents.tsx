@@ -48,7 +48,7 @@ export function Patents() {
                   <p className="mt-5 max-w-[58ch] text-[15px] leading-[1.7] text-mute">
                     {p.body}
                   </p>
-                  <p className="mono mt-6 text-[11px] tracking-[0.06em] text-mute/60">
+                  <p className="mono mt-6 text-[11px] tracking-[0.06em] text-mute/88">
                     {p.tags.map((t, ti) => (
                       <span key={t}>
                         {ti > 0 && <span className="text-line-2"> / </span>}
@@ -142,7 +142,7 @@ export function Honors() {
               <span className="mono text-[12px] tracking-[0.1em] text-accent">
                 {h.result}
               </span>
-              <span className="mono text-[11px] text-mute/60 sm:text-right">
+              <span className="mono text-[11px] text-mute/88 sm:text-right">
                 {h.year}
               </span>
             </li>

@@ -81,7 +81,7 @@ function EscapeHatch() {
       <div className="mx-auto flex max-w-3xl items-center justify-between gap-4 px-6 py-3">
         <Link
           href="/cool-kids"
-          className="group inline-flex items-center gap-2 text-[13px] font-medium text-[#087d8c] underline-offset-4 hover:underline"
+          className="group inline-flex items-center gap-2 text-[13px] font-medium text-[#06636f] underline-offset-4 hover:underline"
         >
           <span aria-hidden className="transition-transform group-hover:-translate-x-0.5">
             ←
@@ -123,7 +123,7 @@ function Header() {
           <li>
             <a
               href={`mailto:${profile.email}`}
-              className="text-[#087d8c] underline-offset-4 hover:underline"
+              className="text-[#06636f] underline-offset-4 hover:underline"
             >
               {profile.email}
             </a>
@@ -138,7 +138,7 @@ function Header() {
                 href={l.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[#087d8c] underline-offset-4 hover:underline"
+                className="text-[#06636f] underline-offset-4 hover:underline"
               >
                 {l.label}
               </a>
@@ -201,7 +201,7 @@ function Experience() {
                 href={job.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-2.5 inline-block text-[13px] text-[#087d8c] underline-offset-4 hover:underline"
+                className="mt-2.5 inline-block text-[13px] text-[#06636f] underline-offset-4 hover:underline"
               >
                 Repository ↗
               </a>
@@ -247,7 +247,7 @@ function Projects() {
                 href={p.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-2.5 inline-block text-[13px] text-[#087d8c] underline-offset-4 hover:underline"
+                className="mt-2.5 inline-block text-[13px] text-[#06636f] underline-offset-4 hover:underline"
               >
                 {p.linkLabel ?? "Link"} ↗
               </a>
@@ -412,7 +412,7 @@ function Footer() {
         Reach me at{" "}
         <a
           href={`mailto:${profile.email}`}
-          className="text-[#087d8c] underline-offset-4 hover:underline"
+          className="text-[#06636f] underline-offset-4 hover:underline"
         >
           {profile.email}
         </a>
@@ -421,7 +421,7 @@ function Footer() {
       <p className="mt-4 text-[14px]">
         <Link
           href="/cool-kids"
-          className="text-[#087d8c] underline-offset-4 hover:underline"
+          className="text-[#06636f] underline-offset-4 hover:underline"
         >
           Made a bad decision? Go to Cool Kids →
         </Link>

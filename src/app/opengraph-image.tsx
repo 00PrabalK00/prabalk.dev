@@ -10,7 +10,7 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 const INK = "#0a0d12";
-const ACCENT = "#087d8c";
+const ACCENT = "#06636f";
 const BONE = "#e6edf5";
 const MUTE = "#7a8798";
 const LINE = "#232c38";

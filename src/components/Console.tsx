@@ -458,12 +458,12 @@ export default function Console() {
           </span>
           <span className="mono truncate text-[11.5px] text-mute">
             <span className="text-pass">prabal</span>
-            <span className="text-mute/60">@</span>
+            <span className="text-mute/88">@</span>
             <span className="text-accent">pk-os</span>
-            <span className="text-mute/60">:~$</span>
+            <span className="text-mute/88">:~$</span>
           </span>
 
-          <span className="mono ml-auto flex items-center gap-4 text-[10px] tracking-[0.16em] uppercase text-mute/70">
+          <span className="mono ml-auto flex items-center gap-4 text-[10px] tracking-[0.16em] uppercase text-mute/92">
             <a
               href={profile.github}
               target="_blank"
@@ -501,7 +501,7 @@ export default function Console() {
               Everything else lives in here.
             </h2>
           </div>
-          <div className="mono flex gap-5 text-[10.5px] text-mute/70">
+          <div className="mono flex gap-5 text-[10.5px] text-mute/92">
             <LiveClock tz="America/New_York" label="brooklyn" />
             <LiveClock tz="Asia/Bangkok" label="bangkok" />
           </div>
@@ -551,7 +551,7 @@ export default function Console() {
                     <span className="mono truncate text-[14px] text-bone transition-colors group-hover:text-[color:var(--card)]">
                       {a.name}
                     </span>
-                    <span className="mono ml-auto shrink-0 text-[9.5px] tracking-[0.14em] text-mute/40 tabular-nums">
+                    <span className="mono ml-auto shrink-0 text-[9.5px] tracking-[0.14em] text-mute/78 tabular-nums">
                       {String(i + 1).padStart(2, "0")}
                     </span>
                   </span>
@@ -561,7 +561,7 @@ export default function Console() {
                   </span>
 
                   <span className="mono mt-3.5 flex w-full items-center justify-between text-[9.5px] tracking-[0.14em] uppercase">
-                    <span className="text-mute/50">{a.meta}</span>
+                    <span className="text-mute/82">{a.meta}</span>
                     <span
                       className="touch-reveal translate-x-[-4px] opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100"
                       style={{ color: a.accent }}
@@ -585,7 +585,7 @@ export default function Console() {
             <div className="mono flex items-center gap-2 border-b border-line px-4 py-2.5 text-[10px] tracking-[0.16em] uppercase text-mute">
               <TerminalIcon size={12} strokeWidth={1.8} />
               bash
-              <span className="ml-auto text-mute/40 normal-case">80×24</span>
+              <span className="ml-auto text-mute/78 normal-case">80×24</span>
             </div>
 
             <div
@@ -605,7 +605,7 @@ export default function Console() {
                         : l.kind === "ok"
                           ? "text-pass"
                           : l.kind === "dim"
-                            ? "text-mute/50"
+                            ? "text-mute/82"
                             : "text-mute"
                   }
                 >
@@ -624,7 +624,7 @@ export default function Console() {
                   key={h}
                   type="button"
                   onClick={() => run(h)}
-                  className="mono border border-line px-2 py-1 text-[10px] text-mute/70 transition-colors hover:border-accent/50 hover:text-accent"
+                  className="mono border border-line px-2 py-1 text-[10px] text-mute/92 transition-colors hover:border-accent/50 hover:text-accent"
                 >
                   {h}
                 </button>
@@ -641,9 +641,9 @@ export default function Console() {
             >
               <span className="mono shrink-0 text-[12px]">
                 <span className="text-pass">prabal</span>
-                <span className="text-mute/50">:</span>
+                <span className="text-mute/82">:</span>
                 <span className="text-accent">~</span>
-                <span className="text-mute/50">$</span>
+                <span className="text-mute/82">$</span>
               </span>
               <input
                 ref={inputRef}
@@ -749,7 +749,7 @@ export default function Console() {
                   onClick={() => setOpen(a.id)}
                   title={a.cmd}
                   className={`mono flex shrink-0 items-center gap-2 px-3 py-2 text-[10px] tracking-[0.12em] uppercase transition-colors ${
-                    on ? "bg-ink-3" : "text-mute/60 hover:text-bone"
+                    on ? "bg-ink-3" : "text-mute/88 hover:text-bone"
                   }`}
                   style={on ? { color: a.accent } : undefined}
                 >

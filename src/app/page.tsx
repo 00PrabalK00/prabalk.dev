@@ -74,7 +74,7 @@ export default function Door() {
         </div>
 
         <footer className="px-6 pb-8 sm:px-12">
-          <p className="mono text-[10px] tracking-[0.16em] text-mute/70 uppercase">
+          <p className="mono text-[10px] tracking-[0.16em] text-mute/92 uppercase">
             Either door reaches the same robots.
           </p>
         </footer>
@@ -133,7 +133,7 @@ function DoorCard({
             {eyebrow}
           </span>
           {aside && (
-            <span className="mono text-[10px] tracking-[0.14em] text-mute/70 lowercase">
+            <span className="mono text-[10px] tracking-[0.14em] text-mute/92 lowercase">
               {aside}
             </span>
           )}

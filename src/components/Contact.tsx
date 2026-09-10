@@ -45,7 +45,7 @@ export default function Contact() {
           {[...MARQUEE, ...MARQUEE].map((t, i) => (
             <span
               key={`${t}-${i}`}
-              className="mono text-[11px] tracking-[0.22em] uppercase text-mute/35"
+              className="mono text-[11px] tracking-[0.22em] uppercase text-mute/75"
             >
               {t}
             </span>
@@ -95,7 +95,7 @@ export default function Contact() {
           </ul>
         </Reveal>
 
-        <div className="mono mt-20 flex flex-wrap items-center justify-between gap-x-8 gap-y-3 text-[11px] text-mute/60">
+        <div className="mono mt-20 flex flex-wrap items-center justify-between gap-x-8 gap-y-3 text-[11px] text-mute/88">
           <div className="flex flex-wrap items-center gap-x-7 gap-y-2">
             <span>© {new Date().getFullYear()} Prabal Khare</span>
             <LiveClock tz="America/New_York" label="Brooklyn" />

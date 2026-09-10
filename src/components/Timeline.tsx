@@ -23,16 +23,16 @@ export default function Timeline() {
                 <span className={e.status === "incoming" ? "text-accent" : "text-pass"}>
                   {e.status === "incoming" ? "incoming" : "completing"}
                 </span>
-                <span className="text-mute/60">{e.period}</span>
+                <span className="text-mute/88">{e.period}</span>
               </div>
               <h3 className="text-2xl font-medium tracking-[-0.025em] text-bone">
                 {e.school}
               </h3>
-              <div className="mono mt-1 text-[11px] text-mute/70">{e.sub}</div>
+              <div className="mono mt-1 text-[11px] text-mute/92">{e.sub}</div>
               <p className="mt-4 max-w-[40ch] text-[15px] leading-relaxed text-mute">
                 {e.degree}
               </p>
-              <p className="mono mt-2 text-[11px] text-mute/60">{e.place}</p>
+              <p className="mono mt-2 text-[11px] text-mute/88">{e.place}</p>
             </div>
           </Reveal>
         ))}
@@ -61,7 +61,7 @@ export default function Timeline() {
                     >
                       {x.company.replace(" Co., Ltd.", "")}
                     </span>
-                    <span className="mono mt-0.5 block text-[10px] tracking-[0.1em] text-mute/50">
+                    <span className="mono mt-0.5 block text-[10px] tracking-[0.1em] text-mute/82">
                       {x.period}
                     </span>
                   </button>
@@ -82,7 +82,7 @@ export default function Timeline() {
                   {x.company} · {x.place} · {x.period}
                 </p>
 
-                <p className="mono mt-6 max-w-[60ch] text-[11px] leading-relaxed tracking-[0.05em] text-mute/70">
+                <p className="mono mt-6 max-w-[60ch] text-[11px] leading-relaxed tracking-[0.05em] text-mute/92">
                   {x.tags.map((t, ti) => (
                     <span key={t}>
                       {ti > 0 && <span className="text-line-2"> / </span>}
