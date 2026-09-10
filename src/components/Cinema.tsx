@@ -164,12 +164,27 @@ export default function Cinema() {
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+    /**
+     * Stage travel, cached.
+     *
+     * offsetHeight forces the browser to flush pending layout before it can
+     * answer. Reading it every frame, immediately before writing styles to
+     * every beat, is the classic layout thrash — and the number only changes
+     * when the viewport or the stage height does.
+     */
+    let travel = 0;
+    const measure = () => {
+      const stage = stageRef.current;
+      travel = stage ? stage.offsetHeight - window.innerHeight : 0;
+    };
+
     // Stage height is set here rather than in a media query so the rAF loop and
     // the DOM agree on exactly one number.
     const sizeStage = () => {
       if (stageRef.current) {
         stageRef.current.style.height = `${isSmallScreen() ? STAGE_VH_SM : STAGE_VH}svh`;
       }
+      measure();
     };
     sizeStage();
     window.addEventListener("resize", sizeStage);
@@ -198,13 +213,26 @@ export default function Cinema() {
     let lastMoveAt = performance.now();
     let sawUnsafe = false;
 
+    /**
+     * Last value written to each element, so unchanged frames touch no DOM.
+     *
+     * Integer steps rather than the float itself: a Float32Array would round
+     * each stored value to float32 and the comparison against a float64 `q`
+     * would then fail for most values, writing every frame regardless and
+     * quietly defeating the guard.
+     */
+    const OPACITY_STEPS = 500;
+    const lastStep = new Int16Array(BEATS.length).fill(-1);
+
     const frame = (time: number) => {
       lenis?.raf(time);
 
       const stage = stageRef.current;
       if (stage) {
+        // getBoundingClientRect is a read the scroll position genuinely
+        // requires; offsetHeight is not, and is served from `travel`.
         const rect = stage.getBoundingClientRect();
-        const total = stage.offsetHeight - window.innerHeight;
+        const total = travel;
         const p = total > 0 ? Math.min(1, Math.max(0, -rect.top / total)) : 0;
         cinema.progress = p;
 
@@ -263,20 +291,36 @@ export default function Cinema() {
           );
         }
 
-        // drive each beat's opacity directly — no React re-render per frame
-        BEATS.forEach((b, i) => {
+        // Drive each beat's opacity directly — no React re-render per frame.
+        //
+        // Guarded by the previous value, because assigning to el.style marks
+        // the element dirty whether or not the value differs, and at any given
+        // moment all but one or two of the ~18 beats are sitting at a flat 0.
+        // Unguarded, this was ~54 style invalidations per frame to express a
+        // change in two of them.
+        for (let i = 0; i < BEATS.length; i++) {
           const el = beatRefs.current[i];
-          if (!el) return;
+          if (!el) continue;
+          const b = BEATS[i];
           const f = FADES[i];
           const o = reduced ? 1 : window01(p, b.from, b.to, f.in, f.out);
-          el.style.opacity = String(o);
+          // Quantised: sub-percent differences are invisible and still cost a
+          // full style recalculation to apply.
+          const step = Math.round(o * OPACITY_STEPS);
+          if (step === lastStep[i]) continue;
+          lastStep[i] = step;
+          const q = step / OPACITY_STEPS;
+
+          el.style.opacity = String(q);
           el.style.transform = reduced
             ? "none"
-            : `translate3d(0, ${(1 - o) * 26}px, 0)`;
-          // never interactive: these sit over the canvas and would otherwise
-          // swallow clicks meant for the robot
-          el.style.pointerEvents = "none";
-        });
+            : `translate3d(0, ${(1 - q) * 26}px, 0)`;
+          // Promote only while it is actually on screen. Holding a layer for
+          // every beat permanently costs memory for nothing; promoting none of
+          // them repaints the text on every opacity step.
+          el.style.willChange = q > 0 && q < 1 ? "opacity, transform" : "auto";
+          el.style.visibility = q === 0 ? "hidden" : "visible";
+        }
       }
 
       raf = requestAnimationFrame(frame);
@@ -330,6 +374,15 @@ export default function Cinema() {
               className="absolute inset-0 flex items-center px-5 sm:px-12 lg:px-20"
               style={{
                 opacity: 0,
+                // Hidden rather than merely transparent: a fully-faded beat
+                // still carried a full-viewport scrim gradient into the paint,
+                // eighteen of them stacked over the canvas.
+                visibility: "hidden",
+                // Static. These sit over the canvas and would otherwise swallow
+                // clicks meant for the robot — it was being re-asserted on every
+                // frame, which is eighteen more style invalidations for a value
+                // that never changes.
+                pointerEvents: "none",
                 justifyContent:
                   b.align === "left"
                     ? "flex-start"
@@ -510,20 +563,44 @@ function StationIndex() {
 
   useEffect(() => {
     let raf = 0;
+    // Which legs were lit last frame, as a bitmask, and whether the rail was
+    // faded. The lit set changes a handful of times across the whole flight;
+    // without this the loop rewrote colour, opacity and a width on every tick
+    // to say nothing had changed — and each width write fed a CSS transition
+    // that then had to be re-evaluated.
+    //
+    // A mask rather than a single index because the leg ranges are padded and
+    // do overlap, so two can legitimately be lit at once.
+    let lastMask = -1;
+    let lastFaded: boolean | null = null;
+
     const tick = () => {
       const p = cinema.progress;
-      legs.forEach((leg, i) => {
-        const el = items.current[i];
-        if (!el) return;
-        const on = p >= leg.from - 0.05 && p <= leg.to + 0.03;
-        el.style.color = on ? leg.color : "";
-        el.style.opacity = on ? "1" : "0.55";
-        const bar = el.lastElementChild as HTMLElement | null;
-        if (bar) bar.style.width = on ? "22px" : "9px";
-      });
-      if (wrap.current) {
-        wrap.current.style.opacity = p > 0.985 ? "0" : "1";
+
+      let mask = 0;
+      for (let i = 0; i < legs.length; i++) {
+        if (p >= legs[i].from - 0.05 && p <= legs[i].to + 0.03) mask |= 1 << i;
       }
+
+      if (mask !== lastMask) {
+        for (let i = 0; i < legs.length; i++) {
+          const el = items.current[i];
+          if (!el) continue;
+          const lit = (mask & (1 << i)) !== 0;
+          el.style.color = lit ? legs[i].color : "";
+          el.style.opacity = lit ? "1" : "0.55";
+          const bar = el.lastElementChild as HTMLElement | null;
+          if (bar) bar.style.width = lit ? "22px" : "9px";
+        }
+        lastMask = mask;
+      }
+
+      const faded = p > 0.985;
+      if (wrap.current && faded !== lastFaded) {
+        wrap.current.style.opacity = faded ? "0" : "1";
+        lastFaded = faded;
+      }
+
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
@@ -558,7 +635,10 @@ function StationIndex() {
         >
           <span className="whitespace-nowrap">{leg.label}</span>
           <span
-            className="h-px bg-current transition-all duration-300"
+            // width only, not `all` — `all` makes the browser watch every
+            // animatable property on an element whose width is the one thing
+            // that moves.
+            className="h-px bg-current transition-[width] duration-300"
             style={{ width: 9 }}
           />
         </button>
@@ -572,9 +652,14 @@ function ProgressBar() {
 
   useEffect(() => {
     let raf = 0;
+    // Quantised to the bar's own resolution. A 320-step scale is finer than a
+    // hairline can show, and every distinct value costs a style recalculation.
+    let last = -1;
     const tick = () => {
-      if (ref.current) {
-        ref.current.style.transform = `scaleX(${cinema.progress})`;
+      const q = Math.round(cinema.progress * 320) / 320;
+      if (ref.current && q !== last) {
+        last = q;
+        ref.current.style.transform = `scaleX(${q})`;
       }
       raf = requestAnimationFrame(tick);
     };

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { AdaptiveDpr, PerformanceMonitor } from "@react-three/drei";
 import * as THREE from "three";
 import {
@@ -985,11 +985,55 @@ function ThemeDriver() {
   );
 }
 
+/**
+ * Compiles every material up front, including the hidden ones.
+ *
+ * Each station sits at `visible = false` until the camera reaches its slice of
+ * the scroll. A material's GLSL program is not built when the material is
+ * created — it is built the first time three actually draws it, which here is
+ * the exact frame a station appears. Compiling and linking a PBR program is
+ * milliseconds of synchronous GPU driver work, so every station entrance cost
+ * one dropped frame. Six stations, six hitches, each landing precisely on the
+ * transition it would be most visible on.
+ *
+ * `compile()` initialises materials via `scene.traverse` rather than
+ * `traverseVisible` (three.module.js:17427) — only its light gathering skips
+ * invisible objects — so the hidden stations are compiled without being shown
+ * and there is no flash to hide. `compileAsync` wraps that in
+ * KHR_parallel_shader_compile where the driver supports it, which keeps the
+ * work off the main thread; where it does not, this is the same stall that
+ * used to be spread across the scroll, moved to load time where there is
+ * nothing to interrupt.
+ */
+function PrecompileMaterials() {
+  const gl = useThree((s) => s.gl);
+  const scene = useThree((s) => s.scene);
+  const camera = useThree((s) => s.camera);
+
+  useEffect(() => {
+    // Deliberately not awaited and never surfaced: failing to precompile is a
+    // performance regression, not a broken page, and the scene renders either
+    // way.
+    void gl.compileAsync?.(scene, camera);
+  }, [gl, scene, camera]);
+
+  return null;
+}
+
 export default function CinemaScene() {
   // Phones are fill-rate bound long before they're geometry bound, so the DPR
   // ceiling matters more than polygon count.
   const [maxDpr, setMaxDpr] = useState(() => (isLowPower() ? 1.25 : 1.75));
   const [paused, setPaused] = useState(false);
+  /**
+   * Gates the precompile until the environment map exists.
+   *
+   * Assigning `scene.environment` invalidates every material that uses it, so
+   * precompiling first would build each program twice — once without the env
+   * map and again the moment it lands — and the second build would happen
+   * lazily on first draw, which is the stall this is meant to remove.
+   */
+  const [envReady, setEnvReady] = useState(false);
 
   // Stop rendering entirely while a fullscreen overlay covers the scene.
   useEffect(() => {
@@ -1029,6 +1073,7 @@ export default function CinemaScene() {
         scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
         scene.environmentIntensity = 0.85;
         pmrem.dispose();
+        setEnvReady(true);
       }}
     >
       <PerformanceMonitor onDecline={() => setMaxDpr(0.85)} />
@@ -1061,6 +1106,10 @@ export default function CinemaScene() {
       />
 
       <Director />
+
+      {/* Last, so its effect runs after every station has attached itself to
+          the scene graph — traverse only finds what is already there. */}
+      {envReady && <PrecompileMaterials />}
     </Canvas>
   );
 }
