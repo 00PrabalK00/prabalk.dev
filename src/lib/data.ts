@@ -264,6 +264,24 @@ export type Project = {
 
 export const projects: Project[] = [
   {
+    name: "Ripple",
+    kind: "Robot recovery research + site engineer",
+    year: "2026",
+    blurb:
+      "A persistent recovery layer for robots: it watches failures, compares recovery conditions, captures evidence from SO101 and SMR300 runs, and turns tool outputs into deployable robotics pages.",
+    bullets: [
+      "SO101 hardware and camera evidence: front RealSense, wrist camera and rollout video from the real-arm research workspace.",
+      "Recovery-condition comparison figures from the research arm, including pooled injected results and cost/success analysis.",
+      "RosScope built locally and captured against a live ROS 2 graph with talker, listener and parameter_blackboard nodes.",
+      "Screenshots collected from FlowPilot, OpenDroneKit, Continuum and PrabalOS to replace empty project tiles with real evidence.",
+    ],
+    tech: ["ROS 2", "SO101", "RosScope", "Nav2", "VLA recovery", "Playwright"],
+    link: "https://github.com/00PrabalK00/ripple-research",
+    linkLabel: "Research repo",
+    accent: "#4DA6FF",
+    featured: true,
+  },
+  {
     name: "Kurat",
     kind: "Autonomous conversational robot",
     year: "2025 — present",
@@ -724,6 +742,61 @@ export const mediaSlots: MediaSlot[] = [
     span: "wide",
   },
   {
+    file: "smr300-nodered.jpg",
+    type: "image",
+    caption: "FlowPilot / Node-RED — guarded robot task queue flow",
+    group: "SMR300",
+    span: "wide",
+  },
+  {
+    file: "rosscope-ui.jpg",
+    type: "image",
+    caption: "RosScope live graph — talker, listener, parameter_blackboard",
+    group: "SMR300",
+    span: "wide",
+  },
+  {
+    file: "rosscope-demo.mp4",
+    type: "video",
+    caption: "RosScope / SMR300 demo footage",
+    group: "SMR300",
+    span: "wide",
+  },
+  {
+    file: "so101-cameras.jpg",
+    type: "image",
+    caption: "SO101 camera evidence — front RealSense and wrist views",
+    group: "Ripple",
+    span: "wide",
+  },
+  {
+    file: "so101-hardware.jpg",
+    type: "image",
+    caption: "SO101 hardware evidence from the real-arm setup",
+    group: "Ripple",
+  },
+  {
+    file: "so101-rollout.mp4",
+    type: "video",
+    caption: "SO101 real-arm rollout",
+    group: "Ripple",
+    span: "hero",
+  },
+  {
+    file: "ripple-architecture.png",
+    type: "image",
+    caption: "Ripple recovery-condition comparison: cost, scene outcomes, probes, pooled results",
+    group: "Ripple",
+    span: "hero",
+  },
+  {
+    file: "ripple-results.png",
+    type: "image",
+    caption: "Ripple injected pooled recovery result",
+    group: "Ripple",
+    span: "wide",
+  },
+  {
     file: "MIRA_AUV.jpeg",
     type: "image",
     caption:
@@ -825,9 +898,6 @@ export const mediaSlots: MediaSlot[] = [
 
   /* ---------------- wanted, still empty ---------------- */
   { file: "smr300-rviz.jpg", type: "image", caption: "Nav2 costmap and planned path in RViz", group: "SMR300" },
-  { file: "smr300-nodered.jpg", type: "image", caption: "Node-RED operator dashboard", group: "SMR300" },
-  { file: "rosscope-ui.jpg", type: "image", caption: "RosScope — engineer mode", group: "SMR300" },
-
   { file: "mira-electronics.jpg", type: "image", caption: "Sealed-hull electronics and power distribution", group: "Project MIRA" },
   { file: "mira-underwater.mp4", type: "video", caption: "MIRA under test", group: "Project MIRA", span: "wide" },
 
@@ -835,7 +905,12 @@ export const mediaSlots: MediaSlot[] = [
   { file: "vtol-flight.mp4", type: "video", caption: "VTOL flight test", group: "UAV", span: "wide" },
 
   { file: "robotdrawing-abb.mp4", type: "video", caption: "ABB IRB140 drawing a learned stroke route", group: "Hardware", span: "wide" },
-  { file: "opendronekit-ui.jpg", type: "image", caption: "OpenDroneKit — defect analysis", group: "Hardware" },
+  { file: "opendronekit-ui.jpg", type: "image", caption: "OpenDroneKit — inspection workbench UI", group: "Hardware", span: "wide" },
+  { file: "odk-mission.jpg", type: "image", caption: "OpenDroneKit — mission planning map and panels", group: "Hardware", span: "wide" },
+  { file: "odk-reconstruction.jpg", type: "image", caption: "OpenDroneKit — survey operations and reconstruction workspace", group: "Hardware", span: "wide" },
+  { file: "prabalos-ui.png", type: "image", caption: "PrabalOS terminal portfolio surface", group: "Tooling", span: "wide" },
+  { file: "continuum-extension.png", type: "image", caption: "Continuum Extension — browser-native agent context panel", group: "Tooling", span: "wide" },
+  { file: "continuum-ui.png", type: "image", caption: "Continuum — local shared-memory control center", group: "Tooling", span: "wide" },
 
   { file: "workshop-kicad.jpg", type: "image", caption: "KiCad workshop — 50 attendees", group: "Team", span: "wide" },
 ];
@@ -846,6 +921,14 @@ export const SHIPPED_MEDIA = new Set([
   "SMR300_onFactoryFloor.jpeg",
   "UI_SMR300ControlPlane.jpeg",
   "PGV_Mode_SMR300.mp4",
+  "smr300-nodered.jpg",
+  "rosscope-ui.jpg",
+  "rosscope-demo.mp4",
+  "so101-cameras.jpg",
+  "so101-hardware.jpg",
+  "so101-rollout.mp4",
+  "ripple-architecture.png",
+  "ripple-results.png",
   "MIRA_AUV.jpeg",
   "TAC_PhotowithThrophy.jpeg",
   "transformationdrone_rovermode.jpeg",
@@ -860,4 +943,10 @@ export const SHIPPED_MEDIA = new Set([
   "KURAT_Detection.jpeg",
   "Anamatronic_head.jpg",
   "2LayerPCBFab.jpg",
+  "opendronekit-ui.jpg",
+  "odk-mission.jpg",
+  "odk-reconstruction.jpg",
+  "prabalos-ui.png",
+  "continuum-extension.png",
+  "continuum-ui.png",
 ]);
