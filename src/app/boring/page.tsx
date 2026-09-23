@@ -498,11 +498,11 @@ function Entry({
   caseStudy?: string;
 }) {
   return (
-    <article className="grid gap-5 sm:grid-cols-[248px_1fr] sm:gap-7">
+    <article className="grid gap-5 sm:grid-cols-[340px_1fr] sm:gap-8">
       <Thumb media={media} fallback={subtitle} />
 
       <div className="min-w-0">
-        <h3 className="text-[17px] leading-snug font-semibold sm:text-[18px]">
+        <h3 className="text-[19px] leading-snug font-semibold sm:text-[21px]">
           {title}
           <span className="font-normal text-zinc-500">: {subtitle}</span>
         </h3>
@@ -521,15 +521,15 @@ function Entry({
           <span>{meta}</span>
         </p>
 
-        <p className="mt-2 text-[14px] leading-[1.65] text-zinc-700">{blurb}</p>
+        <p className="mt-2.5 text-[15px] leading-[1.7] text-zinc-700">{blurb}</p>
 
         {stat && (
-          <p className="mt-2 text-[13px] leading-[1.6] font-medium text-[#06636f]">
+          <p className="mt-2.5 text-[14px] leading-[1.6] font-medium text-[#06636f]">
             {stat}
           </p>
         )}
 
-        <p className="mt-2 text-[13px] leading-[1.6] text-zinc-500">
+        <p className="mt-2.5 text-[13.5px] leading-[1.6] text-zinc-500">
           {tech.join(" · ")}
         </p>
 
@@ -593,8 +593,8 @@ function Thumb({
 }) {
   if (!media) {
     return (
-      <div className="flex h-[150px] items-center justify-center rounded border border-dashed border-zinc-200 bg-zinc-50 px-4 sm:h-[160px]">
-        <p className="text-center text-[12px] leading-[1.5] text-zinc-400">{fallback}</p>
+      <div className="flex h-[200px] items-center justify-center rounded border border-dashed border-zinc-200 bg-zinc-50 px-4 sm:h-[218px]">
+        <p className="text-center text-[13px] leading-[1.5] text-zinc-400">{fallback}</p>
       </div>
     );
   }
@@ -617,9 +617,9 @@ function Thumb({
           <Image
             src={`/media/${media.file}`}
             alt={media.caption}
-            width={496}
-            height={330}
-            sizes="(min-width: 640px) 248px, 100vw"
+            width={680}
+            height={454}
+            sizes="(min-width: 640px) 340px, 100vw"
             loading="lazy"
             className="aspect-[3/2] w-full object-cover"
           />
@@ -692,18 +692,18 @@ function Patents() {
 
       <div className="space-y-10">
         {patents.map((pt) => (
-          <article key={pt.title} className="grid gap-5 sm:grid-cols-[248px_1fr] sm:gap-7">
+          <article key={pt.title} className="grid gap-5 sm:grid-cols-[340px_1fr] sm:gap-8">
             <Thumb media={mediaForPatent(pt.title)} fallback={pt.tags[0]} />
 
             <div className="min-w-0">
-              <h3 className="text-[17px] leading-snug font-semibold sm:text-[18px]">
+              <h3 className="text-[19px] leading-snug font-semibold sm:text-[21px]">
                 {pt.title}
               </h3>
               <p className="mt-1 text-[13px] text-zinc-500">
                 {pt.status} · {pt.number}
               </p>
-              <p className="mt-2 text-[14px] leading-[1.65] text-zinc-700">{pt.body}</p>
-              <p className="mt-2 text-[13px] leading-[1.6] text-zinc-500">
+              <p className="mt-2.5 text-[15px] leading-[1.7] text-zinc-700">{pt.body}</p>
+              <p className="mt-2.5 text-[13.5px] leading-[1.6] text-zinc-500">
                 {pt.tags.join(" · ")}
               </p>
             </div>
@@ -734,7 +734,7 @@ function Gallery() {
         {groups.map((g) => (
           <div key={g.group}>
             <h3 className="mb-3 text-[14px] font-semibold">{g.group}</h3>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
               {g.items.map((m) => (
                 <figure key={m.file} className="min-w-0">
                   <div className="overflow-hidden rounded border border-zinc-200 bg-zinc-50">
@@ -755,13 +755,13 @@ function Gallery() {
                         alt={m.caption}
                         width={640}
                         height={420}
-                        sizes="(min-width: 640px) 320px, 100vw"
+                        sizes="(min-width: 640px) 460px, 100vw"
                         loading="lazy"
                         className="aspect-[3/2] w-full object-cover"
                       />
                     )}
                   </div>
-                  <figcaption className="mt-1.5 text-[12px] leading-[1.5] text-zinc-500">
+                  <figcaption className="mt-2 text-[13px] leading-[1.55] text-zinc-500">
                     {m.caption}
                   </figcaption>
                 </figure>

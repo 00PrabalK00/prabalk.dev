@@ -485,7 +485,7 @@ function Gallery({ items }: { items: MediaRef[] }) {
       <Heading>Gallery</Heading>
 
       {shipped.length > 0 && (
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-7">
           {shipped.map((m) => (
             <Figure key={m.file} media={m} />
           ))}
@@ -569,14 +569,14 @@ function Figure({
             alt={media.caption}
             width={1280}
             height={840}
-            sizes="(min-width: 640px) 640px, 100vw"
+            sizes="(min-width: 1024px) 760px, 100vw"
             priority={priority}
             loading={priority ? undefined : "lazy"}
             className="aspect-[3/2] w-full object-cover"
           />
         )}
       </div>
-      <figcaption className="mt-1.5 text-[12px] leading-[1.5] text-zinc-500">
+      <figcaption className="mt-2 text-[13.5px] leading-[1.6] text-zinc-500">
         {media.caption}
       </figcaption>
     </figure>

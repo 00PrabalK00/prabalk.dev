@@ -39,23 +39,33 @@
     transform 220ms ease;
 }
 
-.loud .pointer {
+/*
+ * The pointer rests on "fast way", not "loud way".
+ *
+ * The cinematic route is the one that takes a moment to load and wants a
+ * laptop; the plain one is the safer default to point a stranger at. So the
+ * arrow parks there and travels left when someone reaches for the other.
+ *
+ * Travel direction is mirrored accordingly: "loud way" sits to the LEFT, so its
+ * pointer waits off to the right and the resting one exits left.
+ */
+.fast .pointer {
   opacity: 1;
 }
 
-.fast .pointer {
-  opacity: 0;
-  transform: translateX(-50%) translateX(-18px);
-}
-
-.line:has(.fast:hover) .loud .pointer,
-.line:has(.fast:focus-within) .loud .pointer {
+.loud .pointer {
   opacity: 0;
   transform: translateX(-50%) translateX(18px);
 }
 
-.line:has(.fast:hover) .fast .pointer,
-.line:has(.fast:focus-within) .fast .pointer {
+.line:has(.loud:hover) .fast .pointer,
+.line:has(.loud:focus-within) .fast .pointer {
+  opacity: 0;
+  transform: translateX(-50%) translateX(-18px);
+}
+
+.line:has(.loud:hover) .loud .pointer,
+.line:has(.loud:focus-within) .loud .pointer {
   opacity: 1;
   transform: translateX(-50%);
 }
