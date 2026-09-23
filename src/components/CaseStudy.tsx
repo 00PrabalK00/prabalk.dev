@@ -45,7 +45,7 @@ export function CaseStudy({ project: p }: { project: Project }) {
        * you on the subdomain, where neither route exists.
        */}
       <div className="sticky top-0 z-50 border-b border-zinc-200 bg-white/95 backdrop-blur">
-        <div className="mx-auto flex max-w-3xl items-center justify-between gap-3 px-6 py-3">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-6 py-3">
           <a
             href="https://www.prabalkhare.com/boring"
             className="group inline-flex items-center gap-1.5 rounded-[3px] border border-[#c4ebee] bg-[#f2fbfb] px-2.5 py-1.5 text-[13px] font-medium text-[#06636f] transition-colors hover:border-[#51e2f5]"

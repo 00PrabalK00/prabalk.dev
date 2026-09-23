@@ -326,11 +326,27 @@ export const projects: Project[] = [
     featured: true,
   },
   {
+    name: "Pushpak Viman",
+    kind: "Victim detection from a transforming drone-rover",
+    year: "2023 — 2025",
+    blurb:
+      "An autonomous rescue initiative: a victim-under-debris detection pipeline, and a platform whose four arms carry both propellers and geared drive wheels so it can drive where it cannot fly.",
+    bullets: [
+      "Dataset splitting and annotation conversion from Pascal VOC XML through CSV to TFRecord.",
+      "Detection training and real-time inference with TensorFlow Lite and YOLOv5, with bounding-box visualisation.",
+      "MediaPipe hand-landmark tracking for gesture-based control.",
+    ],
+    tech: ["Python", "OpenCV", "TensorFlow Lite", "YOLOv5", "MediaPipe", "PyTorch"],
+    link: "https://github.com/00PrabalK00/Project-Pushpak-Viman-SIH",
+    linkLabel: "Repository",
+    accent: "#34D399",
+  },
+  {
     name: "Autonomous VTOL UAV",
     kind: "Search and rescue",
     year: "2023",
     blurb:
-      "VTOL search-and-rescue platform with thermal victim detection. Top 30 of 500 teams, Smart India Hackathon 2023.",
+      "A VTOL search-and-rescue prototype with thermal victim detection, flown on a Raspberry Pi and Pixhawk airframe. No repository — it was a prototype.",
     bullets: [
       "Raspberry Pi + Pixhawk + MAVROS airframe with OpenCV and thermal imaging for victim detection.",
       "Dataset preparation, TensorFlow Lite and YOLOv5 inference, autonomous scan patterns, custom battery management.",

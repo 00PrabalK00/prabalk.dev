@@ -23,6 +23,7 @@ import { rosscope } from "./rosscope";
 import { smr300 } from "./smr300";
 import { so101 } from "./so101";
 import { stereoptu } from "./stereoptu";
+import { vtol } from "./vtol";
 
 /**
  * The project registry.
@@ -51,6 +52,7 @@ export const PROJECTS: Project[] = [
   robotdrawing,
   stereoptu,
   pushpak,
+  vtol,
   // Developer and robotics infrastructure
   continuum,
   continuumext,

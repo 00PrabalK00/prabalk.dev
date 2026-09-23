@@ -66,6 +66,7 @@ const shippedMedia = mediaSlots.filter(
 
 const GROUP_ALIASES: Record<string, string> = {
   "Autonomous VTOL UAV": "UAV",
+  "Pushpak Viman": "Patents",
 };
 
 /**
@@ -117,7 +118,8 @@ const CASE_STUDY_SLUGS: Record<string, string> = {
   RosScope: "rosscope",
   RobotDrawing: "robotdrawing",
   "Recalibration-Free Stereo PTU": "stereoptu",
-  "Autonomous VTOL UAV": "pushpak",
+  "Autonomous VTOL UAV": "vtol",
+  "Pushpak Viman": "pushpak",
   Continuum: "continuum",
   "Continuum Extension": "continuum-extension",
   FlowPilot: "flowpilot",
@@ -231,7 +233,13 @@ export default function Boring() {
 function EscapeHatch() {
   return (
     <div className="sticky top-0 z-50 border-b border-zinc-200 bg-white">
-      <div className="mx-auto flex max-w-4xl items-center justify-between gap-4 px-6 py-3">
+      {/*
+       * Full width rather than the content column. The bar has exactly two
+       * controls and pinning them to the measure left a lot of empty rule on
+       * either side, which read as the buttons being squashed toward the middle
+       * of an otherwise wide bar.
+       */}
+      <div className="flex items-center justify-between gap-4 px-6 py-3 sm:px-10">
         <Link
           href="/cool-kids"
           className="group inline-flex items-center gap-2 text-[13px] font-medium text-[#06636f] underline-offset-4 hover:underline"
