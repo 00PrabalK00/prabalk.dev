@@ -122,7 +122,7 @@ const RAW: Omit<Station, "enter" | "from" | "to">[] = [
     view: [-6.5, 2.8, 9.5],
     color: "#e0c94a",
     align: "left",
-    kicker: "RobotDrawing · ABB IRB140",
+    kicker: "RobotDrawing · Simulated ABB IRB140",
     title: "I taught it to route. It lost.",
     body: "Robotic drawing reframed as a stroke-level travelling salesman problem, solved by a learned router — which then failed to beat the classical solver it was meant to replace.",
     facts: [

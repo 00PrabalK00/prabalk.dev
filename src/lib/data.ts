@@ -45,7 +45,7 @@ export const profile = {
   resumeDrive:
     "https://drive.google.com/file/d/1GmldZ472upLU58mr1qOuZ3cXxaoN7R9H/view",
   botopsy: "https://botopsylab.com",
-  languages: ["English", "Hindi", "Thai", "Marathi", "German (basic)"],
+  languages: ["English", "Hindi", "Thai", "Marathi"],
 };
 
 export const heroStats = [
@@ -391,7 +391,7 @@ export const projects: Project[] = [
   },
   {
     name: "RobotDrawing",
-    kind: "Learned motion planning · ABB IRB140",
+    kind: "Learned motion planning · simulated ABB IRB140",
     year: "2026",
     blurb:
       "Robotic drawing as a stroke-level TSP, solved by a learned router instead of a slow classical solver — same quality, roughly 20× faster.",
@@ -399,9 +399,9 @@ export const projects: Project[] = [
       "Formulated at stroke level rather than point level, with forward/reverse direction optimization to cut pen-ups and travel.",
       "Graph Neural Network + Pointer Network trained in two phases: imitation learning from classical solvers, then reinforcement learning.",
       "Curriculum learning scales to 300+ strokes; ~150 ms inference per drawing, matching simulated-annealing quality ~20× faster.",
-      "Driven onto an ABB IRB140 arm through a control and UI layer.",
+      "Exported as ABB RAPID and executed by a simulated IRB140 in CoppeliaSim — no physical arm has run it."
     ],
-    tech: ["PyTorch", "PyTorch Geometric", "GNN", "Pointer Network", "RL", "ABB IRB140"],
+    tech: ["PyTorch", "PyTorch Geometric", "GNN", "Pointer Network", "RL", "CoppeliaSim", "ABB RAPID"],
     link: "https://github.com/00PrabalK00/RobotDrawing",
     linkLabel: "Repository",
     accent: "#2DD4BF",
@@ -790,34 +790,34 @@ export const mediaSlots: MediaSlot[] = [
     file: "so101-cameras.jpg",
     type: "image",
     caption: "SO101 camera evidence — front RealSense and wrist views",
-    group: "Ripple",
+    group: "SO101",
     span: "wide",
   },
   {
     file: "so101-hardware.jpg",
     type: "image",
     caption: "SO101 hardware evidence from the real-arm setup",
-    group: "Ripple",
+    group: "SO101",
   },
   {
     file: "so101-rollout.mp4",
     type: "video",
     caption: "SO101 real-arm rollout",
-    group: "Ripple",
+    group: "SO101",
     span: "hero",
   },
   {
     file: "ripple-architecture.png",
     type: "image",
     caption: "Ripple recovery-condition comparison: cost, scene outcomes, probes, pooled results",
-    group: "Ripple",
+    group: "SO101",
     span: "hero",
   },
   {
     file: "ripple-results.png",
     type: "image",
     caption: "Ripple injected pooled recovery result",
-    group: "Ripple",
+    group: "SO101",
     span: "wide",
   },
   {
@@ -928,11 +928,9 @@ export const mediaSlots: MediaSlot[] = [
 
   { file: "vtol-flight.mp4", type: "video", caption: "VTOL flight test", group: "UAV", span: "wide" },
 
-  { file: "robotdrawing-abb.mp4", type: "video", caption: "ABB IRB140 drawing a learned stroke route", group: "Hardware", span: "wide" },
   { file: "opendronekit-ui.jpg", type: "image", caption: "OpenDroneKit — inspection workbench UI", group: "Hardware", span: "wide" },
   { file: "odk-mission.jpg", type: "image", caption: "OpenDroneKit — mission planning map and panels", group: "Hardware", span: "wide" },
   { file: "odk-reconstruction.jpg", type: "image", caption: "OpenDroneKit — survey operations and reconstruction workspace", group: "Hardware", span: "wide" },
-  { file: "prabalos-ui.png", type: "image", caption: "PrabalOS terminal portfolio surface", group: "Tooling", span: "wide" },
   { file: "continuum-extension.png", type: "image", caption: "Continuum Extension — browser-native agent context panel", group: "Tooling", span: "wide" },
   { file: "continuum-ui.png", type: "image", caption: "Continuum — local shared-memory control center", group: "Tooling", span: "wide" },
 
@@ -970,7 +968,6 @@ export const SHIPPED_MEDIA = new Set([
   "opendronekit-ui.jpg",
   "odk-mission.jpg",
   "odk-reconstruction.jpg",
-  "prabalos-ui.png",
   "continuum-extension.png",
   "continuum-ui.png",
 ]);

@@ -127,9 +127,12 @@ export const prabalos: Project = {
   ],
 
   gallery: [
-    { file: "prabalos-hardware.jpg", type: "image", caption: "The device", pending: true },
-    { file: "prabalos-ui.png", type: "image", caption: "The control panel" },
-    { file: "prabalos-drawing.mp4", type: "video", caption: "Drawing and voice note arriving on the device", pending: true },
+    {
+      file: "prabalos-hardware.jpg",
+      type: "image",
+      caption:
+        "The device — presence, both timezones side by side, and two buttons that need no explaining to use",
+    },
   ],
 
   attribution: [

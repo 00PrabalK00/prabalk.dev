@@ -1,5 +1,15 @@
 import type { Project, ProjectCategory } from "./types";
+import { botopsy } from "./botopsy";
+import { claudeskills } from "./claudeskills";
 import { continuum } from "./continuum";
+import { continuumext } from "./continuumext";
+import { contractencrypt } from "./contractencrypt";
+import { facetrack } from "./facetrack";
+import { gesturecar } from "./gesturecar";
+import { infrencex } from "./infrencex";
+import { nextekf } from "./nextekf";
+import { nexthi } from "./nexthi";
+import { smr300sim } from "./smr300sim";
 import { flowpilot } from "./flowpilot";
 import { httpsota } from "./httpsota";
 import { kurat } from "./kurat";
@@ -34,6 +44,8 @@ export const PROJECTS: Project[] = [
   rosscope,
   kurat,
   mira,
+  nextekf,
+  nexthi,
   // Autonomy and perception
   opendronekit,
   robotdrawing,
@@ -41,9 +53,18 @@ export const PROJECTS: Project[] = [
   pushpak,
   // Developer and robotics infrastructure
   continuum,
+  continuumext,
   flowpilot,
   prabalos,
   httpsota,
+  infrencex,
+  botopsy,
+  // Lab bench
+  contractencrypt,
+  facetrack,
+  gesturecar,
+  smr300sim,
+  claudeskills,
 ];
 
 /* ------------------------------------------------------------------ */

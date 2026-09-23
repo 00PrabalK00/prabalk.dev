@@ -206,7 +206,8 @@ export const smr300: Project = {
     {
       file: "smr300-nodered.jpg",
       type: "image",
-      caption: "Node-RED — the guarded robot task queue flow",
+      caption:
+        "FlowPilot's control plane over the Node-RED flow — the guarded SMR300 task queue, with validation and snapshot/rollback beside it",
     },
   ],
 

@@ -36,7 +36,7 @@ export const ripple: Project = {
     "A robot stops. Ripple works out why, recovers within limits you set, asks a person when the problem is physical, and remembers what worked at that spot.",
 
   summary:
-    "Ripple watches a Nav2 robot, diagnoses why it stopped, and recovers inside a budget you configure — clearing costmaps, probing routes, routing around a tight spot, backing out under teleop. When the evidence says the problem is physical, it stops and asks an engineer in plain words. Every closed incident leaves a lesson attached to that place, so the same corner does not cost the same time twice. A separate research arm asks whether interventions like these actually raise task success on frozen learned policies.",
+    "Ripple watches a Nav2 robot, diagnoses why it stopped, and recovers inside a budget you configure — clearing costmaps, probing routes, routing around a tight spot, backing out under teleop. When the evidence says the problem is physical, it stops and asks an engineer in plain words. Every closed incident leaves a lesson attached to that place, so the same corner does not cost the same time twice.",
 
   links: [
     { label: "Live site", href: "https://ripple.prabalkhare.com", kind: "site" },
@@ -221,13 +221,6 @@ export const ripple: Project = {
         "So: lessons come only from outcomes the edge verified and from allowlisted people, each lists its evidence, and they are shown to the model as data and never as permissions. Repeated trouble becomes a suggestion for a person — a keepout, a slow zone — which Ripple never applies itself.",
       ],
     },
-    {
-      heading: "The research arm: does recovery change the outcome?",
-      body: [
-        "Separately from the Nav2 product, the same question is asked of frozen learned policies. A policy that cannot be retrained mid-deployment will still fail; the experiments hold the policy fixed so the intervention is the only variable, and measure final task success rather than whether the recovery executed.",
-        "That work runs against Cosmos Policy and SmolVLA with LeRobot LIBERO processing, under paired evaluation, corrected episode seeding, recorded policy identity and an agent call ledger — infrastructure built because an early seed bug showed the evaluator could produce the result on its own.",
-      ],
-    },
   ],
 
   metrics: [
@@ -267,34 +260,13 @@ export const ripple: Project = {
         "A second, stock-Nav2 profile was run against the same system using only a new `ripple.json`.",
       result: "Runs with no code changes. 9/9 on profile and memory checks.",
     },
-    {
-      name: "Recovery over frozen policies (research arm)",
-      question:
-        "When a frozen learned policy fails, does an external recovery raise final task success?",
-      method:
-        "Paired evaluation over Cosmos Policy and SmolVLA against natural and injected failure streams, with fixed-recovery, agent-selected and retry baselines under seed control.",
-      result:
-        "Sometimes, and not uniformly. Against paired B0 episodes, two conditions raise task success (0.54 → 0.83), two leave it unchanged, and two lower it (0.50 → 0.33, and 0.33 → 0.17). A verified physical repair does not necessarily restore task success — fixing the world is not the same as fixing the rollout.",
-      negative: true,
-    },
-    {
-      name: "Cross-model memory transfer (research arm)",
-      question:
-        "Does memory accumulated under one policy improve competence under another?",
-      method: "Transfer measured against unaided baselines across policies.",
-      result:
-        "Memory transfer moves information across models without demonstrating reliable competence improvement.",
-      negative: true,
-    },
   ],
 
   limitations: [
     "One robot, in simulation. Ripple has not been run on physical hardware.",
     "AMCL can lose track while the robot spins in a tight dock. Recovering needs a person to re-seed the pose, plus a costmap clear for the obstacle marks laid down while it was lost.",
     "Site learning saves a step rather than a large amount of time — 27–29 s per incident either way in the recorded run.",
-    "The research arm's findings are the negative ones above; recovery is not shown to reliably convert a failed episode into a successful task.",
-    "Several recovery conditions were evaluated at n=6, where the Wilson intervals are wide enough to overlap almost everything. The two conditions with n=24 are the only ones carrying much weight.",
-    "Research-side experiments live in a private repository, so the numbers behind them are not independently checkable from the public source.",
+    "The frozen-policy recovery experiments that grew out of this work are reported under SO101, where the arm and the evaluation live.",
   ],
 
   gallery: [
@@ -334,17 +306,6 @@ export const ripple: Project = {
       caption:
         "`ripple setup` on the simulated robot — keys stay masked, the live ROS graph is crawled, and doctor checks every entry against the robot",
     },
-    {
-      file: "ripple-architecture.png",
-      type: "image",
-      caption: "Orchestrator, edge and site memory",
-    },
-    {
-      file: "ripple-results.png",
-      type: "image",
-      caption:
-        "Injected-release conditions, each paired against the same B0 episodes, with Wilson 95% intervals and n on every bar. B1 and B3 raise task success; B4 and B4b lower it; B2 and B5v1 do not move it. This plot is the whole answer to whether recovery helps — sometimes",
-    },
   ],
 
   timeline: [
@@ -362,8 +323,7 @@ export const ripple: Project = {
     },
     {
       kind: "experiment-by-me",
-      detail:
-        "The live simulator runs, the site-learning measurements, and the frozen-policy recovery and memory-transfer experiments, including the negative results.",
+      detail: "The live simulator runs and the site-learning measurements.",
     },
     {
       kind: "based-on-external-research",
@@ -372,5 +332,5 @@ export const ripple: Project = {
     },
   ],
 
-  related: ["rosscope", "smr300", "so101"],
+  related: ["so101", "rosscope", "smr300"],
 };

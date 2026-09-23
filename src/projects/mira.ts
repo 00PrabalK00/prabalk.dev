@@ -105,10 +105,13 @@ export const mira: Project = {
 
   gallery: [
     { file: "MIRA_AUV.jpeg", type: "image", caption: "Project MIRA — extruded aluminium frame, ducted thrusters, domed pressure housings" },
-    { file: "VideoOfUsDoingAutonomousDockingAUV.mp4", type: "video", caption: "Autonomous docking run" },
+    {
+      file: "VideoOfUsDoingAutonomousDockingAUV.mp4",
+      type: "video",
+      caption: "Underwater — an autonomous docking run",
+    },
     { file: "TAC_PhotowithThrophy.jpeg", type: "image", caption: "TAC Challenge, Norway 2024" },
     { file: "mira-electronics.jpg", type: "image", caption: "Electronics stack inside the pressure hull", pending: true },
-    { file: "mira-underwater.mp4", type: "video", caption: "Underwater footage", pending: true },
   ],
 
   attribution: [

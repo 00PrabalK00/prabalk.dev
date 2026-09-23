@@ -23,7 +23,7 @@ export const so101: Project = {
     "Before a manipulation policy can be judged, the pipeline feeding it has to be proven correct — so the first result here is that replayed actions reproduce their demonstrations.",
 
   summary:
-    "A manipulation direction built on the LeRobot SO101 platform: hardware bring-up, a two-camera setup, SmolVLA training, and MuJoCo evaluation. The validated work so far is infrastructural — dataset checks, action replay, camera and normalisation verification — which is what has to be true before any policy number means anything.",
+    "A manipulation direction built on the LeRobot SO101 platform: hardware bring-up, a two-camera setup, SmolVLA training and MuJoCo evaluation. The validated work is infrastructural — dataset checks, action replay, camera and normalisation verification — which is what has to be true before any policy number means anything. On top of that sits the question the recovery experiments ask: when a frozen policy fails, does intervening actually raise task success?",
 
   links: [],
 
@@ -61,6 +61,13 @@ export const so101: Project = {
   },
 
   deepDive: [
+    {
+      heading: "Does recovery change the outcome?",
+      body: [
+        "A policy that cannot be retrained mid-deployment will still fail. The experiments hold the policy frozen so the intervention is the only variable, and score final task success rather than whether the recovery executed — because those two come apart, and only one of them is what the robot was sent to do.",
+        "Run against Cosmos Policy and SmolVLA with LeRobot LIBERO processing, under paired evaluation, corrected episode seeding, recorded policy identity and an agent call ledger. That infrastructure exists because an early seed bug showed the evaluator was capable of producing the result on its own.",
+      ],
+    },
     {
       heading: "Ruling out the wiring before blaming the policy",
       body: [
@@ -114,7 +121,32 @@ export const so101: Project = {
     },
   ],
 
+  experiments: [
+    {
+      name: "Recovery over frozen policies",
+      question:
+        "When a frozen learned policy fails, does an external recovery raise final task success?",
+      method:
+        "Paired evaluation over Cosmos Policy and SmolVLA against natural and injected failure streams, with fixed-recovery, agent-selected and retry baselines under seed control.",
+      result:
+        "Sometimes, and not uniformly. Against paired B0 episodes, two conditions raise task success (0.54 → 0.83), two leave it unchanged, and two lower it (0.50 → 0.33, and 0.33 → 0.17). A verified physical repair does not necessarily restore task success — fixing the world is not the same as fixing the rollout.",
+      negative: true,
+    },
+    {
+      name: "Cross-model memory transfer",
+      question:
+        "Does memory accumulated under one policy improve competence under another?",
+      method: "Transfer measured against unaided baselines across policies.",
+      result:
+        "Memory transfer moves information across models without demonstrating reliable competence improvement.",
+      negative: true,
+    },
+  ],
+
   limitations: [
+    "Several recovery conditions were evaluated at n=6, where the Wilson intervals are wide enough to overlap almost everything. The two conditions at n=24 are the only ones carrying much weight.",
+    "Recovery is not shown to reliably convert a failed episode into a successful task; two of the conditions tested made it worse.",
+    "The recovery experiments live in a private repository, so the numbers behind them are not independently checkable from public source.",
     "No policy performance claim is made yet. The validated work is infrastructural.",
     "Evaluation is in MuJoCo; real-robot deployment is in preparation, not done.",
     "Active research — nothing here should be read as a final result.",
@@ -136,6 +168,18 @@ export const so101: Project = {
       file: "so101-rollout.mp4",
       type: "video",
       caption: "A SmolVLA rollout on the SO101",
+    },
+    {
+      file: "ripple-results.png",
+      type: "image",
+      caption:
+        "Injected-release conditions, each paired against the same B0 episodes, with Wilson 95% intervals and n on every bar. B1 and B3 raise task success; B4 and B4b lower it; B2 and B5v1 do not move it — which is the whole answer to whether an external recovery helps",
+    },
+    {
+      file: "ripple-architecture.png",
+      type: "image",
+      caption:
+        "The wider sweep — success against agent cost per stream, per-scene outcomes, cost against success, and held-out probes under frozen memory",
     },
   ],
 

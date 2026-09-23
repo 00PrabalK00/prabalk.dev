@@ -5,7 +5,6 @@ import {
   education,
   experience,
   honors,
-  benchProjects,
   mediaSlots,
   patents,
   profile,
@@ -120,7 +119,13 @@ const CASE_STUDY_SLUGS: Record<string, string> = {
   "Recalibration-Free Stereo PTU": "stereoptu",
   "Autonomous VTOL UAV": "pushpak",
   Continuum: "continuum",
+  "Continuum Extension": "continuum-extension",
   FlowPilot: "flowpilot",
+  next_EKF: "next-ekf",
+  next_HI: "next-hi",
+  "InfrenceX CLI": "infrencex",
+  "Botopsy Lab": "botopsy",
+  ContractEncrypt: "contractencrypt",
 };
 
 /** Patents are all filed under one group, so they match on filename instead. */
@@ -324,6 +329,11 @@ function Work() {
     (a, b) => a.order - b.order,
   );
 
+  // The bench is driven by the manifests now, so each entry has a case study.
+  const bench = PROJECTS.filter((p) => p.category === "bench").sort(
+    (a, b) => a.order - b.order,
+  );
+
   return (
     <div>
       <PanelHeading>Current research</PanelHeading>
@@ -351,7 +361,7 @@ function Work() {
         ))}
       </div>
 
-      <PanelHeading>Selected work</PanelHeading>
+      <PanelHeading>Projects and professional experience</PanelHeading>
 
       <div className="space-y-10">
         {/*
@@ -390,69 +400,55 @@ function Work() {
         ))}
       </div>
 
-      <PanelHeading className="mt-14">Everything else</PanelHeading>
-
       {/*
-       * The long tail is real work but it is not what anyone came for, so it
-       * gets a two-column list rather than seventeen more entry rows.
+       * The rest of the work, in the same row as everything above it. These
+       * used to be a compact two-column list on the theory that the long tail
+       * is not what anyone came for — but every one of them now has a case
+       * study behind it, and presenting them as a denser tier made them look
+       * like offcuts rather than projects.
        */}
-      <ul className="grid gap-x-8 gap-y-5 sm:grid-cols-2">
+      <div className="mt-10 space-y-10">
         {rest.map((p) => (
-          <li key={p.name}>
-            <p className="text-[14px] font-semibold">
-              {p.name}
-              <span className="font-normal text-zinc-500"> · {p.year}</span>
-            </p>
-            <p className="mt-0.5 text-[13px] leading-[1.6] text-zinc-600">{p.kind}</p>
-            <p className="mt-1 text-[12px] leading-[1.6] text-zinc-500">
-              {p.tech.slice(0, 5).join(" · ")}
-            </p>
-            <span className="mt-1 flex flex-wrap items-baseline gap-x-3">
-              {CASE_STUDY_SLUGS[p.name] && (
-                <a
-                  href={projectUrl(CASE_STUDY_SLUGS[p.name])}
-                  className="text-[12px] font-medium text-[#06636f] underline-offset-4 hover:underline"
-                >
-                  Case study →
-                </a>
-              )}
-              {p.link && (
-                <a
-                  href={p.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[12px] text-[#06636f] underline-offset-4 hover:underline"
-                >
-                  {p.linkLabel ?? "Link"} ↗
-                </a>
-              )}
-            </span>
-          </li>
+          <Entry
+            key={p.name}
+            title={p.name}
+            subtitle={p.kind}
+            meta={p.year}
+            blurb={p.blurb}
+            bullets={p.bullets}
+            tech={p.tech}
+            media={mediaForEntry(p.name, CASE_STUDY_SLUGS[p.name])}
+            caseStudy={CASE_STUDY_SLUGS[p.name]}
+            link={p.link}
+            linkLabel={p.linkLabel}
+          />
         ))}
-      </ul>
+      </div>
+
+      <PanelHeading className="mt-14">Lab bench</PanelHeading>
 
       {/*
-       * The bench. These are not competing with the work above and should not
-       * look like they are — the distinction is that the projects above show
-       * capability and these show breadth and chronology.
+       * Smaller builds, same row. The distinction the report draws is that the
+       * projects above show capability and these show breadth and chronology —
+       * which is a difference in what they prove, not in how carefully they
+       * should be presented.
        */}
-      <PanelHeading className="mt-14">Lab bench</PanelHeading>
-      <ul className="grid gap-x-8 gap-y-4 sm:grid-cols-2">
-        {benchProjects.map((b) => (
-          <li key={b.name}>
-            <a
-              href={b.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[14px] font-medium text-[#06636f] underline-offset-4 hover:underline"
-            >
-              {b.name} ↗
-            </a>
-            <p className="mt-0.5 text-[13px] leading-[1.6] text-zinc-600">{b.desc}</p>
-            <p className="mt-0.5 text-[12px] text-zinc-500">{b.tech}</p>
-          </li>
+      <div className="space-y-10">
+        {bench.map((p) => (
+          <Entry
+            key={p.slug}
+            title={p.title}
+            subtitle={p.subtitle}
+            meta={p.year}
+            blurb={p.summary}
+            tech={p.stack}
+            media={mediaForEntry(p.title, p.slug)}
+            caseStudy={p.slug}
+            link={p.links.find((l) => l.kind === "repo" || l.kind === "site")?.href}
+            linkLabel={p.links.find((l) => l.kind === "repo" || l.kind === "site")?.label}
+          />
         ))}
-      </ul>
+      </div>
     </div>
   );
 }

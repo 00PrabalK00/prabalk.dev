@@ -189,11 +189,11 @@ export const opendronekit: Project = {
 
   gallery: [
     { file: "opendronekit-ui.jpg", type: "image", caption: "The operator UI" },
-    { file: "odk-mission.jpg", type: "image", caption: "Terrain-aware mission planning" },
     {
-      file: "odk-reconstruction.jpg",
+      file: "odk-mission.jpg",
       type: "image",
-      caption: "Reconstruction outputs — orthomosaic, DSM, hillshade",
+      caption:
+        "A survey flown over example data — the banner is the system's own, and it says so rather than implying a live connection",
     },
     {
       file: "odk-defects.jpg",

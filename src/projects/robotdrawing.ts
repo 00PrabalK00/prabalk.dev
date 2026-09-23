@@ -21,7 +21,7 @@ export const robotdrawing: Project = {
   slug: "robotdrawing",
   subdomain: "robotdrawing",
   title: "RobotDrawing",
-  subtitle: "Learned stroke routing for an ABB IRB140",
+  subtitle: "Learned stroke routing for a simulated ABB IRB140",
   status: "completed",
   year: "2026",
   role: "Author",
@@ -48,7 +48,8 @@ export const robotdrawing: Project = {
     "GNN",
     "Pointer Network",
     "Reinforcement learning",
-    "ABB IRB140",
+    "CoppeliaSim",
+    "ABB RAPID",
   ],
 
   problem: {
@@ -66,10 +67,11 @@ export const robotdrawing: Project = {
       "Stroke-level formulation with forward/reverse direction optimisation to cut pen-ups and travel",
       "GNN + Pointer Network trained in two phases: imitation learning warm-started from the classical solvers, then reinforcement learning",
       "Curriculum learning from simple to complex graphs",
+      "RAPID export with configurable module, reference point, tool and velocity",
       "Greedy nearest-neighbour and simulated-annealing baselines",
       "A 28-image batch harness reporting pen-ups, pen-up distance, continuity and runtime per method",
       "Feature and flooding ablations",
-      "Control and UI layer driving an ABB IRB140 arm",
+      "A stroke-planning UI that exports ABB RAPID and drives an IRB140 in CoppeliaSim",
     ],
   },
 
@@ -99,7 +101,7 @@ export const robotdrawing: Project = {
             { label: "Learned router (GNN + Pointer Net) — 10.9 s, 28.8 pen-ups", tone: "bad" },
           ] },
         { label: "Direction flipping", detail: "Forward/reverse optimisation to cut pen-ups and travel." },
-        { label: "Drive the ABB IRB140", detail: "Through the control and UI layer.", tone: "good" },
+        { label: "Export RAPID and draw it", detail: "The planned order is exported as an ABB RAPID module and executed by a simulated IRB140 in CoppeliaSim. No physical arm has run this.", tone: "good" },
       ],
     },
   ],
@@ -153,7 +155,7 @@ export const robotdrawing: Project = {
     "The repository README advertises ~150 ms inference and a 20× speedup over SA. The committed batch results do not reproduce that, and the two have not been reconciled — the 150 ms may measure model inference alone, excluding stroke extraction and post-processing, but nothing in the repository establishes it.",
     "The learned router loses to simulated annealing on quality and to greedy nearest-neighbour on speed on this benchmark.",
     "28 images is a small benchmark, and pen-up counts vary enormously across them (0 to 302), so the averages hide a wide spread.",
-    "Deployment on the ABB IRB140 demonstrates execution, not an advantage over the classical baselines.",
+    "The IRB140 is simulated in CoppeliaSim. RAPID is exported for a real controller, but no physical arm has ever executed one of these drawings — so nothing here is evidence about real-world tracking, pen pressure or mechanical repeatability.",
   ],
 
   gallery: [
@@ -174,15 +176,25 @@ export const robotdrawing: Project = {
       caption: "Pen-up counts by method — lower is better",
     },
     {
-      file: "robotdrawing-abb.mp4",
-      type: "video",
-      caption: "ABB IRB140 executing a stroke order",
-      pending: true,
+      file: "robotdrawing-sim.png",
+      type: "image",
+      caption:
+        "A simulated IRB140 with a felt pen drawing the planned stroke order in CoppeliaSim — the only arm that has ever executed one of these routes",
+    },
+    {
+      file: "robotdrawing-ui.png",
+      type: "image",
+      caption:
+        "The stroke-planning UI — contour graph and routed order for one image, solver selection, and the RAPID export panel that targets a real controller",
     },
   ],
 
   attribution: [
-    { kind: "built-by-me", detail: "Formulation, models, training, benchmark harness and the ABB control layer." },
+    {
+      kind: "built-by-me",
+      detail:
+        "Formulation, models, training, the benchmark harness, the stroke-planning UI and the RAPID export and CoppeliaSim integration.",
+    },
     {
       kind: "experiment-by-me",
       detail:
