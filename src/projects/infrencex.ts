@@ -43,6 +43,15 @@ export const infrencex: Project = {
     ],
   },
 
+  gallery: [
+    {
+      file: "infrencex-cli.jpg",
+      type: "image",
+      caption:
+        "The project's own render of the TUI — cost and model shown in the status line, which is the part that makes routing decisions visible",
+    },
+  ],
+
   limitations: [
     "Routing quality depends on the market's availability signals; a provider that is listed but degraded still has to be discovered by failing.",
   ],

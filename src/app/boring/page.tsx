@@ -320,7 +320,18 @@ function Header() {
 
 function Work() {
   const featured = projects.filter((p) => p.featured);
-  const rest = projects.filter((p) => !p.featured);
+  /*
+   * The bench section renders its own projects from the manifests, so anything
+   * whose manifest lives in that category has to come out of here — otherwise
+   * it appears twice on the same page, which is what happened to
+   * ContractEncrypt.
+   */
+  const benchSlugs = new Set(
+    PROJECTS.filter((p) => p.category === "bench").map((p) => p.slug),
+  );
+  const rest = projects.filter(
+    (p) => !p.featured && !benchSlugs.has(CASE_STUDY_SLUGS[p.name] ?? ""),
+  );
 
   // Current research leads. A visitor should read where the work is going
   // before they read where it has been, which is the opposite of the order a

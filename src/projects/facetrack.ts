@@ -31,6 +31,15 @@ export const facetrack: Project = {
 
   limitations: ["A bench exercise. No smoothing, no prediction, and it loses the face the moment detection drops a frame."],
 
+  gallery: [
+    {
+      file: "facetrack-demo.mp4",
+      type: "video",
+      caption:
+        "The whole loop on a desk — OpenCV finding a face on screen while the servos below follow it over serial",
+    },
+  ],
+
   attribution: [{ kind: "built-by-me", detail: "Both halves." }],
 
   related: [],

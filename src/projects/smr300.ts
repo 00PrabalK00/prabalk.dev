@@ -204,6 +204,12 @@ export const smr300: Project = {
         "Operator control plane mid-run — live LiDAR return, planned path, saved zones, and the robot aligning to a shelf point under AUTO",
     },
     {
+      file: "smr300-map.png",
+      type: "image",
+      caption:
+        "An occupancy grid built on the factory floor — the map the operator platform edits and Nav2 plans against",
+    },
+    {
       file: "smr300-nodered.jpg",
       type: "image",
       caption:
