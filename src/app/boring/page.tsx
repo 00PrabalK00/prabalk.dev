@@ -156,7 +156,14 @@ export default function Boring() {
       <div className="min-h-dvh bg-white text-zinc-900">
         <EscapeHatch />
 
-        <div className="mx-auto max-w-4xl px-6 py-12 sm:py-16">
+        {/*
+         * Left-aligned rather than centred. On a wide screen a centred 4xl
+         * column leaves a large empty margin on both sides, and the eye has to
+         * travel to find where the page starts. Anchoring it to the left keeps
+         * the measure readable while letting the text begin where the reader is
+         * already looking.
+         */}
+        <div className="max-w-5xl px-6 py-12 sm:px-10 sm:py-16 lg:px-16">
           <Header />
 
           {/*

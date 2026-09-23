@@ -45,7 +45,7 @@ export function CaseStudy({ project: p }: { project: Project }) {
        * you on the subdomain, where neither route exists.
        */}
       <div className="sticky top-0 z-50 border-b border-zinc-200 bg-white/95 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-6 py-3">
+        <div className="flex max-w-7xl items-center justify-between gap-3 px-6 py-3 sm:px-10 lg:px-16">
           <a
             href="https://www.prabalkhare.com/boring"
             className="group inline-flex items-center gap-1.5 rounded-[3px] border border-[#c4ebee] bg-[#f2fbfb] px-2.5 py-1.5 text-[13px] font-medium text-[#06636f] transition-colors hover:border-[#51e2f5]"
@@ -78,7 +78,7 @@ export function CaseStudy({ project: p }: { project: Project }) {
        * collapses back above the content and the page is the single column it
        * always was.
        */}
-      <article className="mx-auto max-w-6xl px-6 py-14 sm:py-20">
+      <article className="max-w-7xl px-6 py-14 sm:px-10 sm:py-20 lg:px-16">
         <div className="lg:grid lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-14">
           <div className="lg:col-span-2">
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] text-zinc-500 lg:hidden">
