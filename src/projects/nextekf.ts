@@ -17,6 +17,7 @@ export const nextekf: Project = {
   role: "Author",
   category: "robot-systems",
   order: 5,
+  compact: true,
 
   thesis:
     "Most EKF tuning is a guess dressed as a covariance. This one measures the IMU's actual noise first, then hands the filter numbers it can trust.",

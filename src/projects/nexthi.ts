@@ -16,6 +16,7 @@ export const nexthi: Project = {
   role: "Author",
   category: "robot-systems",
   order: 6,
+  compact: true,
 
   thesis:
     "A ros2_control plugin that speaks Kinco CANopen and manages the CiA 402 state machine — including the parts of it that are ugly and load-bearing.",

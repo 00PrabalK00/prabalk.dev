@@ -445,6 +445,30 @@ function Work() {
         ))}
       </div>
 
+      <PanelHeading className="mt-14">Other fun projects</PanelHeading>
+
+      {/*
+       * Smaller builds, same row. These come before the compact list because
+       * they have something to show — a glove wired to a car, a face tracker on
+       * a desk — and a photograph of a thing that exists is worth more of the
+       * page than a line of text about a CLI.
+       */}
+      <div className="space-y-10">
+        {bench.map((p) => (
+          <Entry
+            key={p.slug}
+            title={p.title}
+            subtitle={p.subtitle}
+            meta={p.year}
+            blurb={p.summary}
+            tech={p.stack}
+            media={mediaForEntry(p.title, p.slug)}
+            caseStudy={p.slug}
+            link={p.links.find((l) => l.kind === "repo" || l.kind === "site")?.href}
+            linkLabel={p.links.find((l) => l.kind === "repo" || l.kind === "site")?.label}
+          />
+        ))}
+      </div>
       {/*
        * A list, not a row each. These are real projects with real case studies
        * behind them, but a CLI and a simulation package do not need a large
@@ -486,30 +510,6 @@ function Work() {
         ))}
       </ul>
 
-      <PanelHeading className="mt-14">Lab bench</PanelHeading>
-
-      {/*
-       * Smaller builds, same row. The distinction the report draws is that the
-       * projects above show capability and these show breadth and chronology —
-       * which is a difference in what they prove, not in how carefully they
-       * should be presented.
-       */}
-      <div className="space-y-10">
-        {bench.map((p) => (
-          <Entry
-            key={p.slug}
-            title={p.title}
-            subtitle={p.subtitle}
-            meta={p.year}
-            blurb={p.summary}
-            tech={p.stack}
-            media={mediaForEntry(p.title, p.slug)}
-            caseStudy={p.slug}
-            link={p.links.find((l) => l.kind === "repo" || l.kind === "site")?.href}
-            linkLabel={p.links.find((l) => l.kind === "repo" || l.kind === "site")?.label}
-          />
-        ))}
-      </div>
     </div>
   );
 }
