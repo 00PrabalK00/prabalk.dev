@@ -163,7 +163,7 @@ export default function Boring() {
          * the measure readable while letting the text begin where the reader is
          * already looking.
          */}
-        <div className="max-w-5xl px-6 py-12 sm:px-10 sm:py-16 lg:px-16">
+        <div className="max-w-[92rem] px-6 py-12 sm:px-10 sm:py-16 lg:px-16">
           <Header />
 
           {/*
@@ -274,9 +274,15 @@ function EscapeHatch() {
   );
 }
 
+/**
+ * The header block is centred even though the rest of the page is anchored
+ * left. It is the one part with no column beneath it to line up with, and a
+ * portrait plus five lines of bio stranded against the left edge of a very wide
+ * page reads as though something failed to load beside it.
+ */
 function Header() {
   return (
-    <header className="flex flex-col gap-7 sm:flex-row sm:items-start sm:gap-9">
+    <header className="mx-auto flex max-w-4xl flex-col gap-7 sm:flex-row sm:items-start sm:gap-9">
       <Image
         src="/media/portrait.jpg"
         alt={`${profile.name}, robotics software engineer`}
@@ -298,7 +304,7 @@ function Header() {
         <p className="mt-4 max-w-[52ch] text-[17px] leading-[1.5] font-medium text-zinc-900">
           {profile.headline}
         </p>
-        <p className="mt-3 max-w-[62ch] text-[15px] leading-[1.7] text-zinc-700">
+        <p className="mt-3 max-w-[78ch] text-[15px] leading-[1.7] text-zinc-700">
           {profile.tagline}
         </p>
 
@@ -881,14 +887,14 @@ function About() {
     <div>
       <PanelHeading>About</PanelHeading>
 
-      <p className="max-w-[68ch] text-[15px] leading-[1.7] text-zinc-700">
+      <p className="max-w-[86ch] text-[15px] leading-[1.7] text-zinc-700">
         Most recently I replaced a company&apos;s ROS 1 architecture with a ROS
         2 Humble stack for the SMR300, a 300 kg industrial AMR, LiDAR
         perception, PGV floor-tag localization, Nav2 navigation, CANopen and CiA
         402 drives, and an operator platform for engineers who don&apos;t write
         code. It docks with 97% success and 2 cm mean error across 150 trials.
       </p>
-      <p className="mt-3 max-w-[68ch] text-[15px] leading-[1.7] text-zinc-700">
+      <p className="mt-3 max-w-[86ch] text-[15px] leading-[1.7] text-zinc-700">
         Languages: {profile.languages.join(", ")}.
       </p>
 
