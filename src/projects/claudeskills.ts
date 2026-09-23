@@ -9,6 +9,7 @@ export const claudeskills: Project = {
   role: "Author",
   category: "bench",
   order: 5,
+  compact: true,
 
   thesis: "The tooling layer under my own workflow, extracted so it can be reused.",
 

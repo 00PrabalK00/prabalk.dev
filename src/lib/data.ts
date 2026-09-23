@@ -695,9 +695,9 @@ export const honors = [
     year: "2023",
   },
   {
-    title: "GEOFEST CMU 2020",
+    title: "GEOFEST 2020 — CMS Lucknow",
     result: "2nd Place",
-    body: "Carnegie Mellon University geoscience festival.",
+    body: "Geoscience festival at City Montessori School, Lucknow.",
     year: "2020",
   },
   {

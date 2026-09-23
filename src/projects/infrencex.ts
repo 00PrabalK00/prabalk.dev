@@ -10,6 +10,7 @@ export const infrencex: Project = {
   role: "Author",
   category: "infrastructure",
   order: 6,
+  compact: true,
 
   thesis:
     "A terminal coding agent that routes each task to whichever provider is cheapest and available, and fails over without losing the conversation.",

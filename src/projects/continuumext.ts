@@ -17,6 +17,7 @@ export const continuumext: Project = {
   role: "Author",
   category: "infrastructure",
   order: 5,
+  compact: true,
 
   thesis:
     "Pull context out of a PR, an AI chat or an error page and route it to an agent — with credentials stripped before it ever leaves the tab.",

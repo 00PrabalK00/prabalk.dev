@@ -47,6 +47,15 @@ export const botopsy: Project = {
     ],
   },
 
+  gallery: [
+    {
+      file: "botopsy-lab.png",
+      type: "image",
+      caption:
+        "The premise, stated on the front page — a broken ROS 2 system, the real tools, and a test that checks your fix rather than your answer",
+    },
+  ],
+
   limitations: [
     "Course and lab counts are the plan, not the shipped total.",
   ],

@@ -33,6 +33,14 @@ export const gesturecar: Project = {
     ],
   },
 
+  gallery: [
+    {
+      file: "gesture-car.jpg",
+      type: "image",
+      caption: "The glove and the car — an IMU on the back of the hand, the receiver on the chassis",
+    },
+  ],
+
   limitations: ["Bench project. No failsafe — losing the link does not stop the car."],
 
   attribution: [{ kind: "built-by-me", detail: "Glove, link and motor control." }],

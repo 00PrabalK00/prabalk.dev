@@ -181,6 +181,15 @@ export type Project = {
   category: ProjectCategory;
   /** Ordering within a category. Lower sorts first. */
   order: number;
+  /**
+   * Render as a line in a list rather than a full media row.
+   *
+   * Some projects are real and worth a case study without warranting a
+   * 420px-wide figure on the index — a CLI, a browser extension, a simulation
+   * package. Giving everything the same row made the index longer without
+   * making it more informative.
+   */
+  compact?: boolean;
 
   /** One sentence that could stand alone as the project's thesis. */
   thesis: string;

@@ -329,8 +329,17 @@ function Work() {
   const benchSlugs = new Set(
     PROJECTS.filter((p) => p.category === "bench").map((p) => p.slug),
   );
+  // Compact records are listed further down rather than given a media row.
+  const compactSlugs = new Set(
+    PROJECTS.filter((p) => p.compact).map((p) => p.slug),
+  );
+  const compact = PROJECTS.filter((p) => p.compact);
+
   const rest = projects.filter(
-    (p) => !p.featured && !benchSlugs.has(CASE_STUDY_SLUGS[p.name] ?? ""),
+    (p) =>
+      !p.featured &&
+      !benchSlugs.has(CASE_STUDY_SLUGS[p.name] ?? "") &&
+      !compactSlugs.has(CASE_STUDY_SLUGS[p.name] ?? ""),
   );
 
   // Current research leads. A visitor should read where the work is going
@@ -341,7 +350,7 @@ function Work() {
   );
 
   // The bench is driven by the manifests now, so each entry has a case study.
-  const bench = PROJECTS.filter((p) => p.category === "bench").sort(
+  const bench = PROJECTS.filter((p) => p.category === "bench" && !p.compact).sort(
     (a, b) => a.order - b.order,
   );
 
@@ -436,6 +445,47 @@ function Work() {
         ))}
       </div>
 
+      {/*
+       * A list, not a row each. These are real projects with real case studies
+       * behind them, but a CLI and a simulation package do not need a large
+       * figure on an index page to be understood.
+       */}
+      <PanelHeading className="mt-14">Also built</PanelHeading>
+      <ul className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+        {compact.map((p) => (
+          <li key={p.slug}>
+            <p className="text-[15px] font-semibold">
+              {p.title}
+              <span className="font-normal text-zinc-500"> · {p.year}</span>
+            </p>
+            <p className="mt-1 text-[13.5px] leading-[1.6] text-zinc-600">
+              {p.subtitle}
+            </p>
+            <p className="mt-1 text-[12.5px] leading-[1.6] text-zinc-500">
+              {p.stack.slice(0, 5).join(" · ")}
+            </p>
+            <span className="mt-1.5 flex flex-wrap items-baseline gap-x-3">
+              <a
+                href={projectUrl(p.slug)}
+                className="text-[13px] font-medium text-[#06636f] underline-offset-4 hover:underline"
+              >
+                Case study →
+              </a>
+              {p.links[0] && (
+                <a
+                  href={p.links[0].href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[13px] text-[#06636f] underline-offset-4 hover:underline"
+                >
+                  {p.links[0].label} ↗
+                </a>
+              )}
+            </span>
+          </li>
+        ))}
+      </ul>
+
       <PanelHeading className="mt-14">Lab bench</PanelHeading>
 
       {/*
@@ -498,7 +548,7 @@ function Entry({
   caseStudy?: string;
 }) {
   return (
-    <article className="grid gap-5 sm:grid-cols-[340px_1fr] sm:gap-8">
+    <article className="grid gap-5 sm:grid-cols-[420px_1fr] sm:gap-9">
       <Thumb media={media} fallback={subtitle} />
 
       <div className="min-w-0">
@@ -593,7 +643,7 @@ function Thumb({
 }) {
   if (!media) {
     return (
-      <div className="flex h-[200px] items-center justify-center rounded border border-dashed border-zinc-200 bg-zinc-50 px-4 sm:h-[218px]">
+      <div className="flex h-[248px] items-center justify-center rounded border border-dashed border-zinc-200 bg-zinc-50 px-4 sm:h-[270px]">
         <p className="text-center text-[13px] leading-[1.5] text-zinc-400">{fallback}</p>
       </div>
     );
@@ -619,7 +669,7 @@ function Thumb({
             alt={media.caption}
             width={680}
             height={454}
-            sizes="(min-width: 640px) 340px, 100vw"
+            sizes="(min-width: 640px) 420px, 100vw"
             loading="lazy"
             className="aspect-[3/2] w-full object-cover"
           />
@@ -692,7 +742,7 @@ function Patents() {
 
       <div className="space-y-10">
         {patents.map((pt) => (
-          <article key={pt.title} className="grid gap-5 sm:grid-cols-[340px_1fr] sm:gap-8">
+          <article key={pt.title} className="grid gap-5 sm:grid-cols-[420px_1fr] sm:gap-9">
             <Thumb media={mediaForPatent(pt.title)} fallback={pt.tags[0]} />
 
             <div className="min-w-0">

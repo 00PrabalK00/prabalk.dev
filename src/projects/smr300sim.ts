@@ -9,6 +9,7 @@ export const smr300sim: Project = {
   role: "Author",
   category: "bench",
   order: 4,
+  compact: true,
 
   thesis:
     "A factory floor is a bad place to find out an autonomy change was wrong, so the robot exists in Gazebo too.",

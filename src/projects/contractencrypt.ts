@@ -10,6 +10,7 @@ export const contractencrypt: Project = {
   role: "Author",
   category: "bench",
   order: 1,
+  compact: true,
 
   thesis:
     "Implement both schemes from the primitives, then attack them — because the interesting question is not which is faster but which assumption survives.",
