@@ -22,7 +22,7 @@ export const stereoptu: Project = {
     "A stereo pan-tilt unit whose extrinsics stay trustworthy as it moves, so the rig does not need to be recalibrated by hand every time it is used.",
 
   summary:
-    "A stereo pair on a pan-tilt mount with an IMU reference and a laser anchor for absolute correction, with a six-state EKF estimating and correcting the errors that normally force recalibration — servo backlash and drift. Evaluated in synthetic and real conditions with reprojection and ablation analysis.",
+    "A stereo pair on a pan-tilt mount with an IMU reference and a laser anchor for absolute correction, with a six-state EKF estimating and correcting the errors that normally force recalibration, servo backlash and drift. Evaluated in synthetic and real conditions with reprojection and ablation analysis.",
 
   links: [
     {
@@ -71,11 +71,29 @@ export const stereoptu: Project = {
         "The rig loses calibration the moment it moves. Rather than recalibrating by hand, the errors that cause the drift are estimated as part of the state.",
       steps: [
         { label: "Command a pan/tilt move" },
-        { label: "Servo backlash and drift accumulate", detail: "The extrinsics stop describing the actual geometry.", tone: "bad" },
-        { label: "Six-state EKF", detail: "Backlash estimated explicitly rather than assumed away; IMU (MPU9250) provides the inertial reference." },
-        { label: "Laser anchor correction", detail: "A VL53L0X range to a known anchor gives an absolute correction, not just a relative one." },
-        { label: "Depth from stereo", detail: "SGBM block matching fused with MiDaS monocular priors." },
-        { label: "Reprojection error stays bounded — no manual recalibration", tone: "good" },
+        {
+          label: "Servo backlash and drift accumulate",
+          detail: "The extrinsics stop describing the actual geometry.",
+          tone: "bad",
+        },
+        {
+          label: "Six-state EKF",
+          detail:
+            "Backlash estimated explicitly rather than assumed away; IMU (MPU9250) provides the inertial reference.",
+        },
+        {
+          label: "Laser anchor correction",
+          detail:
+            "A VL53L0X range to a known anchor gives an absolute correction, not just a relative one.",
+        },
+        {
+          label: "Depth from stereo",
+          detail: "SGBM block matching fused with MiDaS monocular priors.",
+        },
+        {
+          label: "Reprojection error stays bounded, no manual recalibration",
+          tone: "good",
+        },
       ],
     },
   ],
@@ -85,7 +103,10 @@ export const stereoptu: Project = {
       title: "The rig",
       head: ["Part", "Role"],
       rows: [
-        ["Stereo pair on a pan-tilt mount", "The sensor whose extrinsics are the problem"],
+        [
+          "Stereo pair on a pan-tilt mount",
+          "The sensor whose extrinsics are the problem",
+        ],
         ["MPU9250 IMU", "Inertial reference for the filter"],
         ["VL53L0X laser anchor", "Absolute correction against a known point"],
         ["Jetson Orin Nano", "Runs estimation and depth"],
@@ -114,7 +135,7 @@ export const stereoptu: Project = {
     {
       file: "stereoptu-rig.jpg",
       type: "image",
-      caption: "The rig — stereo pair on the pan-tilt mount, as modelled",
+      caption: "The rig, stereo pair on the pan-tilt mount, as modelled",
     },
     {
       file: "stereoptu-ablation.png",
@@ -131,7 +152,10 @@ export const stereoptu: Project = {
 
   attribution: [
     { kind: "built-by-me", detail: "Hardware, CAD, estimator and evaluation." },
-    { kind: "based-on-external-research", detail: "SGBM and MiDaS are upstream methods." },
+    {
+      kind: "based-on-external-research",
+      detail: "SGBM and MiDaS are upstream methods.",
+    },
   ],
 
   related: ["opendronekit", "smr300"],

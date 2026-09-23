@@ -69,49 +69,58 @@ export default function DrawingPanel({
     };
   }, [currentId]);
 
-  const render = useCallback((canvas: HTMLCanvasElement, data: string, scale: number) => {
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+  const render = useCallback(
+    (canvas: HTMLCanvasElement, data: string, scale: number) => {
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
 
-    canvas.width = W * scale;
-    canvas.height = H * scale;
+      canvas.width = W * scale;
+      canvas.height = H * scale;
 
-    // Same near-black as the device panel, so what arrives looks like what
-    // they drew rather than ink on white.
-    ctx.fillStyle = "#0a0d12";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+      // Same near-black as the device panel, so what arrives looks like what
+      // they drew rather than ink on white.
+      ctx.fillStyle = "#0a0d12";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    ctx.strokeStyle = "#e4ecf5";
-    ctx.lineWidth = 2.5 * scale;
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
+      ctx.strokeStyle = "#e4ecf5";
+      ctx.lineWidth = 2.5 * scale;
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
 
-    for (const stroke of data.split("|")) {
-      const points = stroke
-        .trim()
-        .split(" ")
-        .filter(Boolean)
-        .map((p) => p.split(",").map(Number))
-        .filter(([x, y]) => Number.isFinite(x) && Number.isFinite(y));
+      for (const stroke of data.split("|")) {
+        const points = stroke
+          .trim()
+          .split(" ")
+          .filter(Boolean)
+          .map((p) => p.split(",").map(Number))
+          .filter(([x, y]) => Number.isFinite(x) && Number.isFinite(y));
 
-      if (points.length === 0) continue;
+        if (points.length === 0) continue;
 
-      ctx.beginPath();
-      if (points.length === 1) {
-        // A single tap is a dot, not a zero-length line, which would draw
-        // nothing at all.
-        ctx.arc(points[0][0] * scale, points[0][1] * scale, 1.5 * scale, 0, Math.PI * 2);
-        ctx.fillStyle = "#e4ecf5";
-        ctx.fill();
-        continue;
+        ctx.beginPath();
+        if (points.length === 1) {
+          // A single tap is a dot, not a zero-length line, which would draw
+          // nothing at all.
+          ctx.arc(
+            points[0][0] * scale,
+            points[0][1] * scale,
+            1.5 * scale,
+            0,
+            Math.PI * 2,
+          );
+          ctx.fillStyle = "#e4ecf5";
+          ctx.fill();
+          continue;
+        }
+        ctx.moveTo(points[0][0] * scale, points[0][1] * scale);
+        for (let i = 1; i < points.length; i++) {
+          ctx.lineTo(points[i][0] * scale, points[i][1] * scale);
+        }
+        ctx.stroke();
       }
-      ctx.moveTo(points[0][0] * scale, points[0][1] * scale);
-      for (let i = 1; i < points.length; i++) {
-        ctx.lineTo(points[i][0] * scale, points[i][1] * scale);
-      }
-      ctx.stroke();
-    }
-  }, []);
+    },
+    [],
+  );
 
   useEffect(() => {
     if (canvasRef.current && strokes) render(canvasRef.current, strokes, SCALE);
@@ -148,8 +157,8 @@ export default function DrawingPanel({
   if (!drawing) {
     return (
       <p className="mono text-[11px] leading-relaxed text-mute">
-        Nothing drawn yet. On the device: DRAW, scribble with the stylus, SEND. Only the most
-        recent one is kept — download the ones worth keeping.
+        Nothing drawn yet. On the device: DRAW, scribble with the stylus, SEND.
+        Only the most recent one is kept, download the ones worth keeping.
       </p>
     );
   }
@@ -166,7 +175,9 @@ export default function DrawingPanel({
           })}
         </span>
         {!drawing.seen && (
-          <span className="mono text-[9px] uppercase tracking-[0.14em] text-violet-300">new</span>
+          <span className="mono text-[9px] uppercase tracking-[0.14em] text-violet-300">
+            new
+          </span>
         )}
       </div>
 

@@ -14,7 +14,7 @@ import { SITE_URL } from "@/lib/site";
  */
 
 export const metadata: Metadata = {
-  title: "Prabal Khare — Robotics Engineer & Embodied AI",
+  title: "Prabal Khare, Robotics Engineer & Embodied AI",
   description:
     "The full cinematic flight: a 300 kg AMR, six robots, and the autonomy stack behind them.",
   alternates: { canonical: `${SITE_URL}/cool-kids` },
@@ -29,8 +29,14 @@ const personSchema = {
   url: SITE_URL,
   sameAs: [profile.github, profile.linkedin, profile.youtube, profile.botopsy],
   alumniOf: [
-    { "@type": "CollegeOrUniversity", name: "Vellore Institute of Technology, Chennai" },
-    { "@type": "CollegeOrUniversity", name: "New York University, Tandon School of Engineering" },
+    {
+      "@type": "CollegeOrUniversity",
+      name: "Vellore Institute of Technology, Chennai",
+    },
+    {
+      "@type": "CollegeOrUniversity",
+      name: "New York University, Tandon School of Engineering",
+    },
   ],
   knowsAbout: [
     "ROS 2",

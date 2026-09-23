@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Prabal Khare — Portfolio",
+  title: "Prabal Khare, Portfolio",
   description:
     "Robotics software engineer. ROS 2 autonomy, localization, navigation and operator tooling. Experience, projects, patents and contact details.",
   alternates: { canonical: `${SITE_URL}/boring` },

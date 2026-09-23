@@ -15,7 +15,7 @@ export default function Smr300Section() {
       title="SMR300"
       kicker={smr300.blurb}
     >
-      {/* metrics — numbers in open space */}
+      {/* metrics, numbers in open space */}
       <div className="grid grid-cols-2 gap-x-10 gap-y-12 md:grid-cols-4">
         {smr300.metrics.map((m, i) => (
           <Reveal key={m.label} delay={i * 90}>
@@ -31,7 +31,7 @@ export default function Smr300Section() {
 
       <div className="hairline my-20" />
 
-      {/* engineering notes — long-form */}
+      {/* engineering notes, long-form */}
       <div className="grid gap-y-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-x-16">
         <div className="space-y-12">
           {smr300.highlights.map((h, i) => (
@@ -48,7 +48,7 @@ export default function Smr300Section() {
           ))}
         </div>
 
-        {/* stack — accordion without chrome */}
+        {/* stack, accordion without chrome */}
         <Reveal delay={80}>
           <div className="lg:pt-2">
             <div className="mono mb-8 text-[10px] tracking-[0.2em] uppercase text-mute">
@@ -59,7 +59,10 @@ export default function Smr300Section() {
               {smr300.stack.map((layer, i) => {
                 const open = openLayer === i;
                 return (
-                  <li key={layer.layer} className="border-t border-line/60 last:border-b">
+                  <li
+                    key={layer.layer}
+                    className="border-t border-line/60 last:border-b"
+                  >
                     <button
                       type="button"
                       onClick={() => setOpenLayer(open ? null : i)}
@@ -130,7 +133,7 @@ export default function Smr300Section() {
 
       <div className="hairline my-20" />
 
-      {/* four repos — editorial list */}
+      {/* four repos, editorial list */}
       <Reveal>
         <div className="mono mb-10 text-[10px] tracking-[0.2em] uppercase text-mute">
           Four repositories, one robot
@@ -167,12 +170,18 @@ export default function Smr300Section() {
         ))}
       </ul>
 
-      {/* media — the docking run leads, because it is the proof */}
+      {/* media, the docking run leads, because it is the proof */}
       <div className="mt-20 space-y-3 sm:space-y-4">
         <MediaSlot file="Shelf_Docking_SMR300.mp4" aspect="aspect-[16/9]" />
         <div className="grid gap-3 sm:gap-4 lg:grid-cols-2">
-          <MediaSlot file="SMR300_onFactoryFloor.jpeg" aspect="aspect-[16/10]" />
-          <MediaSlot file="UI_SMR300ControlPlane.jpeg" aspect="aspect-[16/10]" />
+          <MediaSlot
+            file="SMR300_onFactoryFloor.jpeg"
+            aspect="aspect-[16/10]"
+          />
+          <MediaSlot
+            file="UI_SMR300ControlPlane.jpeg"
+            aspect="aspect-[16/10]"
+          />
         </div>
         <MediaSlot file="PGV_Mode_SMR300.mp4" aspect="aspect-[16/9]" />
       </div>

@@ -28,7 +28,8 @@ export default async function LoginPage({
   // Only same-origin relative paths are honoured. Anything else — an absolute
   // URL, a protocol-relative "//evil.example" — falls back to /os, so this
   // parameter can never become an open redirect.
-  const target = next && /^\/(?!\/)[A-Za-z0-9/_\-?=&.]*$/.test(next) ? next : "/os";
+  const target =
+    next && /^\/(?!\/)[A-Za-z0-9/_\-?=&.]*$/.test(next) ? next : "/os";
 
   return (
     <main className="grid-paper-fine flex min-h-screen items-center justify-center bg-ink px-5">

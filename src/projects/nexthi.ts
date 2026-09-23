@@ -19,16 +19,27 @@ export const nexthi: Project = {
   compact: true,
 
   thesis:
-    "A ros2_control plugin that speaks Kinco CANopen and manages the CiA 402 state machine — including the parts of it that are ugly and load-bearing.",
+    "A ros2_control plugin that speaks Kinco CANopen and manages the CiA 402 state machine, including the parts of it that are ugly and load-bearing.",
 
   summary:
     "Velocity commands translated into Kinco CANopen frames over SocketCAN, with position integrated from velocity feedback. Automatic CiA 402 state management and fault-reset sequences, heartbeat monitoring to confirm drives are actually ready, and command gating that refuses motion during initialization or fault.",
 
   links: [
-    { label: "Repository", href: "https://github.com/00PrabalK00/next_HI", kind: "repo" },
+    {
+      label: "Repository",
+      href: "https://github.com/00PrabalK00/next_HI",
+      kind: "repo",
+    },
   ],
 
-  stack: ["ros2_control", "CANopen", "CiA 402", "SocketCAN", "SLAM Toolbox", "Nav2"],
+  stack: [
+    "ros2_control",
+    "CANopen",
+    "CiA 402",
+    "SocketCAN",
+    "SLAM Toolbox",
+    "Nav2",
+  ],
 
   problem: {
     heading: "Problem",
@@ -40,7 +51,9 @@ export const nexthi: Project = {
 
   built: {
     heading: "What I built",
-    body: ["A ros2_control hardware interface, and the safety behaviour around it."],
+    body: [
+      "A ros2_control hardware interface, and the safety behaviour around it.",
+    ],
     points: [
       "Velocity commands to Kinco CANopen frames over SocketCAN, position integrated from velocity feedback",
       "Automatic CiA 402 state management and fault-reset sequences",
@@ -61,7 +74,10 @@ export const nexthi: Project = {
         ["Drive still initializing", "Commands gated; no motion"],
         ["Any drive reporting a fault", "Gated, then automatic reset sequence"],
         ["Heartbeat missing", "Drive is not treated as ready"],
-        ["Lift actuator at a limit switch", "Enforced by its own driver, independently of the wheel drives"],
+        [
+          "Lift actuator at a limit switch",
+          "Enforced by its own driver, independently of the wheel drives",
+        ],
       ],
     },
   ],
@@ -71,8 +87,15 @@ export const nexthi: Project = {
   ],
 
   attribution: [
-    { kind: "built-by-me", detail: "The hardware interface, state machine handling, gating and the lift driver." },
-    { kind: "my-contribution-in-a-team", detail: "Built at Next Robotics Lab as part of the SMR300 deployment." },
+    {
+      kind: "built-by-me",
+      detail:
+        "The hardware interface, state machine handling, gating and the lift driver.",
+    },
+    {
+      kind: "my-contribution-in-a-team",
+      detail: "Built at Next Robotics Lab as part of the SMR300 deployment.",
+    },
   ],
 
   related: ["smr300", "next-ekf"],

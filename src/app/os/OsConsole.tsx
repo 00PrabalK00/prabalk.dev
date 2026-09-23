@@ -64,10 +64,13 @@ export default function OsConsole({ initial }: { initial: Overview }) {
     try {
       // Send the version we already have; the server answers "unchanged" for
       // two reads instead of re-fetching everything.
-      const res = await fetch(`/api/prabalos/admin/overview?v=${versionRef.current}`, {
-        headers: { [CSRF_HEADER]: "1" },
-        cache: "no-store",
-      });
+      const res = await fetch(
+        `/api/prabalos/admin/overview?v=${versionRef.current}`,
+        {
+          headers: { [CSRF_HEADER]: "1" },
+          cache: "no-store",
+        },
+      );
       if (res.status === 401) {
         router.replace("/login");
         return;
@@ -76,12 +79,21 @@ export default function OsConsole({ initial }: { initial: Overview }) {
 
       const payload = (await res.json()) as
         | (Overview & { unchanged?: false })
-        | { unchanged: true; version: number; health: Overview["health"]; now: number };
+        | {
+            unchanged: true;
+            version: number;
+            health: Overview["health"];
+            now: number;
+          };
 
       if ("unchanged" in payload && payload.unchanged) {
         // Only telemetry moved. Merge it rather than replacing state, so the
         // panels do not re-render for nothing.
-        setData((prev) => ({ ...prev, health: payload.health, now: payload.now }));
+        setData((prev) => ({
+          ...prev,
+          health: payload.health,
+          now: payload.now,
+        }));
         return;
       }
 
@@ -152,7 +164,9 @@ export default function OsConsole({ initial }: { initial: Overview }) {
 
       {flash && (
         <div className="fixed bottom-5 left-1/2 z-50 -translate-x-1/2 border border-accent bg-ink-2 px-4 py-2">
-          <span className="mono text-[11px] uppercase tracking-[0.16em] text-accent">{flash}</span>
+          <span className="mono text-[11px] uppercase tracking-[0.16em] text-accent">
+            {flash}
+          </span>
         </div>
       )}
 
@@ -164,7 +178,11 @@ export default function OsConsole({ initial }: { initial: Overview }) {
         <Device data={data} now={now} />
         <Security data={data} />
         <Panel title="Drawing from home">
-          <DrawingPanel drawing={data.drawing} onChanged={refresh} onFlash={say} />
+          <DrawingPanel
+            drawing={data.drawing}
+            onChanged={refresh}
+            onFlash={say}
+          />
         </Panel>
         <Panel title="Firmware">
           <FirmwarePanel
@@ -181,7 +199,12 @@ export default function OsConsole({ initial }: { initial: Overview }) {
 
 /* ------------------------------------------------------------------ */
 
-type Post = (path: string, body: unknown, label: string, note: string) => Promise<boolean>;
+type Post = (
+  path: string,
+  body: unknown,
+  label: string,
+  note: string,
+) => Promise<boolean>;
 
 function Header({
   health,
@@ -213,7 +236,7 @@ function Header({
           className={`mono flex items-center gap-1.5 text-[10px] uppercase tracking-[0.16em] ${
             live ? "text-pass" : "text-fault"
           }`}
-          title={`${deviceId} — ${seen ? `last seen ${fmtAge(age)} ago` : "never seen"}`}
+          title={`${deviceId}, ${seen ? `last seen ${fmtAge(age)} ago` : "never seen"}`}
         >
           <span
             className={`inline-block h-1.5 w-1.5 rounded-full ${live ? "bg-pass" : "bg-fault"}`}
@@ -246,18 +269,33 @@ function Panel({
   span?: boolean;
 }) {
   return (
-    <section className={`border border-line bg-ink-2 p-4 ${span ? "md:col-span-2" : ""}`}>
-      <h2 className="mono mb-3 text-[10px] uppercase tracking-[0.2em] text-mute">{title}</h2>
+    <section
+      className={`border border-line bg-ink-2 p-4 ${span ? "md:col-span-2" : ""}`}
+    >
+      <h2 className="mono mb-3 text-[10px] uppercase tracking-[0.2em] text-mute">
+        {title}
+      </h2>
       {children}
     </section>
   );
 }
 
-function Presence({ data, post, busy }: { data: Overview; post: Post; busy: string | null }) {
+function Presence({
+  data,
+  post,
+  busy,
+}: {
+  data: Overview;
+  post: Post;
+  busy: string | null;
+}) {
   const [place, setPlace] = useState(data.state.place);
   const [note, setNote] = useState(data.state.note);
   const [dirty, setDirty] = useState(false);
-  const [synced, setSynced] = useState({ place: data.state.place, note: data.state.note });
+  const [synced, setSynced] = useState({
+    place: data.state.place,
+    note: data.state.note,
+  });
 
   // Server state wins unless there are unsaved local edits — otherwise the 5 s
   // poll would yank characters out from under the cursor mid-sentence.
@@ -265,7 +303,10 @@ function Presence({ data, post, busy }: { data: Overview; post: Post; busy: stri
   // Adjusted during render rather than in an effect: React re-runs this
   // component before painting, so the boxes never flash the stale value, and
   // there is no cascading second render.
-  if (!dirty && (synced.place !== data.state.place || synced.note !== data.state.note)) {
+  if (
+    !dirty &&
+    (synced.place !== data.state.place || synced.note !== data.state.note)
+  ) {
     setSynced({ place: data.state.place, note: data.state.note });
     setPlace(data.state.place);
     setNote(data.state.note);
@@ -280,7 +321,14 @@ function Presence({ data, post, busy }: { data: Overview; post: Post; busy: stri
             <button
               key={s}
               disabled={busy !== null}
-              onClick={() => post("/api/prabalos/admin/state", { status: s }, "status", `→ ${s}`)}
+              onClick={() =>
+                post(
+                  "/api/prabalos/admin/state",
+                  { status: s },
+                  "status",
+                  `→ ${s}`,
+                )
+              }
               className={`mono border px-2 py-2 text-[10px] uppercase tracking-[0.1em] transition-colors ${
                 active
                   ? "border-accent bg-accent/15 text-accent"
@@ -305,7 +353,14 @@ function Presence({ data, post, busy }: { data: Overview; post: Post; busy: stri
             setDirty(true);
           }}
           onBlur={async () => {
-            if (await post("/api/prabalos/admin/state", { place }, "place", "Place saved"))
+            if (
+              await post(
+                "/api/prabalos/admin/state",
+                { place },
+                "place",
+                "Place saved",
+              )
+            )
               setDirty(false);
           }}
           placeholder="Brooklyn"
@@ -314,7 +369,9 @@ function Presence({ data, post, busy }: { data: Overview; post: Post; busy: stri
       </label>
 
       <label className="flex flex-col gap-1.5">
-        <span className="mono text-[10px] uppercase tracking-[0.16em] text-mute">Daily note</span>
+        <span className="mono text-[10px] uppercase tracking-[0.16em] text-mute">
+          Daily note
+        </span>
         <textarea
           value={note}
           maxLength={240}
@@ -324,7 +381,14 @@ function Presence({ data, post, busy }: { data: Overview; post: Post; busy: stri
             setDirty(true);
           }}
           onBlur={async () => {
-            if (await post("/api/prabalos/admin/state", { note }, "note", "Note saved"))
+            if (
+              await post(
+                "/api/prabalos/admin/state",
+                { note },
+                "note",
+                "Note saved",
+              )
+            )
               setDirty(false);
           }}
           placeholder="Classes until 3, lab after. Free to call after 8."
@@ -354,7 +418,15 @@ function Presence({ data, post, busy }: { data: Overview; post: Post; busy: stri
   );
 }
 
-function Compose({ data, post, busy }: { data: Overview; post: Post; busy: string | null }) {
+function Compose({
+  data,
+  post,
+  busy,
+}: {
+  data: Overview;
+  post: Post;
+  busy: string | null;
+}) {
   const [text, setText] = useState("");
 
   return (
@@ -370,7 +442,14 @@ function Compose({ data, post, busy }: { data: Overview; post: Post; busy: strin
       <button
         disabled={busy !== null || text.trim().length === 0}
         onClick={async () => {
-          if (await post("/api/prabalos/admin/message", { text }, "msg", "Message sent"))
+          if (
+            await post(
+              "/api/prabalos/admin/message",
+              { text },
+              "msg",
+              "Message sent",
+            )
+          )
             setText("");
         }}
         className="mono mt-2 w-full border border-accent bg-accent/10 px-3 py-2.5 text-[11px] uppercase tracking-[0.18em] text-accent transition-colors hover:bg-accent/20 disabled:border-line disabled:bg-transparent disabled:text-mute"
@@ -383,14 +462,28 @@ function Compose({ data, post, busy }: { data: Overview; post: Post; busy: strin
       <div className="mt-2 grid grid-cols-2 gap-2">
         <button
           disabled={busy !== null}
-          onClick={() => post("/api/prabalos/admin/love", { kind: "love" }, "love", "Love sent home")}
+          onClick={() =>
+            post(
+              "/api/prabalos/admin/love",
+              { kind: "love" },
+              "love",
+              "Love sent home",
+            )
+          }
           className="mono border border-fault bg-fault/10 px-3 py-4 text-[13px] uppercase tracking-[0.2em] text-fault transition-colors hover:bg-fault/20 disabled:opacity-50"
         >
           ♥ I love you
         </button>
         <button
           disabled={busy !== null}
-          onClick={() => post("/api/prabalos/admin/love", { kind: "miss" }, "love", "Sent home")}
+          onClick={() =>
+            post(
+              "/api/prabalos/admin/love",
+              { kind: "miss" },
+              "love",
+              "Sent home",
+            )
+          }
           className="mono border border-accent bg-accent/10 px-3 py-4 text-[13px] uppercase tracking-[0.2em] text-accent transition-colors hover:bg-accent/20 disabled:opacity-50"
         >
           ♥ I miss you
@@ -399,13 +492,17 @@ function Compose({ data, post, busy }: { data: Overview; post: Post; busy: strin
 
       {data.incoming && (
         <p className="mono mt-2 text-[10px] uppercase tracking-[0.14em] text-amber-400">
-          Waiting for the device to show the {data.incoming.kind === "miss" ? "miss" : "love"}
+          Waiting for the device to show the{" "}
+          {data.incoming.kind === "miss" ? "miss" : "love"}
         </p>
       )}
 
       <ul className="mt-4 flex flex-col gap-1.5">
         {data.messages.slice(0, 6).map((m) => (
-          <li key={m.id} className="flex items-baseline gap-2 border-b border-line/60 pb-1.5">
+          <li
+            key={m.id}
+            className="flex items-baseline gap-2 border-b border-line/60 pb-1.5"
+          >
             <span
               className={`mono shrink-0 text-[9px] uppercase tracking-[0.14em] ${
                 m.read ? "text-mute" : "text-cyan"
@@ -413,8 +510,12 @@ function Compose({ data, post, busy }: { data: Overview; post: Post; busy: strin
             >
               {m.read ? "read" : "new"}
             </span>
-            <span className="mono truncate text-[12px] text-bone">{m.text}</span>
-            <span className="mono ml-auto shrink-0 text-[10px] text-mute">{fmtClock(m.ts)}</span>
+            <span className="mono truncate text-[12px] text-bone">
+              {m.text}
+            </span>
+            <span className="mono ml-auto shrink-0 text-[10px] text-mute">
+              {fmtClock(m.ts)}
+            </span>
           </li>
         ))}
         {data.messages.length === 0 && (
@@ -438,7 +539,13 @@ function Voice({
     <Panel title="Voice note">
       <VoiceRecorder
         existing={
-          data.voice ? { id: data.voice.id, secs: data.voice.secs, played: data.voice.played } : null
+          data.voice
+            ? {
+                id: data.voice.id,
+                secs: data.voice.secs,
+                played: data.voice.played,
+              }
+            : null
         }
         onChanged={refresh}
         onFlash={say}
@@ -451,8 +558,16 @@ function FromHome({ data }: { data: Overview }) {
   return (
     <Panel title="From home">
       <div className="mb-4 flex gap-6">
-        <Counter label="I love you" value={data.counters.loveFromHome} tone="text-fault" />
-        <Counter label="I miss you" value={data.counters.missFromHome} tone="text-accent" />
+        <Counter
+          label="I love you"
+          value={data.counters.loveFromHome}
+          tone="text-fault"
+        />
+        <Counter
+          label="I miss you"
+          value={data.counters.missFromHome}
+          tone="text-accent"
+        />
         <Counter
           label="Sent by you"
           value={data.counters.loveFromPrabal + data.counters.missFromPrabal}
@@ -462,7 +577,10 @@ function FromHome({ data }: { data: Overview }) {
 
       <ul className="flex max-h-[240px] flex-col gap-1.5 overflow-y-auto">
         {data.events.map((e) => (
-          <li key={e.id} className="flex items-baseline gap-2 border-b border-line/60 pb-1.5">
+          <li
+            key={e.id}
+            className="flex items-baseline gap-2 border-b border-line/60 pb-1.5"
+          >
             <span
               className={`mono text-[13px] ${e.type === "love" ? "text-fault" : "text-accent"}`}
             >
@@ -482,7 +600,9 @@ function FromHome({ data }: { data: Overview }) {
                 queued
               </span>
             )}
-            <span className="mono ml-auto text-[10px] text-mute">{fmtClock(e.ts)}</span>
+            <span className="mono ml-auto text-[10px] text-mute">
+              {fmtClock(e.ts)}
+            </span>
           </li>
         ))}
         {data.events.length === 0 && (
@@ -493,11 +613,25 @@ function FromHome({ data }: { data: Overview }) {
   );
 }
 
-function Counter({ label, value, tone }: { label: string; value: number; tone: string }) {
+function Counter({
+  label,
+  value,
+  tone,
+}: {
+  label: string;
+  value: number;
+  tone: string;
+}) {
   return (
     <div>
-      <div className={`font-display text-[26px] font-semibold leading-none ${tone}`}>{value}</div>
-      <div className="mono mt-1 text-[9px] uppercase tracking-[0.16em] text-mute">{label}</div>
+      <div
+        className={`font-display text-[26px] font-semibold leading-none ${tone}`}
+      >
+        {value}
+      </div>
+      <div className="mono mt-1 text-[9px] uppercase tracking-[0.16em] text-mute">
+        {label}
+      </div>
     </div>
   );
 }
@@ -515,31 +649,40 @@ function Device({ data, now }: { data: Overview; now: number }) {
     <Panel title="Device">
       {!h ? (
         <p className="mono text-[11px] text-mute">
-          {data.deviceId} has never checked in. Nothing is wrong with the server — the firmware
-          simply has not called yet.
+          {data.deviceId} has never checked in. Nothing is wrong with the
+          server, the firmware simply has not called yet.
         </p>
       ) : (
         <dl className="grid grid-cols-2 gap-x-4 gap-y-2">
           <Stat k="Device" v={data.deviceId} />
           <Stat k="Firmware" v={h.fw || "?"} />
-          <Stat k="Last seen" v={age === null ? "never" : `${fmtAge(age)} ago`} />
-          <Stat k="Signal" v={h.rssi ? `${h.rssi} dBm` : "—"} />
-          <Stat k="Free heap" v={h.heap ? `${Math.round(h.heap / 1024)} KB` : "—"} />
+          <Stat
+            k="Last seen"
+            v={age === null ? "never" : `${fmtAge(age)} ago`}
+          />
+          <Stat k="Signal" v={h.rssi ? `${h.rssi} dBm` : ", "} />
+          <Stat
+            k="Free heap"
+            v={h.heap ? `${Math.round(h.heap / 1024)} KB` : ", "}
+          />
           <Stat
             k="Largest block"
-            v={h.largestBlock ? `${Math.round(h.largestBlock / 1024)} KB` : "—"}
+            v={
+              h.largestBlock ? `${Math.round(h.largestBlock / 1024)} KB` : ", "
+            }
             warn={blockWarn}
           />
           <Stat k="Queued events" v={String(h.queue)} warn={h.queue > 0} />
-          <Stat k="Local IP" v={h.ip || "—"} />
+          <Stat k="Local IP" v={h.ip || ", "} />
         </dl>
       )}
 
       {blockWarn && (
         <p className="mono mt-3 text-[10px] leading-relaxed text-amber-400">
-          Largest contiguous block is under 24 KB. The device will start refusing TLS handshakes
-          and queueing presses instead of dropping them. Usually means Bluetooth audio has been
-          started and stopped a few times.
+          Largest contiguous block is under 24 KB. The device will start
+          refusing TLS handshakes and queueing presses instead of dropping them.
+          Usually means Bluetooth audio has been started and stopped a few
+          times.
         </p>
       )}
     </Panel>
@@ -549,8 +692,14 @@ function Device({ data, now }: { data: Overview; now: number }) {
 function Stat({ k, v, warn }: { k: string; v: string; warn?: boolean }) {
   return (
     <div>
-      <dt className="mono text-[9px] uppercase tracking-[0.16em] text-mute">{k}</dt>
-      <dd className={`mono text-[12px] ${warn ? "text-amber-400" : "text-bone"}`}>{v}</dd>
+      <dt className="mono text-[9px] uppercase tracking-[0.16em] text-mute">
+        {k}
+      </dt>
+      <dd
+        className={`mono text-[12px] ${warn ? "text-amber-400" : "text-bone"}`}
+      >
+        {v}
+      </dd>
     </div>
   );
 }
@@ -560,7 +709,10 @@ function Security({ data }: { data: Overview }) {
     <Panel title="Access log">
       <ul className="flex max-h-[220px] flex-col gap-1.5 overflow-y-auto">
         {data.authLog.map((e, i) => (
-          <li key={`${e.ts}-${i}`} className="flex items-baseline gap-2 border-b border-line/60 pb-1.5">
+          <li
+            key={`${e.ts}-${i}`}
+            className="flex items-baseline gap-2 border-b border-line/60 pb-1.5"
+          >
             <span
               className={`mono text-[9px] uppercase tracking-[0.14em] ${
                 e.ok ? "text-pass" : "text-fault"
@@ -570,16 +722,21 @@ function Security({ data }: { data: Overview }) {
             </span>
             <span className="mono text-[11px] text-bone">{e.reason}</span>
             <span className="mono truncate text-[10px] text-mute">{e.ip}</span>
-            <span className="mono ml-auto shrink-0 text-[10px] text-mute">{fmtClock(e.ts)}</span>
+            <span className="mono ml-auto shrink-0 text-[10px] text-mute">
+              {fmtClock(e.ts)}
+            </span>
           </li>
         ))}
         {data.authLog.length === 0 && (
-          <li className="mono text-[11px] text-mute">No login attempts recorded.</li>
+          <li className="mono text-[11px] text-mute">
+            No login attempts recorded.
+          </li>
         )}
       </ul>
       <p className="mono mt-3 text-[10px] leading-relaxed text-mute">
-        Failed attempts lock this IP out for 15 minutes after 5 tries. If you see failures you did
-        not make, rotate PRABALOS_SESSION_KEY — every session dies with it.
+        Failed attempts lock this IP out for 15 minutes after 5 tries. If you
+        see failures you did not make, rotate PRABALOS_SESSION_KEY, every
+        session dies with it.
       </p>
     </Panel>
   );
@@ -597,5 +754,8 @@ function fmtAge(sec: number): string {
 
 function fmtClock(tsSec: number): string {
   if (!tsSec) return "";
-  return new Date(tsSec * 1000).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+  return new Date(tsSec * 1000).toLocaleTimeString([], {
+    hour: "numeric",
+    minute: "2-digit",
+  });
 }

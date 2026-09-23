@@ -47,7 +47,11 @@ const personSchema = {
   email: `mailto:${profile.email}`,
   url: `${SITE_URL}/boring`,
   image: `${SITE_URL}/media/portrait.jpg`,
-  address: { "@type": "PostalAddress", addressLocality: "Brooklyn", addressRegion: "NY" },
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Brooklyn",
+    addressRegion: "NY",
+  },
   sameAs: [profile.github, profile.linkedin, profile.youtube, profile.botopsy],
 };
 
@@ -244,7 +248,10 @@ function EscapeHatch() {
           href="/cool-kids"
           className="group inline-flex items-center gap-2 text-[13px] font-medium text-[#06636f] underline-offset-4 hover:underline"
         >
-          <span aria-hidden className="transition-transform group-hover:-translate-x-0.5">
+          <span
+            aria-hidden
+            className="transition-transform group-hover:-translate-x-0.5"
+          >
             ←
           </span>
           Made a bad decision? Go to Cool Kids
@@ -353,14 +360,14 @@ function Work() {
   // Current research leads. A visitor should read where the work is going
   // before they read where it has been, which is the opposite of the order a
   // résumé puts things in.
-  const research = PROJECTS.filter((p) => p.category === "current-research").sort(
-    (a, b) => a.order - b.order,
-  );
+  const research = PROJECTS.filter(
+    (p) => p.category === "current-research",
+  ).sort((a, b) => a.order - b.order);
 
   // The bench is driven by the manifests now, so each entry has a case study.
-  const bench = PROJECTS.filter((p) => p.category === "bench" && !p.compact).sort(
-    (a, b) => a.order - b.order,
-  );
+  const bench = PROJECTS.filter(
+    (p) => p.category === "bench" && !p.compact,
+  ).sort((a, b) => a.order - b.order);
 
   return (
     <div>
@@ -383,8 +390,12 @@ function Work() {
             tech={p.stack}
             media={mediaForEntry(p.title, p.slug)}
             caseStudy={p.slug}
-            link={p.links.find((l) => l.kind === "repo" || l.kind === "site")?.href}
-            linkLabel={p.links.find((l) => l.kind === "repo" || l.kind === "site")?.label}
+            link={
+              p.links.find((l) => l.kind === "repo" || l.kind === "site")?.href
+            }
+            linkLabel={
+              p.links.find((l) => l.kind === "repo" || l.kind === "site")?.label
+            }
           />
         ))}
       </div>
@@ -404,7 +415,15 @@ function Work() {
           blurb={smr300.blurb}
           media={mediaForEntry(smr300.name, CASE_STUDY_SLUGS[smr300.name])}
           caseStudy={CASE_STUDY_SLUGS[smr300.name]}
-          tech={["ROS 2 Humble", "Nav2", "CANopen", "CiA 402", "PGV", "LiDAR", "C++"]}
+          tech={[
+            "ROS 2 Humble",
+            "Nav2",
+            "CANopen",
+            "CiA 402",
+            "PGV",
+            "LiDAR",
+            "C++",
+          ]}
           stat={smr300.metrics
             .slice(0, 3)
             .map((m) => `${m.value}${m.suffix} ${m.label.toLowerCase()}`)
@@ -472,8 +491,12 @@ function Work() {
             tech={p.stack}
             media={mediaForEntry(p.title, p.slug)}
             caseStudy={p.slug}
-            link={p.links.find((l) => l.kind === "repo" || l.kind === "site")?.href}
-            linkLabel={p.links.find((l) => l.kind === "repo" || l.kind === "site")?.label}
+            link={
+              p.links.find((l) => l.kind === "repo" || l.kind === "site")?.href
+            }
+            linkLabel={
+              p.links.find((l) => l.kind === "repo" || l.kind === "site")?.label
+            }
           />
         ))}
       </div>
@@ -517,7 +540,6 @@ function Work() {
           </li>
         ))}
       </ul>
-
     </div>
   );
 }
@@ -579,7 +601,9 @@ function Entry({
           <span>{meta}</span>
         </p>
 
-        <p className="mt-2.5 text-[15px] leading-[1.7] text-zinc-700">{blurb}</p>
+        <p className="mt-2.5 text-[15px] leading-[1.7] text-zinc-700">
+          {blurb}
+        </p>
 
         {stat && (
           <p className="mt-2.5 text-[14px] leading-[1.6] font-medium text-[#06636f]">
@@ -652,7 +676,9 @@ function Thumb({
   if (!media) {
     return (
       <div className="flex h-[248px] items-center justify-center rounded border border-dashed border-zinc-200 bg-zinc-50 px-4 sm:h-[270px]">
-        <p className="text-center text-[13px] leading-[1.5] text-zinc-400">{fallback}</p>
+        <p className="text-center text-[13px] leading-[1.5] text-zinc-400">
+          {fallback}
+        </p>
       </div>
     );
   }
@@ -694,7 +720,7 @@ function Experience() {
     <div>
       <PanelHeading>Experience</PanelHeading>
 
-      {/* A timeline, not entry rows — roles do not have thumbnails. */}
+      {/* A timeline, not entry rows, roles do not have thumbnails. */}
       <div className="space-y-9 border-l border-zinc-200 pl-6">
         {experience.map((job) => (
           <article key={`${job.company}-${job.period}`} className="relative">
@@ -705,9 +731,14 @@ function Experience() {
             <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
               <h3 className="text-[16px] font-semibold">
                 {job.role}
-                <span className="font-normal text-zinc-500"> · {job.company}</span>
+                <span className="font-normal text-zinc-500">
+                  {" "}
+                  · {job.company}
+                </span>
               </h3>
-              <p className="text-[13px] whitespace-nowrap text-zinc-500">{job.period}</p>
+              <p className="text-[13px] whitespace-nowrap text-zinc-500">
+                {job.period}
+              </p>
             </div>
             <p className="mt-0.5 text-[13px] text-zinc-500">{job.place}</p>
 
@@ -750,7 +781,10 @@ function Patents() {
 
       <div className="space-y-10">
         {patents.map((pt) => (
-          <article key={pt.title} className="grid gap-5 sm:grid-cols-[420px_1fr] sm:gap-9">
+          <article
+            key={pt.title}
+            className="grid gap-5 sm:grid-cols-[420px_1fr] sm:gap-9"
+          >
             <Thumb media={mediaForPatent(pt.title)} fallback={pt.tags[0]} />
 
             <div className="min-w-0">
@@ -760,7 +794,9 @@ function Patents() {
               <p className="mt-1 text-[13px] text-zinc-500">
                 {pt.status} · {pt.number}
               </p>
-              <p className="mt-2.5 text-[15px] leading-[1.7] text-zinc-700">{pt.body}</p>
+              <p className="mt-2.5 text-[15px] leading-[1.7] text-zinc-700">
+                {pt.body}
+              </p>
               <p className="mt-2.5 text-[13.5px] leading-[1.6] text-zinc-500">
                 {pt.tags.join(" · ")}
               </p>
@@ -839,11 +875,11 @@ function About() {
       <PanelHeading>About</PanelHeading>
 
       <p className="max-w-[68ch] text-[15px] leading-[1.7] text-zinc-700">
-        Most recently I replaced a company&apos;s ROS 1 architecture with a ROS 2
-        Humble stack for the SMR300, a 300 kg industrial AMR — LiDAR perception,
-        PGV floor-tag localization, Nav2 navigation, CANopen and CiA 402 drives,
-        and an operator platform for engineers who don&apos;t write code. It docks
-        with 97% success and 2 cm mean error across 150 trials.
+        Most recently I replaced a company&apos;s ROS 1 architecture with a ROS
+        2 Humble stack for the SMR300, a 300 kg industrial AMR, LiDAR
+        perception, PGV floor-tag localization, Nav2 navigation, CANopen and CiA
+        402 drives, and an operator platform for engineers who don&apos;t write
+        code. It docks with 97% success and 2 cm mean error across 150 trials.
       </p>
       <p className="mt-3 max-w-[68ch] text-[15px] leading-[1.7] text-zinc-700">
         Languages: {profile.languages.join(", ")}.
@@ -872,7 +908,9 @@ function About() {
                 {e.school}
                 <span className="font-normal text-zinc-500"> · {e.sub}</span>
               </h3>
-              <p className="text-[13px] whitespace-nowrap text-zinc-500">{e.period}</p>
+              <p className="text-[13px] whitespace-nowrap text-zinc-500">
+                {e.period}
+              </p>
             </div>
             <p className="mt-1 text-[14px] text-zinc-700">{e.degree}</p>
             <p className="mt-0.5 text-[13px] text-zinc-500">{e.place}</p>
@@ -885,7 +923,7 @@ function About() {
         {honors.map((h) => (
           <li key={h.title} className="text-[14px] leading-[1.6]">
             <span className="font-medium">{h.result}</span>
-            <span className="text-zinc-700"> — {h.title}</span>
+            <span className="text-zinc-700">, {h.title}</span>
             <span className="text-zinc-500"> ({h.year})</span>
             <p className="mt-0.5 text-[13px] text-zinc-500">{h.body}</p>
           </li>

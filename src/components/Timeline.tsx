@@ -28,7 +28,9 @@ export default function Timeline() {
                  * started.
                  */}
                 <span
-                  className={e.status === "current" ? "text-accent" : "text-pass"}
+                  className={
+                    e.status === "current" ? "text-accent" : "text-pass"
+                  }
                 >
                   {e.status}
                 </span>
@@ -49,7 +51,7 @@ export default function Timeline() {
 
       <div className="hairline my-20" />
 
-      {/* experience — rail on the left, prose on the right */}
+      {/* experience, rail on the left, prose on the right */}
       <div className="grid gap-y-10 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-x-16">
         <nav className="lg:sticky lg:top-28 lg:self-start">
           <ul>
@@ -87,7 +89,10 @@ export default function Timeline() {
                 <h3 className="text-3xl leading-tight font-semibold tracking-[-0.035em] text-bone sm:text-4xl">
                   {x.role}
                 </h3>
-                <p className="mono mt-3 text-[12px]" style={{ color: x.accent }}>
+                <p
+                  className="mono mt-3 text-[12px]"
+                  style={{ color: x.accent }}
+                >
                   {x.company} · {x.place} · {x.period}
                 </p>
 
@@ -126,7 +131,7 @@ export default function Timeline() {
                   </a>
                 )}
               </div>
-            ) : null
+            ) : null,
           )}
         </div>
       </div>

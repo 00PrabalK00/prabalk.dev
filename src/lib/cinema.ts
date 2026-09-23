@@ -107,7 +107,7 @@ const RAW: Omit<Station, "enter" | "from" | "to">[] = [
     align: "right",
     kicker: "Kurat · Autonomous conversational robot",
     title: "Three brains, so one can fail.",
-    body: "Perception, cognition and action are separated on purpose — each can degrade or recover without taking the others down.",
+    body: "Perception, cognition and action are separated on purpose, each can degrade or recover without taking the others down.",
     facts: [
       "RealSense D435i + Jetson Orin Nano",
       "YOLOv8 perception, Whisper speech, ORB-SLAM3 localization, Nav2 navigation",
@@ -124,7 +124,7 @@ const RAW: Omit<Station, "enter" | "from" | "to">[] = [
     align: "left",
     kicker: "RobotDrawing · Simulated ABB IRB140",
     title: "I taught it to route. It lost.",
-    body: "Robotic drawing reframed as a stroke-level travelling salesman problem, solved by a learned router — which then failed to beat the classical solver it was meant to replace.",
+    body: "Robotic drawing reframed as a stroke-level travelling salesman problem, solved by a learned router, which then failed to beat the classical solver it was meant to replace.",
     facts: [
       "GNN + Pointer Network, imitation learning then reinforcement learning",
       "Simulated annealing: 26.8 pen-ups at 195 ms. The learned router: 28.8 at 10.9 s",
@@ -141,7 +141,7 @@ const RAW: Omit<Station, "enter" | "from" | "to">[] = [
     align: "right",
     kicker: "OpenDroneKit · Drone Entry",
     title: "Find the crack. Then predict it.",
-    body: "Structural inspection that doesn't stop at detection — the crack gets projected onto the reconstruction and simulated forward in time.",
+    body: "Structural inspection that doesn't stop at detection, the crack gets projected onto the reconstruction and simulated forward in time.",
     facts: [
       "~40,000 defect images through YOLOv8 detection and U-Net segmentation",
       "Cracks mapped onto COLMAP 3D reconstructions",
@@ -162,7 +162,7 @@ const RAW: Omit<Station, "enter" | "from" | "to">[] = [
     facts: [
       "Append-only SQLite event log → checkpoints → materialized current.md",
       "log / diff / blame / restore / branch / merge, plus semantic search",
-      "Local-first — nothing leaves .continuum/ by default",
+      "Local-first, nothing leaves .continuum/ by default",
     ],
     link: "https://continuum.prabalkhare.com",
   },
@@ -184,11 +184,11 @@ const RAW: Omit<Station, "enter" | "from" | "to">[] = [
     align: "right",
     kicker: "Ripple · Active research",
     title: "It stopped. Now what?",
-    body: "A site engineer that watches a Nav2 robot fail, recovers inside a budget you set, and asks a person when the evidence says the problem is physical — then remembers what worked at that spot.",
+    body: "A site engineer that watches a Nav2 robot fail, recovers inside a budget you set, and asks a person when the evidence says the problem is physical, then remembers what worked at that spot.",
     facts: [
       "The model only emits tool calls; the edge validates, journals, then acts",
       "A keepout counts once the mask and costmap show it. An arrival counts once odometry settles",
-      "123 unit tests, recovery 13/13 in simulation — and never yet on physical hardware",
+      "123 unit tests, recovery 13/13 in simulation, and never yet on physical hardware",
     ],
     link: "https://ripple.prabalkhare.com",
   },
@@ -201,7 +201,7 @@ const RAW: Omit<Station, "enter" | "from" | "to">[] = [
     align: "left",
     kicker: "SO101 · SmolVLA · Active research",
     title: "Rule out the wiring first.",
-    body: "Most reported manipulation failures are not policy failures. They are camera ordering, normalisation or action scaling wearing a policy's name — so the first result here is that replayed actions reproduce their demonstrations.",
+    body: "Most reported manipulation failures are not policy failures. They are camera ordering, normalisation or action scaling wearing a policy's name, so the first result here is that replayed actions reproduce their demonstrations.",
     facts: [
       "Leader and follower on the LeRobot SO101, two cameras, MuJoCo evaluation",
       "Recorded actions replayed through the evaluator reproduce the demonstrations",

@@ -18,7 +18,7 @@ export const pushpak: Project = {
   title: "Pushpak Viman",
   subtitle: "Finding people under debris, from a transforming drone",
   status: "completed",
-  year: "2023 — 2025",
+  year: "2023 to 2025",
   role: "Team lead",
   category: "autonomy-and-perception",
   order: 4,
@@ -27,7 +27,7 @@ export const pushpak: Project = {
     "A rescue vehicle that drives where it cannot fly, and a detection pipeline trained to find a person in rubble rather than a person in a photograph.",
 
   summary:
-    "An autonomous rescue initiative built around victim detection from aerial and ground imagery. A victim-under-debris dataset prepared and split, annotations converted from Pascal VOC through to TFRecord, detection models trained and run in real time, and hand-landmark tracking for gesture control — on a platform whose four arms carry both propellers and geared drive wheels.",
+    "An autonomous rescue initiative built around victim detection from aerial and ground imagery. A victim-under-debris dataset prepared and split, annotations converted from Pascal VOC through to TFRecord, detection models trained and run in real time, and hand-landmark tracking for gesture control, on a platform whose four arms carry both propellers and geared drive wheels.",
 
   links: [
     {
@@ -56,7 +56,7 @@ export const pushpak: Project = {
   problem: {
     heading: "Problem",
     body: [
-      "A person trapped under debris does not look like a person. They look like an arm, or a patch of fabric, in an image mostly made of broken concrete — which is a different detection problem from the one most models are trained on.",
+      "A person trapped under debris does not look like a person. They look like an arm, or a patch of fabric, in an image mostly made of broken concrete, which is a different detection problem from the one most models are trained on.",
       "Reaching them is a second problem. A ground vehicle gets blocked; an aircraft cannot enter a confined space or linger. The platform carries propellers and geared drive wheels on the same four arms so it does not have to choose.",
     ],
   },
@@ -81,18 +81,39 @@ export const pushpak: Project = {
     {
       title: "From a dataset to a vehicle that can act on it",
       caption:
-        "Most of the work is before the model — a detection pipeline is only as good as the annotations feeding it, and converting them correctly is where the time goes.",
+        "Most of the work is before the model, a detection pipeline is only as good as the annotations feeding it, and converting them correctly is where the time goes.",
       steps: [
         { label: "Collect victim-under-debris imagery" },
-        { label: "Split the dataset", detail: "Automated, so the train/test boundary is reproducible rather than ad hoc." },
-        { label: "Convert annotations", detail: "Pascal VOC XML → CSV → TFRecord." },
-        { label: "Train detection models", detail: "TensorFlow Lite and YOLOv5." },
-        { label: "Real-time inference with visualisation", tone: "decision",
+        {
+          label: "Split the dataset",
+          detail:
+            "Automated, so the train/test boundary is reproducible rather than ad hoc.",
+        },
+        {
+          label: "Convert annotations",
+          detail: "Pascal VOC XML → CSV → TFRecord.",
+        },
+        {
+          label: "Train detection models",
+          detail: "TensorFlow Lite and YOLOv5.",
+        },
+        {
+          label: "Real-time inference with visualisation",
+          tone: "decision",
           branches: [
-            { label: "Detection — flag the position for the rescue team", tone: "good" },
-            { label: "Nothing — keep searching" },
-          ] },
-        { label: "Reach the location", detail: "Drive on the geared wheels, or fly when the ground runs out.", tone: "good" },
+            {
+              label: "Detection, flag the position for the rescue team",
+              tone: "good",
+            },
+            { label: "Nothing, keep searching" },
+          ],
+        },
+        {
+          label: "Reach the location",
+          detail:
+            "Drive on the geared wheels, or fly when the ground runs out.",
+          tone: "good",
+        },
       ],
     },
   ],
@@ -104,9 +125,21 @@ export const pushpak: Project = {
         "The arrangement is the subject of a patent filing: four arms carrying both the propellers and the geared drive wheels, so neither mode needs separate hardware.",
       head: ["Mode", "Uses", "For"],
       rows: [
-        ["Rover", "Geared drive wheels on the four arms", "Rubble, confined spaces, long dwell time"],
-        ["Drone", "Propellers on those same arms", "Ground the vehicle cannot cross, overhead search"],
-        ["Both", "Visual detection and GPS-denied operation", "Finding a person who cannot be seen"],
+        [
+          "Rover",
+          "Geared drive wheels on the four arms",
+          "Rubble, confined spaces, long dwell time",
+        ],
+        [
+          "Drone",
+          "Propellers on those same arms",
+          "Ground the vehicle cannot cross, overhead search",
+        ],
+        [
+          "Both",
+          "Visual detection and GPS-denied operation",
+          "Finding a person who cannot be seen",
+        ],
       ],
     },
   ],

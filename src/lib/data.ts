@@ -24,7 +24,7 @@ export const profile = {
   headline:
     "I build robot systems and study what happens when learned policies fail.",
   tagline:
-    "I build the whole robot — sensors, comms, localization, navigation, controls, operator tooling, and the deployment that proves it works. Now at NYU, working on whether learned policies can recover when they do not.",
+    "I build the whole robot, sensors, comms, localization, navigation, controls, operator tooling, and the deployment that proves it works. Now at NYU, working on whether learned policies can recover when they do not.",
   location: "Brooklyn, New York",
   previousLocation: "Bangkok, Thailand",
   email: "pk3391@nyu.edu",
@@ -61,15 +61,15 @@ export const education = [
     sub: "Tandon School of Engineering",
     degree: "M.S. Mechatronics and Robotics",
     place: "Brooklyn, NY",
-    period: "Aug 2026 — May 2028",
+    period: "Aug 2026, May 2028",
     status: "current",
   },
   {
     school: "Vellore Institute of Technology",
     sub: "VIT Chennai",
-    degree: "B.Tech Computer Engineering — Robotics & AI Specialization",
+    degree: "B.Tech Computer Engineering, Robotics & AI Specialization",
     place: "Chennai, India",
-    period: "2022 — Jul 2026",
+    period: "2022, Jul 2026",
     status: "completed",
   },
 ];
@@ -90,15 +90,15 @@ export const experience: Experience[] = [
     company: "Next Robotics Lab Co., Ltd.",
     role: "Robotics Software Intern",
     place: "Pathum Thani, Thailand",
-    period: "Jan 2026 — Jul 2026",
+    period: "Jan 2026, Jul 2026",
     accent: "#4DA6FF",
     tags: ["ROS 2 Humble", "Nav2", "CANopen", "CiA 402", "PGV", "LiDAR", "C++"],
     link: "https://github.com/00PrabalK00/OpenRosWarehouse",
     bullets: [
-      "Architected a reusable ROS 2 autonomy stack for the 300 kg SMR300 AMR — integrating LiDAR, PGV, Nav2, an AI camera, CANopen and CiA 402 — replacing the company's prior ROS 1 architecture.",
+      "Architected a reusable ROS 2 autonomy stack for the 300 kg SMR300 AMR, integrating LiDAR, PGV, Nav2, an AI camera, CANopen and CiA 402, replacing the company's prior ROS 1 architecture.",
       "Validated navigation across 150 shelf-docking trials and 150 point-to-point runs: 97% docking success, 2 cm shelf docking error, point-to-point mismatch cut from 5 cm to a 3 cm mean.",
       "Implemented reflective-marker recognition for two- and four-legged shelves using LiDAR clustering, center checks, automatic repositioning, sector safety gating, safe aborts and alerts; root-caused failures traced to sunlight reflections at open factory doors.",
-      "Built an operator platform for mapping, map editing, URDF and sensor configuration, Nav2 parameter tuning, mission control, monitoring and deployment validation — plus a Node-RED dashboard evaluated by 5 operators and 2 engineers.",
+      "Built an operator platform for mapping, map editing, URDF and sensor configuration, Nav2 parameter tuning, mission control, monitoring and deployment validation, plus a Node-RED dashboard evaluated by 5 operators and 2 engineers.",
       "Developed Python, C++, JavaScript and Web API components for path following, zone management, map handling, robot profiles, workflow management and robot bringup.",
     ],
   },
@@ -106,11 +106,11 @@ export const experience: Experience[] = [
     company: "Theta Sound",
     role: "Hardware Engineering Intern",
     place: "Remote",
-    period: "Jan 2025 — Oct 2025",
+    period: "Jan 2025, Oct 2025",
     accent: "#7DD3FC",
     tags: ["KiCad", "PCB", "ANC", "PPG", "IMU", "Power budgeting"],
     bullets: [
-      "Researched smart-earphone architectures and produced multiple PCB layouts and simulated prototypes — evaluating Qualcomm audio platforms, ANC, Bluetooth, microphones, battery systems, PPG and IMU health sensing, and sensor fusion.",
+      "Researched smart-earphone architectures and produced multiple PCB layouts and simulated prototypes, evaluating Qualcomm audio platforms, ANC, Bluetooth, microphones, battery systems, PPG and IMU health sensing, and sensor fusion.",
       "Modeled board footprint, battery life and power consumption to guide an early prototype for engineers and manufacturers; led a KiCad PCB design workshop for 50 attendees.",
     ],
   },
@@ -118,25 +118,25 @@ export const experience: Experience[] = [
     company: "Drone Entry",
     role: "AI Software Development Intern",
     place: "Thailand",
-    period: "Jun 2025 — Aug 2025",
+    period: "Jun 2025, Aug 2025",
     accent: "#A78BFA",
     tags: ["PyQt6", "YOLOv8", "U-Net", "COLMAP", "FEniCSx"],
     link: "https://github.com/00PrabalK00/OpenDroneKit",
     bullets: [
-      "Built OpenDroneKit — a PyQt6 structural-inspection workflow spanning ~40,000 metal, brick and other defect images, integrating YOLOv8 detection and U-Net crack segmentation.",
+      "Built OpenDroneKit, a PyQt6 structural-inspection workflow spanning ~40,000 metal, brick and other defect images, integrating YOLOv8 detection and U-Net crack segmentation.",
       "Mapped detected cracks onto COLMAP 3D reconstructions and connected segmentation masks to FEniCSx simulations to estimate crack propagation over time and flag structural severity.",
       "Implemented desktop workflows for project setup, dataset import, defect analysis, reconstruction and report generation.",
     ],
   },
   {
     company: "Drone Academy",
-    role: "R&D Summer Intern — Robotics & Drones",
+    role: "R&D Summer Intern, Robotics & Drones",
     place: "Thailand",
-    period: "May 2025 — Jun 2025",
+    period: "May 2025, Jun 2025",
     accent: "#34D399",
     tags: ["PCB", "Raspberry Pi 4", "Animatronics", "Local LLM", "TTS"],
     bullets: [
-      "Designed and fabricated 3 PCBs — an animatronic head, Raspberry Pi 4 I/O, and an RC car kit — driving eye, jaw and head servos plus a speaker through GPIO.",
+      "Designed and fabricated 3 PCBs, an animatronic head, Raspberry Pi 4 I/O, and an RC car kit, driving eye, jaw and head servos plus a speaker through GPIO.",
       "Ran text-to-speech and a 2B-parameter language model locally on an 8 GB Raspberry Pi 4; validated the RC car board for sale as a build-your-own educational product.",
     ],
   },
@@ -144,12 +144,12 @@ export const experience: Experience[] = [
     company: "Dreadnought Robotics",
     role: "Resource Head · Systems Department",
     place: "Chennai, India",
-    period: "Aug 2023 — Jun 2025",
+    period: "Aug 2023, Jun 2025",
     accent: "#F87171",
     tags: ["ROS", "MAVROS", "MAVLink", "AUV", "Power distribution"],
     bullets: [
-      "Managed a $15K+ budget, inventory and procurement for 120 members across 4 departments — comparing alternatives on cost, availability and system fit.",
-      "For Project MIRA, designed electrical systems for reliable operation inside a sealed AUV pressure hull and developed ROS, MAVROS and MAVLink control software — contributing to 2nd place at TAC Challenge Norway 2024.",
+      "Managed a $15K+ budget, inventory and procurement for 120 members across 4 departments, comparing alternatives on cost, availability and system fit.",
+      "For Project MIRA, designed electrical systems for reliable operation inside a sealed AUV pressure hull and developed ROS, MAVROS and MAVLink control software, contributing to 2nd place at TAC Challenge Norway 2024.",
       "Integrated power distribution, hydrophones and sensor-control subsystems while coordinating cross-functional testing across hardware and software teams.",
     ],
   },
@@ -159,12 +159,27 @@ export const smr300 = {
   name: "SMR300",
   subtitle: "300 kg industrial autonomous mobile robot",
   blurb:
-    "The full autonomy stack — written to be reused across a fleet, not to survive one demo. Rebuilt from a legacy ROS 1 architecture into ROS 2 Humble, validated over 300 logged trials on a live factory floor.",
+    "The full autonomy stack, written to be reused across a fleet, not to survive one demo. Rebuilt from a legacy ROS 1 architecture into ROS 2 Humble, validated over 300 logged trials on a live factory floor.",
   metrics: [
-    { value: 97, suffix: "%", label: "Shelf docking success", sub: "150 trials" },
+    {
+      value: 97,
+      suffix: "%",
+      label: "Shelf docking success",
+      sub: "150 trials",
+    },
     { value: 2, suffix: " cm", label: "Shelf docking error", sub: "mean" },
-    { value: 3, suffix: " cm", label: "Point-to-point mismatch", sub: "down from 5 cm" },
-    { value: 300, suffix: " kg", label: "Platform mass", sub: "industrial AMR" },
+    {
+      value: 3,
+      suffix: " cm",
+      label: "Point-to-point mismatch",
+      sub: "down from 5 cm",
+    },
+    {
+      value: 300,
+      suffix: " kg",
+      label: "Platform mass",
+      sub: "industrial AMR",
+    },
   ],
   stack: [
     {
@@ -252,7 +267,7 @@ export const smr300 = {
     },
     {
       title: "Failure diagnosis on a live floor",
-      body: "Intermittent docking failures were traced to direct sunlight entering through open factory doors and saturating the reflective-marker return — an environmental failure mode, not a software regression.",
+      body: "Intermittent docking failures were traced to direct sunlight entering through open factory doors and saturating the reflective-marker return, an environmental failure mode, not a software regression.",
     },
     {
       title: "CiA 402 that recovers instead of stopping",
@@ -282,21 +297,29 @@ export const projects: Project[] = [
   {
     name: "Kurat",
     kind: "Autonomous conversational robot",
-    year: "2025 — present",
+    year: "2025 to present",
     blurb:
       "A companion robot built on a three-brain architecture that separates perception, cognition and action so each can fail and recover independently.",
     bullets: [
-      "Three-brain split — perception, cognition, action — for modular autonomy and reliable real-time interaction.",
+      "Three-brain split, perception, cognition, action, for modular autonomy and reliable real-time interaction.",
       "Intel RealSense D435i + Jetson Orin Nano running YOLOv8, Whisper, ORB-SLAM3 and Nav2 for perception, speech, localization and navigation.",
     ],
-    tech: ["ROS 2", "PyTorch", "YOLOv8", "Whisper", "ORB-SLAM3", "Nav2", "Jetson"],
+    tech: [
+      "ROS 2",
+      "PyTorch",
+      "YOLOv8",
+      "Whisper",
+      "ORB-SLAM3",
+      "Nav2",
+      "Jetson",
+    ],
     accent: "#4DA6FF",
     featured: true,
   },
   {
     name: "Project MIRA",
     kind: "Autonomous underwater vehicle",
-    year: "2023 — 2025",
+    year: "2023 to 2025",
     blurb:
       "Sealed-hull AUV that took 2nd place at the TAC Challenge in Norway, 2024. I owned the electrical architecture and the MAVROS control software.",
     bullets: [
@@ -328,7 +351,7 @@ export const projects: Project[] = [
   {
     name: "Pushpak Viman",
     kind: "Victim detection from a transforming drone-rover",
-    year: "2023 — 2025",
+    year: "2023 to 2025",
     blurb:
       "An autonomous rescue initiative: a victim-under-debris detection pipeline, and a platform whose four arms carry both propellers and geared drive wheels so it can drive where it cannot fly.",
     bullets: [
@@ -336,7 +359,14 @@ export const projects: Project[] = [
       "Detection training and real-time inference with TensorFlow Lite and YOLOv5, with bounding-box visualisation.",
       "MediaPipe hand-landmark tracking for gesture-based control.",
     ],
-    tech: ["Python", "OpenCV", "TensorFlow Lite", "YOLOv5", "MediaPipe", "PyTorch"],
+    tech: [
+      "Python",
+      "OpenCV",
+      "TensorFlow Lite",
+      "YOLOv5",
+      "MediaPipe",
+      "PyTorch",
+    ],
     link: "https://github.com/00PrabalK00/Project-Pushpak-Viman-SIH",
     linkLabel: "Repository",
     accent: "#34D399",
@@ -346,7 +376,7 @@ export const projects: Project[] = [
     kind: "Search and rescue",
     year: "2023",
     blurb:
-      "A VTOL search-and-rescue prototype with thermal victim detection, flown on a Raspberry Pi and Pixhawk airframe. No repository — it was a prototype.",
+      "A VTOL search-and-rescue prototype with thermal victim detection, flown on a Raspberry Pi and Pixhawk airframe. No repository, it was a prototype.",
     bullets: [
       "Raspberry Pi + Pixhawk + MAVROS airframe with OpenCV and thermal imaging for victim detection.",
       "Dataset preparation, TensorFlow Lite and YOLOv5 inference, autonomous scan patterns, custom battery management.",
@@ -377,13 +407,19 @@ export const projects: Project[] = [
     kind: "Odometry + IMU fusion",
     year: "2026",
     blurb:
-      "Fuses wheel odometry with IMU after measuring the sensor's real noise parameters — so the filter is tuned on evidence, not on a guess.",
+      "Fuses wheel odometry with IMU after measuring the sensor's real noise parameters, so the filter is tuned on evidence, not on a guess.",
     bullets: [
       "Allan variance analysis extracts gyro and accelerometer bias-instability and random-walk terms.",
       "Measured covariances are injected into the IMU messages so the EKF weights corrections by quantified uncertainty.",
       "Complementary filter for orientation, then robot_localization EKF fusing encoders and IMU into a Nav2-ready odometry estimate.",
     ],
-    tech: ["ROS 2 Humble", "robot_localization", "Allan variance", "C++", "EKF"],
+    tech: [
+      "ROS 2 Humble",
+      "robot_localization",
+      "Allan variance",
+      "C++",
+      "EKF",
+    ],
     link: "https://github.com/00PrabalK00/next_EKF",
     linkLabel: "Repository",
     accent: "#7FE3D4",
@@ -400,7 +436,14 @@ export const projects: Project[] = [
       "Command gating blocks motion during initialization or fault; separate lift-actuator driver enforces limit switches.",
       "SLAM Toolbox mapping and Nav2 bringup with DWB local and Navfn global planners on top.",
     ],
-    tech: ["ros2_control", "CANopen", "CiA 402", "SocketCAN", "SLAM Toolbox", "Nav2"],
+    tech: [
+      "ros2_control",
+      "CANopen",
+      "CiA 402",
+      "SocketCAN",
+      "SLAM Toolbox",
+      "Nav2",
+    ],
     link: "https://github.com/00PrabalK00/next_HI",
     linkLabel: "Repository",
     accent: "#F97316",
@@ -410,14 +453,22 @@ export const projects: Project[] = [
     kind: "Learned motion planning · simulated ABB IRB140",
     year: "2026",
     blurb:
-      "Robotic drawing as a stroke-level TSP, solved by a learned router instead of a slow classical solver — same quality, roughly 20× faster.",
+      "Robotic drawing as a stroke-level TSP, solved by a learned router instead of a slow classical solver, same quality, roughly 20× faster.",
     bullets: [
       "Formulated at stroke level rather than point level, with forward/reverse direction optimization to cut pen-ups and travel.",
       "Graph Neural Network + Pointer Network trained in two phases: imitation learning from classical solvers, then reinforcement learning.",
       "Curriculum learning scales to 300+ strokes; ~150 ms inference per drawing, matching simulated-annealing quality ~20× faster.",
-      "Exported as ABB RAPID and executed by a simulated IRB140 in CoppeliaSim — no physical arm has run it."
+      "Exported as ABB RAPID and executed by a simulated IRB140 in CoppeliaSim, no physical arm has run it.",
     ],
-    tech: ["PyTorch", "PyTorch Geometric", "GNN", "Pointer Network", "RL", "CoppeliaSim", "ABB RAPID"],
+    tech: [
+      "PyTorch",
+      "PyTorch Geometric",
+      "GNN",
+      "Pointer Network",
+      "RL",
+      "CoppeliaSim",
+      "ABB RAPID",
+    ],
     link: "https://github.com/00PrabalK00/RobotDrawing",
     linkLabel: "Repository",
     accent: "#2DD4BF",
@@ -443,9 +494,9 @@ export const projects: Project[] = [
       "Git, but for the context your AI agent is holding. Switch from Claude Code to Codex to Gemini without re-explaining the codebase, the bug, or what you already tried.",
     bullets: [
       "Three-layer architecture mirroring Git: an append-only SQLite event log, checkpoints as commits, and a materialized `current.md` view.",
-      "`continuum log / diff / blame / restore / branch / merge` — plus `note`, `ask`, and semantic `search` over recorded decisions and hypotheses.",
+      "`continuum log / diff / blame / restore / branch / merge`, plus `note`, `ask`, and semantic `search` over recorded decisions and hypotheses.",
       "Local-first: everything lives in `.continuum/`, nothing uploads by default. Ships as a Claude Code plugin and an MCP server.",
-      "Repo benchmark reports 100% recall accuracy with context injection versus 17–20% without, ~94% context compression, and agent response time dropping from 17–21 s to 5.5 s.",
+      "Repo benchmark reports 100% recall accuracy with context injection versus 17 to 20% without, ~94% context compression, and agent response time dropping from 17 to 21 s to 5.5 s.",
     ],
     tech: ["Python", "SQLite", "MCP", "Agent hooks", "CLI"],
     link: "https://github.com/00PrabalK00/Continuum",
@@ -458,7 +509,7 @@ export const projects: Project[] = [
     kind: "Browser control plane",
     year: "2026",
     blurb:
-      "Turns the browser into a capture surface for Continuum — pull context out of a PR, an AI chat, or a Stack Overflow thread and route it straight to an agent.",
+      "Turns the browser into a capture surface for Continuum, pull context out of a PR, an AI chat, or a Stack Overflow thread and route it straight to an agent.",
     bullets: [
       "Captures context from GitHub PRs and issues, ChatGPT/Claude/Gemini/Perplexity chats, docs and error pages.",
       "Secret redaction for AWS, GitHub and OpenAI credentials before anything leaves the page; per-site permissions and private-tab blocking.",
@@ -475,7 +526,7 @@ export const projects: Project[] = [
     kind: "Agentic terminal + model marketplace",
     year: "2026",
     blurb:
-      "A terminal coding agent wired to a decentralized model market — it routes each task to whichever provider is cheapest and available, and fails over without losing the conversation.",
+      "A terminal coding agent wired to a decentralized model market, it routes each task to whichever provider is cheapest and available, and fails over without losing the conversation.",
     bullets: [
       "Ink-based TUI with live token/cost tracking and subagent monitoring.",
       "Automatic provider failover preserving conversation history; five role-aware personas and a plan-first mode requiring approval before changes.",
@@ -492,10 +543,10 @@ export const projects: Project[] = [
     kind: "Robotics education platform",
     year: "2026",
     blurb:
-      "Failure-first robotics education. Students get a broken robot, diagnose it, repair it, and prove the fix — in the browser, with automated grading.",
+      "Failure-first robotics education. Students get a broken robot, diagnose it, repair it, and prove the fix, in the browser, with automated grading.",
     bullets: [
       "Browser-accessible ROS and ROS 2 environments with VM checkpoints and save/resume.",
-      "Six courses, 96 graded labs planned; separate teacher-led curriculum for grades 3–8.",
+      "Six courses, 96 graded labs planned; separate teacher-led curriculum for grades 3 to 8.",
       "Diagnose → modify → test → prove loop instead of lecture-and-quiz.",
     ],
     tech: ["ROS 2", "Browser VMs", "Autograding", "Curriculum design"],
@@ -510,12 +561,20 @@ export const projects: Project[] = [
     blurb:
       "Built out of the Node-RED dashboards I shipped on a factory floor: an AI that drafts flows in plain English but never deploys one that hasn't survived five layers of validation.",
     bullets: [
-      "Five-layer validation — JSON schema, node catalog, function-code static analysis, security scanning, and sandboxed runtime simulation.",
+      "Five-layer validation, JSON schema, node catalog, function-code static analysis, security scanning, and sandboxed runtime simulation.",
       "Safe deployment with snapshots, approval gates, health checks and automatic rollback on failure.",
       "Live monitoring over SSE/WebSocket, plus a role-based permission engine gating tool use by risk level.",
       "Outbound-only connector tunnels to Node-RED so the instance is never exposed to the internet.",
     ],
-    tech: ["React", "Vite", "Express", "WebSocket", "SQLite", "MCP", "Node-RED"],
+    tech: [
+      "React",
+      "Vite",
+      "Express",
+      "WebSocket",
+      "SQLite",
+      "MCP",
+      "Node-RED",
+    ],
     link: "https://github.com/00PrabalK00/FlowPilot",
     linkLabel: "Repository",
     accent: "#C084FC",
@@ -542,13 +601,13 @@ export const projects: Project[] = [
 export const benchProjects = [
   {
     name: "FaceTrack",
-    desc: "OpenCV face detection driving two servos through an Arduino over serial — vision to actuation in the shortest possible loop.",
+    desc: "OpenCV face detection driving two servos through an Arduino over serial, vision to actuation in the shortest possible loop.",
     tech: "Python · OpenCV · Arduino",
     link: "https://github.com/00PrabalK00/FaceTrack",
   },
   {
     name: "Gesture-Controlled Car",
-    desc: "IMU glove commanding a car over ESP-NOW — no pairing, no router, sub-frame latency.",
+    desc: "IMU glove commanding a car over ESP-NOW, no pairing, no router, sub-frame latency.",
     tech: "C++ · ESP-NOW · Arduino",
     link: "https://github.com/00PrabalK00/Gesture-Controlled-Car",
   },
@@ -560,7 +619,7 @@ export const benchProjects = [
   },
   {
     name: "claude-skills",
-    desc: "Reusable agent skills packaged for Claude Code — the tooling layer under my own workflow.",
+    desc: "Reusable agent skills packaged for Claude Code, the tooling layer under my own workflow.",
     tech: "Shell · Agent skills",
     link: "https://github.com/00PrabalK00/claude-skills",
   },
@@ -568,17 +627,23 @@ export const benchProjects = [
 
 export const patents = [
   {
-    title: "Transformation Drone — Autonomous Drone-Rover System",
+    title: "Transformation Drone, Autonomous Drone-Rover System",
     number: "202641035669",
     status: "Filed",
-    body: "One vehicle that drives and flies. Four arms carry both the propellers and geared drive wheels, so it rolls through terrain on the ground and lifts off when the ground runs out — with AI-driven visual and thermal detection for search and rescue in GPS-denied environments.",
-    tags: ["UAV-UGV", "Search & rescue", "GPS-denied", "Thermal", "Raspberry Pi"],
+    body: "One vehicle that drives and flies. Four arms carry both the propellers and geared drive wheels, so it rolls through terrain on the ground and lifts off when the ground runs out, with AI-driven visual and thermal detection for search and rescue in GPS-denied environments.",
+    tags: [
+      "UAV-UGV",
+      "Search & rescue",
+      "GPS-denied",
+      "Thermal",
+      "Raspberry Pi",
+    ],
   },
   {
     title: "Thermoregulation System for Portable Water Containers",
     number: "Number pending",
     status: "Filed",
-    body: "A smart bottle that heats or cools its own contents. A Peltier stack under the body circulates water through inlet and outlet lines, with a sealed compartment for the microcontroller, battery and wiring, and an integrated pill dispenser on the side — so medication and the water to take it with travel together.",
+    body: "A smart bottle that heats or cools its own contents. A Peltier stack under the body circulates water through inlet and outlet lines, with a sealed compartment for the microcontroller, battery and wiring, and an integrated pill dispenser on the side, so medication and the water to take it with travel together.",
     tags: ["Peltier", "Thermal design", "BMS", "Pill dispenser", "Embedded"],
   },
   {
@@ -695,7 +760,7 @@ export const honors = [
   {
     title: "TAC Challenge Norway 2024",
     result: "2nd Place",
-    body: "International autonomous underwater vehicle competition — Project MIRA.",
+    body: "International autonomous underwater vehicle competition, Project MIRA.",
     year: "2024",
   },
   {
@@ -711,7 +776,7 @@ export const honors = [
     year: "2023",
   },
   {
-    title: "GEOFEST 2020 — CMS Lucknow",
+    title: "GEOFEST 2020, CMS Lucknow",
     result: "2nd Place",
     body: "Geoscience festival at City Montessori School, Lucknow.",
     year: "2020",
@@ -756,7 +821,7 @@ export const mediaSlots: MediaSlot[] = [
   {
     file: "Shelf_Docking_SMR300.mp4",
     type: "video",
-    caption: "Autonomous shelf docking — approach, align, lift",
+    caption: "Autonomous shelf docking, approach, align, lift",
     group: "SMR300",
     span: "hero",
   },
@@ -770,28 +835,28 @@ export const mediaSlots: MediaSlot[] = [
   {
     file: "UI_SMR300ControlPlane.jpeg",
     type: "image",
-    caption: "Operator control plane — live scan, path editor, safety groups",
+    caption: "Operator control plane, live scan, path editor, safety groups",
     group: "SMR300",
     span: "wide",
   },
   {
     file: "PGV_Mode_SMR300.mp4",
     type: "video",
-    caption: "PGV mode — tag-referenced localization run",
+    caption: "PGV mode, tag-referenced localization run",
     group: "SMR300",
     span: "wide",
   },
   {
     file: "smr300-nodered.jpg",
     type: "image",
-    caption: "FlowPilot / Node-RED — guarded robot task queue flow",
+    caption: "FlowPilot / Node-RED, guarded robot task queue flow",
     group: "SMR300",
     span: "wide",
   },
   {
     file: "rosscope-ui.jpg",
     type: "image",
-    caption: "RosScope live graph — talker, listener, parameter_blackboard",
+    caption: "RosScope live graph, talker, listener, parameter_blackboard",
     group: "SMR300",
     span: "wide",
   },
@@ -805,7 +870,7 @@ export const mediaSlots: MediaSlot[] = [
   {
     file: "so101-cameras.jpg",
     type: "image",
-    caption: "SO101 camera evidence — front RealSense and wrist views",
+    caption: "SO101 camera evidence, front RealSense and wrist views",
     group: "SO101",
     span: "wide",
   },
@@ -825,7 +890,8 @@ export const mediaSlots: MediaSlot[] = [
   {
     file: "ripple-architecture.png",
     type: "image",
-    caption: "Ripple recovery-condition comparison: cost, scene outcomes, probes, pooled results",
+    caption:
+      "Ripple recovery-condition comparison: cost, scene outcomes, probes, pooled results",
     group: "SO101",
     span: "hero",
   },
@@ -840,28 +906,28 @@ export const mediaSlots: MediaSlot[] = [
     file: "MIRA_AUV.jpeg",
     type: "image",
     caption:
-      "Project MIRA — extruded aluminium frame, ducted thrusters, domed pressure housings",
+      "Project MIRA, extruded aluminium frame, ducted thrusters, domed pressure housings",
     group: "Project MIRA",
     span: "hero",
   },
   {
     file: "TAC_PhotowithThrophy.jpeg",
     type: "image",
-    caption: "Second place, TAC Challenge Norway 2024 — Dreadnought Robotics",
+    caption: "Second place, TAC Challenge Norway 2024, Dreadnought Robotics",
     group: "Project MIRA",
     span: "wide",
   },
   {
     file: "transformationdrone_rovermode.jpeg",
     type: "image",
-    caption: "Transformation Drone — rover mode, driving on geared hubs",
+    caption: "Transformation Drone, rover mode, driving on geared hubs",
     group: "Patents",
     span: "wide",
   },
   {
     file: "transformationdrone_dronemode.jpeg",
     type: "image",
-    caption: "Transformation Drone — flight mode, arms deployed",
+    caption: "Transformation Drone, flight mode, arms deployed",
     group: "Patents",
     span: "wide",
   },
@@ -869,28 +935,28 @@ export const mediaSlots: MediaSlot[] = [
     file: "thermobottle.jpg",
     type: "image",
     caption:
-      "Thermoregulating bottle — Peltier loop, sealed electronics bay, pill dispenser",
+      "Thermoregulating bottle, Peltier loop, sealed electronics bay, pill dispenser",
     group: "Patents",
   },
   {
     file: "VTOL.jpeg",
     type: "image",
     caption:
-      "VTOL search-and-rescue quadplane — plank wing, four lift rotors, exposed avionics",
+      "VTOL search-and-rescue quadplane, plank wing, four lift rotors, exposed avionics",
     group: "UAV",
     span: "hero",
   },
   {
     file: "TransformationDroneVideo.mp4",
     type: "video",
-    caption: "Transformation Drone — driving and flying on the same four arms",
+    caption: "Transformation Drone, driving and flying on the same four arms",
     group: "Patents",
     span: "hero",
   },
   {
     file: "VideoOfUsDoingAutonomousDockingAUV.mp4",
     type: "video",
-    caption: "Project MIRA — autonomous docking run",
+    caption: "Project MIRA, autonomous docking run",
     group: "Project MIRA",
     span: "hero",
   },
@@ -898,21 +964,22 @@ export const mediaSlots: MediaSlot[] = [
     file: "Kurat_body.jpeg",
     type: "image",
     caption:
-      "Kurat — RealSense D435i and Jetson Orin Nano on a four-wheel chassis",
+      "Kurat, RealSense D435i and Jetson Orin Nano on a four-wheel chassis",
     group: "Kurat",
     span: "tall",
   },
   {
     file: "KURAT_Detection.jpeg",
     type: "image",
-    caption: "Kurat perception — YOLO detections with confidence, live indoor scene",
+    caption:
+      "Kurat perception, YOLO detections with confidence, live indoor scene",
     group: "Kurat",
     span: "wide",
   },
   {
     file: "Anamatronic_head.jpg",
     type: "image",
-    caption: "Animatronic head — eye, jaw and head servos driven over GPIO",
+    caption: "Animatronic head, eye, jaw and head servos driven over GPIO",
     group: "Hardware",
   },
   {
@@ -924,7 +991,7 @@ export const mediaSlots: MediaSlot[] = [
   {
     file: "DNT_Team_Pic.jpeg",
     type: "image",
-    caption: "Dreadnought Robotics — 120 members, 4 departments",
+    caption: "Dreadnought Robotics, 120 members, 4 departments",
     group: "Team",
     span: "wide",
   },
@@ -937,20 +1004,77 @@ export const mediaSlots: MediaSlot[] = [
   },
 
   /* ---------------- wanted, still empty ---------------- */
-  { file: "smr300-rviz.jpg", type: "image", caption: "Nav2 costmap and planned path in RViz", group: "SMR300" },
-  { file: "mira-electronics.jpg", type: "image", caption: "Sealed-hull electronics and power distribution", group: "Project MIRA" },
-  { file: "mira-underwater.mp4", type: "video", caption: "MIRA under test", group: "Project MIRA", span: "wide" },
+  {
+    file: "smr300-rviz.jpg",
+    type: "image",
+    caption: "Nav2 costmap and planned path in RViz",
+    group: "SMR300",
+  },
+  {
+    file: "mira-electronics.jpg",
+    type: "image",
+    caption: "Sealed-hull electronics and power distribution",
+    group: "Project MIRA",
+  },
+  {
+    file: "mira-underwater.mp4",
+    type: "video",
+    caption: "MIRA under test",
+    group: "Project MIRA",
+    span: "wide",
+  },
 
+  {
+    file: "vtol-flight.mp4",
+    type: "video",
+    caption: "VTOL flight test",
+    group: "UAV",
+    span: "wide",
+  },
 
-  { file: "vtol-flight.mp4", type: "video", caption: "VTOL flight test", group: "UAV", span: "wide" },
+  {
+    file: "opendronekit-ui.jpg",
+    type: "image",
+    caption: "OpenDroneKit, inspection workbench UI",
+    group: "Hardware",
+    span: "wide",
+  },
+  {
+    file: "odk-mission.jpg",
+    type: "image",
+    caption: "OpenDroneKit, mission planning map and panels",
+    group: "Hardware",
+    span: "wide",
+  },
+  {
+    file: "odk-reconstruction.jpg",
+    type: "image",
+    caption: "OpenDroneKit, survey operations and reconstruction workspace",
+    group: "Hardware",
+    span: "wide",
+  },
+  {
+    file: "continuum-extension.png",
+    type: "image",
+    caption: "Continuum Extension, browser-native agent context panel",
+    group: "Tooling",
+    span: "wide",
+  },
+  {
+    file: "continuum-ui.png",
+    type: "image",
+    caption: "Continuum, local shared-memory control center",
+    group: "Tooling",
+    span: "wide",
+  },
 
-  { file: "opendronekit-ui.jpg", type: "image", caption: "OpenDroneKit — inspection workbench UI", group: "Hardware", span: "wide" },
-  { file: "odk-mission.jpg", type: "image", caption: "OpenDroneKit — mission planning map and panels", group: "Hardware", span: "wide" },
-  { file: "odk-reconstruction.jpg", type: "image", caption: "OpenDroneKit — survey operations and reconstruction workspace", group: "Hardware", span: "wide" },
-  { file: "continuum-extension.png", type: "image", caption: "Continuum Extension — browser-native agent context panel", group: "Tooling", span: "wide" },
-  { file: "continuum-ui.png", type: "image", caption: "Continuum — local shared-memory control center", group: "Tooling", span: "wide" },
-
-  { file: "workshop-kicad.jpg", type: "image", caption: "KiCad workshop — 50 attendees", group: "Team", span: "wide" },
+  {
+    file: "workshop-kicad.jpg",
+    type: "image",
+    caption: "KiCad workshop, 50 attendees",
+    group: "Team",
+    span: "wide",
+  },
 ];
 
 /** Only the slots whose files actually exist should drive the default view. */

@@ -166,7 +166,7 @@ export default function VoiceRecorder({
           onClick={stopAndSend}
           className="mono w-full border border-fault bg-fault/15 px-3 py-4 text-[13px] uppercase tracking-[0.2em] text-fault transition-colors hover:bg-fault/25"
         >
-          ■ Stop and send — {seconds}s / {MAX_SECONDS}s
+          ■ Stop and send, {seconds}s / {MAX_SECONDS}s
         </button>
       )}
 
@@ -193,9 +193,9 @@ export default function VoiceRecorder({
       )}
 
       <p className="mono mt-3 text-[10px] leading-relaxed text-mute">
-        Recorded at 16 kHz mono so the device can play it straight from the network with no
-        decoding. Up to {MAX_SECONDS} seconds. Playing a note pauses the Bluetooth speaker — they
-        share one audio output.
+        Recorded at 16 kHz mono so the device can play it straight from the
+        network with no decoding. Up to {MAX_SECONDS} seconds. Playing a note
+        pauses the Bluetooth speaker, they share one audio output.
       </p>
     </div>
   );
@@ -205,12 +205,17 @@ export default function VoiceRecorder({
  * Builds a 16-bit PCM WAV. The device parses only this header layout, so the
  * field order and the 44-byte length are load-bearing.
  */
-function encodeWav(chunks: Float32Array[], total: number, rate: number): ArrayBuffer {
+function encodeWav(
+  chunks: Float32Array[],
+  total: number,
+  rate: number,
+): ArrayBuffer {
   const buffer = new ArrayBuffer(44 + total * 2);
   const view = new DataView(buffer);
 
   const ascii = (offset: number, text: string) => {
-    for (let i = 0; i < text.length; i++) view.setUint8(offset + i, text.charCodeAt(i));
+    for (let i = 0; i < text.length; i++)
+      view.setUint8(offset + i, text.charCodeAt(i));
   };
 
   ascii(0, "RIFF");

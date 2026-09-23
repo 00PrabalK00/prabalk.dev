@@ -28,7 +28,7 @@ export function Reveal({
           io.unobserve(el);
         }
       },
-      { rootMargin: "0px 0px -8% 0px", threshold: 0.08 }
+      { rootMargin: "0px 0px -8% 0px", threshold: 0.08 },
     );
     io.observe(el);
     return () => io.disconnect();
@@ -88,7 +88,7 @@ export function Counter({
         };
         raf = requestAnimationFrame(tick);
       },
-      { threshold: 0.3 }
+      { threshold: 0.3 },
     );
     io.observe(el);
     return () => {

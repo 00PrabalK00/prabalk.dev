@@ -11,10 +11,11 @@ export const claudeskills: Project = {
   order: 5,
   compact: true,
 
-  thesis: "The tooling layer under my own workflow, extracted so it can be reused.",
+  thesis:
+    "The tooling layer under my own workflow, extracted so it can be reused.",
 
   summary:
-    "Reusable agent skills packaged for Claude Code — the workflow layer that sits under the rest of this work rather than a project in its own right.",
+    "Reusable agent skills packaged for Claude Code, the workflow layer that sits under the rest of this work rather than a project in its own right.",
 
   links: [
     {
@@ -29,11 +30,13 @@ export const claudeskills: Project = {
   built: {
     heading: "What it is",
     body: [
-      "Skills packaged so a workflow that worked once can be applied again without rebuilding it — the same motivation as Continuum, at a smaller scale.",
+      "Skills packaged so a workflow that worked once can be applied again without rebuilding it, the same motivation as Continuum, at a smaller scale.",
     ],
   },
 
-  attribution: [{ kind: "built-by-me", detail: "The skills and their packaging." }],
+  attribution: [
+    { kind: "built-by-me", detail: "The skills and their packaging." },
+  ],
 
   related: ["continuum"],
 };

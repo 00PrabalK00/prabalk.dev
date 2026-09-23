@@ -70,7 +70,11 @@ export function Patents() {
                           {mediaFor(p.title)
                             .slice(1)
                             .map((f) => (
-                              <MediaSlot key={f} file={f} aspect="aspect-[16/10]" />
+                              <MediaSlot
+                                key={f}
+                                file={f}
+                                aspect="aspect-[16/10]"
+                              />
                             ))}
                         </div>
                       )}

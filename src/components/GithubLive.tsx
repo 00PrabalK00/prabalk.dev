@@ -148,7 +148,7 @@ export default function GithubLive() {
       id="github"
       index="02 / LIVE"
       title="Live from the terminal"
-      kicker="This reads the GitHub API through a cached server route and refreshes every sixty seconds. It is not a screenshot — if I push in the next minute, it lands here."
+      kicker="This reads the GitHub API through a cached server route and refreshes every sixty seconds. It is not a screenshot, if I push in the next minute, it lands here."
     >
       {/* status line */}
       <Reveal>
@@ -210,7 +210,7 @@ export default function GithubLive() {
             <div key={s.label}>
               <div className="text-4xl font-semibold tracking-[-0.045em] tabular-nums text-bone sm:text-5xl">
                 {s.gated ? (
-                  <span className="text-line-2">—</span>
+                  <span className="text-line-2">, </span>
                 ) : (
                   <Counter value={s.value} />
                 )}
@@ -369,7 +369,7 @@ export default function GithubLive() {
                 {r.name}
               </div>
               <p className="max-w-[60ch] text-[14px] leading-relaxed text-mute">
-                {r.description ?? "—"}
+                {r.description ?? ", "}
               </p>
               <div className="mono flex shrink-0 gap-5 text-[10.5px] text-mute/88">
                 <span>★ {r.stargazers_count}</span>

@@ -85,7 +85,7 @@ for (const p of PROJECTS) {
   if (p.subdomain) {
     if (seenSubdomains.has(p.subdomain)) {
       throw new Error(
-        `Two projects claim the subdomain "${p.subdomain}" — one of them will be unreachable.`,
+        `Two projects claim the subdomain "${p.subdomain}", one of them will be unreachable.`,
       );
     }
     seenSubdomains.add(p.subdomain);
@@ -155,7 +155,10 @@ export const CATEGORY_ORDER: ProjectCategory[] = [
   "bench",
 ];
 
-export function projectsByCategory(): { category: ProjectCategory; items: Project[] }[] {
+export function projectsByCategory(): {
+  category: ProjectCategory;
+  items: Project[];
+}[] {
   return CATEGORY_ORDER.map((category) => ({
     category,
     items: PROJECTS.filter((p) => p.category === category).sort(

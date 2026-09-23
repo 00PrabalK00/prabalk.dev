@@ -29,10 +29,10 @@ export const robotdrawing: Project = {
   order: 2,
 
   thesis:
-    "Robotic drawing posed as a stroke-level routing problem, solved with a graph network and pointer decoder — and then measured honestly against the classical solvers it was meant to beat.",
+    "Robotic drawing posed as a stroke-level routing problem, solved with a graph network and pointer decoder, and then measured honestly against the classical solvers it was meant to beat.",
 
   summary:
-    "Drawing with a robot arm is a routing problem: which stroke next, and in which direction, to minimise pen-ups and travel. Formulated at stroke level rather than point level and solved with a GNN plus Pointer Network trained by imitation then reinforcement learning. On the committed 28-image benchmark the learned router did not beat simulated annealing on either axis — which is the result, and it is reported as such.",
+    "Drawing with a robot arm is a routing problem: which stroke next, and in which direction, to minimise pen-ups and travel. Formulated at stroke level rather than point level and solved with a GNN plus Pointer Network trained by imitation then reinforcement learning. On the committed 28-image benchmark the learned router did not beat simulated annealing on either axis, which is the result, and it is reported as such.",
 
   links: [
     {
@@ -55,14 +55,16 @@ export const robotdrawing: Project = {
   problem: {
     heading: "Problem",
     body: [
-      "Classical solvers produce good stroke orderings and take time to do it. At point level the problem is also far larger than it needs to be — the decision that matters is the order and direction of strokes, not of individual points.",
+      "Classical solvers produce good stroke orderings and take time to do it. At point level the problem is also far larger than it needs to be, the decision that matters is the order and direction of strokes, not of individual points.",
       "The hypothesis was that a learned router could match simulated annealing's ordering quality at a fraction of the runtime, by amortising the search into a trained model.",
     ],
   },
 
   built: {
     heading: "What I built",
-    body: ["A learned router, the classical baselines to judge it against, and the control layer that puts a stroke order on a real arm."],
+    body: [
+      "A learned router, the classical baselines to judge it against, and the control layer that puts a stroke order on a real arm.",
+    ],
     points: [
       "Stroke-level formulation with forward/reverse direction optimisation to cut pen-ups and travel",
       "GNN + Pointer Network trained in two phases: imitation learning warm-started from the classical solvers, then reinforcement learning",
@@ -92,16 +94,37 @@ export const robotdrawing: Project = {
         "The benchmark harness is the part that matters: all three methods run over the same 28 images and every image records runtime and quality per method. That is the only reason the gap between the README's claim and the system's behaviour is visible.",
       steps: [
         { label: "An image comes in" },
-        { label: "Extract strokes", detail: "The problem is posed at stroke level rather than point level — the decision that matters is order and direction, not individual points." },
+        {
+          label: "Extract strokes",
+          detail:
+            "The problem is posed at stroke level rather than point level, the decision that matters is order and direction, not individual points.",
+        },
         { label: "Build the stroke graph" },
-        { label: "Route it", tone: "decision",
+        {
+          label: "Route it",
+          tone: "decision",
           branches: [
-            { label: "Greedy nearest neighbour — 18 ms, 27.0 pen-ups" },
-            { label: "Simulated annealing — 195 ms, 26.8 pen-ups", tone: "good" },
-            { label: "Learned router (GNN + Pointer Net) — 10.9 s, 28.8 pen-ups", tone: "bad" },
-          ] },
-        { label: "Direction flipping", detail: "Forward/reverse optimisation to cut pen-ups and travel." },
-        { label: "Export RAPID and draw it", detail: "The planned order is exported as an ABB RAPID module and executed by a simulated IRB140 in CoppeliaSim. No physical arm has run this.", tone: "good" },
+            { label: "Greedy nearest neighbour, 18 ms, 27.0 pen-ups" },
+            {
+              label: "Simulated annealing, 195 ms, 26.8 pen-ups",
+              tone: "good",
+            },
+            {
+              label: "Learned router (GNN + Pointer Net), 10.9 s, 28.8 pen-ups",
+              tone: "bad",
+            },
+          ],
+        },
+        {
+          label: "Direction flipping",
+          detail: "Forward/reverse optimisation to cut pen-ups and travel.",
+        },
+        {
+          label: "Export RAPID and draw it",
+          detail:
+            "The planned order is exported as an ABB RAPID module and executed by a simulated IRB140 in CoppeliaSim. No physical arm has run this.",
+          tone: "good",
+        },
       ],
     },
   ],
@@ -123,12 +146,12 @@ export const robotdrawing: Project = {
   metrics: [
     {
       value: "26.8 / 27.0 / 28.8",
-      label: "Avg pen-ups — SA / greedy / learned",
+      label: "Avg pen-ups, SA / greedy / learned",
       context: "Lower is better. Across the committed 28-image batch.",
     },
     {
       value: "195 ms / 18 ms / 10.9 s",
-      label: "Avg runtime — SA / greedy / learned",
+      label: "Avg runtime, SA / greedy / learned",
       context: "Same batch. The learned router is ~56× slower than SA here.",
     },
     {
@@ -152,10 +175,10 @@ export const robotdrawing: Project = {
   ],
 
   limitations: [
-    "The repository README advertises ~150 ms inference and a 20× speedup over SA. The committed batch results do not reproduce that, and the two have not been reconciled — the 150 ms may measure model inference alone, excluding stroke extraction and post-processing, but nothing in the repository establishes it.",
+    "The repository README advertises ~150 ms inference and a 20× speedup over SA. The committed batch results do not reproduce that, and the two have not been reconciled, the 150 ms may measure model inference alone, excluding stroke extraction and post-processing, but nothing in the repository establishes it.",
     "The learned router loses to simulated annealing on quality and to greedy nearest-neighbour on speed on this benchmark.",
     "28 images is a small benchmark, and pen-up counts vary enormously across them (0 to 302), so the averages hide a wide spread.",
-    "The IRB140 is simulated in CoppeliaSim. RAPID is exported for a real controller, but no physical arm has ever executed one of these drawings — so nothing here is evidence about real-world tracking, pen pressure or mechanical repeatability.",
+    "The IRB140 is simulated in CoppeliaSim. RAPID is exported for a real controller, but no physical arm has ever executed one of these drawings, so nothing here is evidence about real-world tracking, pen pressure or mechanical repeatability.",
   ],
 
   gallery: [
@@ -163,7 +186,7 @@ export const robotdrawing: Project = {
       file: "robotdrawing-compare.png",
       type: "image",
       caption:
-        "Quality against runtime across all three methods. The learned router sits where you would least want it — slowest and highest pen-up count",
+        "Quality against runtime across all three methods. The learned router sits where you would least want it, slowest and highest pen-up count",
     },
     {
       file: "robotdrawing-runtime.png",
@@ -173,19 +196,19 @@ export const robotdrawing: Project = {
     {
       file: "robotdrawing-penups.png",
       type: "image",
-      caption: "Pen-up counts by method — lower is better",
+      caption: "Pen-up counts by method, lower is better",
     },
     {
       file: "robotdrawing-sim.png",
       type: "image",
       caption:
-        "A simulated IRB140 with a felt pen drawing the planned stroke order in CoppeliaSim — the only arm that has ever executed one of these routes",
+        "A simulated IRB140 with a felt pen drawing the planned stroke order in CoppeliaSim, the only arm that has ever executed one of these routes",
     },
     {
       file: "robotdrawing-ui.png",
       type: "image",
       caption:
-        "The stroke-planning UI — contour graph and routed order for one image, solver selection, and the RAPID export panel that targets a real controller",
+        "The stroke-planning UI, contour graph and routed order for one image, solver selection, and the RAPID export panel that targets a real controller",
     },
   ],
 

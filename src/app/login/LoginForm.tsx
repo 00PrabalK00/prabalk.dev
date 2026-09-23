@@ -42,7 +42,10 @@ export default function LoginForm({ next }: { next: string }) {
         return;
       }
 
-      const data = (await res.json().catch(() => ({}))) as { error?: string; remaining?: number };
+      const data = (await res.json().catch(() => ({}))) as {
+        error?: string;
+        remaining?: number;
+      };
 
       // Only a 401 means the credentials were wrong. Anything else is the
       // server having a problem, and saying "Incorrect credentials." there
@@ -50,13 +53,14 @@ export default function LoginForm({ next }: { next: string }) {
       if (!data.error) {
         setError(
           res.status >= 500
-            ? `Server error (${res.status}). Not your password — check the deployment logs.`
+            ? `Server error (${res.status}). Not your password, check the deployment logs.`
             : `Request rejected (${res.status}).`,
         );
         return;
       }
 
-      const remaining = typeof data.remaining === "number" ? data.remaining : null;
+      const remaining =
+        typeof data.remaining === "number" ? data.remaining : null;
       setError(
         remaining !== null && remaining <= 2
           ? `${data.error} ${remaining} attempt${remaining === 1 ? "" : "s"} left.`
@@ -73,7 +77,9 @@ export default function LoginForm({ next }: { next: string }) {
   return (
     <form onSubmit={submit} className="flex flex-col gap-5">
       <label className="flex flex-col gap-2">
-        <span className="mono text-[11px] uppercase tracking-[0.18em] text-mute">Password</span>
+        <span className="mono text-[11px] uppercase tracking-[0.18em] text-mute">
+          Password
+        </span>
         <input
           type="password"
           value={password}
@@ -105,7 +111,9 @@ export default function LoginForm({ next }: { next: string }) {
           <input
             type="text"
             value={code}
-            onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+            onChange={(e) =>
+              setCode(e.target.value.replace(/\D/g, "").slice(0, 6))
+            }
             inputMode="numeric"
             autoComplete="one-time-code"
             pattern="\d{6}"
@@ -125,7 +133,9 @@ export default function LoginForm({ next }: { next: string }) {
         }}
         className="mono -mt-2 self-start text-[10px] uppercase tracking-[0.16em] text-mute underline decoration-dotted underline-offset-4 transition-colors hover:text-bone"
       >
-        {recovery ? "Use the authenticator instead" : "Lost your phone? Use a recovery code"}
+        {recovery
+          ? "Use the authenticator instead"
+          : "Lost your phone? Use a recovery code"}
       </button>
 
       {error && (
@@ -136,7 +146,11 @@ export default function LoginForm({ next }: { next: string }) {
 
       <button
         type="submit"
-        disabled={busy || password.length === 0 || (recovery ? code.length < 20 : code.length !== 6)}
+        disabled={
+          busy ||
+          password.length === 0 ||
+          (recovery ? code.length < 20 : code.length !== 6)
+        }
         className="mono mt-1 border border-accent bg-accent/10 px-4 py-3 text-[12px] uppercase tracking-[0.22em] text-accent transition-colors hover:bg-accent/20 disabled:cursor-not-allowed disabled:border-line disabled:bg-transparent disabled:text-mute"
       >
         {busy ? "Checking..." : "Unlock"}

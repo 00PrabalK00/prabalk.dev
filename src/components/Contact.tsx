@@ -78,7 +78,10 @@ export default function Contact() {
         <Reveal delay={100}>
           <ul className="mt-20">
             {links.map((l) => (
-              <li key={l.label} className="border-t border-line/60 last:border-b">
+              <li
+                key={l.label}
+                className="border-t border-line/60 last:border-b"
+              >
                 <a
                   href={l.href}
                   download={l.download}

@@ -45,7 +45,7 @@ const ACT1_BEATS: Beat[] = [
      */
     kicker: "Robotics Engineer · Embodied AI · Brooklyn, NY",
     big: "PRABAL\nKHARE",
-    body: "I build robot systems and study what happens when learned policies fail. Sensors, comms, localization, navigation, controls, operator tooling — and now, at NYU, whether a policy can recover when it breaks.",
+    body: "I build robot systems and study what happens when learned policies fail. Sensors, comms, localization, navigation, controls, operator tooling, and now, at NYU, whether a policy can recover when it breaks.",
   },
   {
     from: 0.13,
@@ -77,14 +77,17 @@ const ACT1_BEATS: Beat[] = [
     align: "left",
     kicker: "Docking",
     title: "Center check. Reposition. Or abort.",
-    body: "The pose is validated before the lift moves. If it fails, it retries — and if it fails again, it aborts safely instead of guessing.",
+    body: "The pose is validated before the lift moves. If it fails, it retries, and if it fails again, it aborts safely instead of guessing.",
   },
   {
     from: 0.65,
     to: 0.75,
     align: "center",
     kicker: "Result",
-    metric: { value: "97%", label: "docking success · 2 cm mean error · 150 trials" },
+    metric: {
+      value: "97%",
+      label: "docking success · 2 cm mean error · 150 trials",
+    },
   },
   {
     from: 0.78,
@@ -92,7 +95,7 @@ const ACT1_BEATS: Beat[] = [
     align: "left",
     kicker: "SMR300",
     title: "300 kg. Built to be reused.",
-    body: "I replaced the company's ROS 1 architecture with a ROS 2 Humble stack designed for a fleet, not a prototype — CANopen and CiA 402 drives, ros2_control, an AI camera, and an operator platform for engineers who don't write code.",
+    body: "I replaced the company's ROS 1 architecture with a ROS 2 Humble stack designed for a fleet, not a prototype, CANopen and CiA 402 drives, ros2_control, an AI camera, and an operator platform for engineers who don't write code.",
   },
   {
     from: 0.9,
@@ -100,7 +103,7 @@ const ACT1_BEATS: Beat[] = [
     align: "center",
     kicker: "Keep going",
     title: "That's one robot.",
-    body: "Six more ahead — and then the research that asks whether any of them actually work.",
+    body: "Six more ahead, and then the research that asks whether any of them actually work.",
   },
 ];
 
@@ -111,19 +114,17 @@ const BEATS: Beat[] = [
     from: b.from * ACT1_END,
     to: b.to * ACT1_END,
   })),
-  ...STATIONS.map(
-    (s): Beat => ({
-      from: s.from,
-      to: s.to,
-      align: s.align,
-      kicker: s.kicker,
-      title: s.title,
-      body: s.body,
-      facts: s.facts,
-      accent: s.color,
-      link: s.link,
-    })
-  ),
+  ...STATIONS.map((s): Beat => ({
+    from: s.from,
+    to: s.to,
+    align: s.align,
+    kicker: s.kicker,
+    title: s.title,
+    body: s.body,
+    facts: s.facts,
+    accent: s.color,
+    link: s.link,
+  })),
   {
     from: OUTRO.patents.from,
     to: OUTRO.patents.to,
@@ -132,7 +133,7 @@ const BEATS: Beat[] = [
     title: "Three filings.",
     body: "A vehicle that drives and flies, a bottle that heats and cools its own contents, and an IMU module that stays honest under vibration.",
     facts: [
-      "Transformation Drone — autonomous drone-rover · 202641035669",
+      "Transformation Drone, autonomous drone-rover · 202641035669",
       "Thermoregulation System for Portable Water Containers · pending",
       "IMU Calibration and Sensor Fusion Module · pending",
     ],
@@ -173,7 +174,9 @@ export default function Cinema() {
   const secretRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
 
     /**
      * Stage travel, cached.
@@ -204,12 +207,17 @@ export default function Cinema() {
     // slideshow rather than one continuous take.
     const lenis = reduced
       ? null
-      : new Lenis({ duration: 1.15, wheelMultiplier: 0.9, touchMultiplier: 1.4 });
+      : new Lenis({
+          duration: 1.15,
+          wheelMultiplier: 0.9,
+          touchMultiplier: 1.4,
+        });
 
     // Route programmatic jumps through Lenis so they share the same easing.
     if (lenis) {
       cinema.scrollTo = (px) => lenis.scrollTo(px, { duration: 1.6 });
-      cinema.setPageScroll = (enabled) => (enabled ? lenis.start() : lenis.stop());
+      cinema.setPageScroll = (enabled) =>
+        enabled ? lenis.start() : lenis.stop();
     }
 
     // ↑↑↓↓←→←→BA — barrel roll and a rainbow scan
@@ -298,7 +306,7 @@ export default function Cinema() {
         // fade the whole 3D stage out as the DOM content takes over
         if (overlayRef.current) {
           overlayRef.current.style.opacity = String(
-            p > 0.985 ? Math.max(0, 1 - (p - 0.985) / 0.015) : 1
+            p > 0.985 ? Math.max(0, 1 - (p - 0.985) / 0.015) : 1,
           );
         }
 
@@ -365,7 +373,7 @@ export default function Cinema() {
 
           {/* film grain + vignette */}
           <div className="scanlines pointer-events-none absolute inset-0" />
-          {/* Vignette in the stage's own colour — a black vignette over a
+          {/* Vignette in the stage's own colour, a black vignette over a
               light sweep reads as dirt on the lens. */}
           <div
             className="pointer-events-none absolute inset-0"
@@ -434,7 +442,9 @@ export default function Cinema() {
                 {b.kicker && (
                   <p
                     className="mono mb-6 text-[11px] leading-relaxed tracking-[0.24em] uppercase"
-                    style={{ color: `color-mix(in srgb, ${b.accent ?? "var(--c-accent)"}, black var(--accent-darken))` }}
+                    style={{
+                      color: `color-mix(in srgb, ${b.accent ?? "var(--c-accent)"}, black var(--accent-darken))`,
+                    }}
                   >
                     {b.kicker}
                   </p>
@@ -466,7 +476,9 @@ export default function Cinema() {
                 {b.body && (
                   <p
                     className={`mt-5 text-[15px] leading-[1.65] text-bone/85 sm:mt-7 sm:text-[16px] md:text-lg ${
-                      b.align === "center" ? "mx-auto max-w-[46ch]" : "max-w-[44ch]"
+                      b.align === "center"
+                        ? "mx-auto max-w-[46ch]"
+                        : "max-w-[44ch]"
                     }`}
                   >
                     {b.body}
@@ -476,14 +488,18 @@ export default function Cinema() {
                 {b.facts && (
                   <ul
                     className={`mt-6 hidden space-y-3 sm:mt-8 sm:block ${
-                      b.align === "center" ? "mx-auto max-w-[52ch] text-left" : "max-w-[44ch]"
+                      b.align === "center"
+                        ? "mx-auto max-w-[52ch] text-left"
+                        : "max-w-[44ch]"
                     }`}
                   >
                     {b.facts.map((f) => (
                       <li key={f} className="flex gap-4">
                         <span
                           className="mt-[9px] h-px w-5 shrink-0"
-                          style={{ background: `color-mix(in srgb, ${b.accent ?? "var(--c-accent)"}, black var(--accent-darken))` }}
+                          style={{
+                            background: `color-mix(in srgb, ${b.accent ?? "var(--c-accent)"}, black var(--accent-darken))`,
+                          }}
                         />
                         <span className="text-[14px] leading-[1.65] text-bone/75">
                           {f}
@@ -521,13 +537,13 @@ export default function Cinema() {
             </div>
           ))}
 
-          {/* egg HUD — konami / idle roam */}
+          {/* egg HUD, konami / idle roam */}
           <div
             ref={hudRef}
             className="mono pointer-events-none absolute top-6 left-1/2 z-20 -translate-x-1/2 border border-fault/50 bg-fault/10 px-3 py-1.5 text-[10px] tracking-[0.16em] whitespace-nowrap text-fault uppercase opacity-0 transition-opacity duration-500"
           />
 
-          {/* the 3% marker — only at exactly 97% of the flight */}
+          {/* the 3% marker, only at exactly 97% of the flight */}
           <div
             ref={secretRef}
             className="pointer-events-none absolute inset-x-0 bottom-24 z-20 flex justify-center opacity-0 transition-opacity duration-300"
@@ -537,7 +553,7 @@ export default function Cinema() {
             </p>
           </div>
 
-          {/* flight manifest — where you are in the route */}
+          {/* flight manifest, where you are in the route */}
           <StationIndex />
 
           {/* persistent chrome */}

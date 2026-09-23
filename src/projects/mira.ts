@@ -14,13 +14,13 @@ export const mira: Project = {
   title: "Project MIRA",
   subtitle: "Autonomous underwater vehicle",
   status: "completed",
-  year: "2023 — 2025",
+  year: "2023 to 2025",
   role: "Electrical architecture and control software",
   category: "robot-systems",
   order: 4,
 
   thesis:
-    "A sealed-hull AUV that placed 2nd at the TAC Challenge in Norway, 2024 — where every design decision is downstream of the fact that you cannot open the hull once it is closed.",
+    "A sealed-hull AUV that placed 2nd at the TAC Challenge in Norway, 2024, where every design decision is downstream of the fact that you cannot open the hull once it is closed.",
 
   summary:
     "A sealed-pressure-hull autonomous underwater vehicle built by Dreadnought Robotics. I owned the electrical architecture and power distribution inside the hull, the hydrophone and sensor-control subsystem integration, and the ROS / MAVROS / MAVLink control software.",
@@ -33,7 +33,14 @@ export const mira: Project = {
     },
   ],
 
-  stack: ["ROS", "MAVROS", "MAVLink", "ArduSub", "PCB design", "Power distribution"],
+  stack: [
+    "ROS",
+    "MAVROS",
+    "MAVLink",
+    "ArduSub",
+    "PCB design",
+    "Power distribution",
+  ],
 
   problem: {
     heading: "Problem",
@@ -45,7 +52,9 @@ export const mira: Project = {
 
   built: {
     heading: "What I built",
-    body: ["The electrical system inside the hull, and the control software driving it."],
+    body: [
+      "The electrical system inside the hull, and the control software driving it.",
+    ],
     points: [
       "Electrical architecture and power distribution within a sealed pressure hull",
       "Hydrophone and sensor-control subsystem integration",
@@ -69,15 +78,38 @@ export const mira: Project = {
       caption:
         "Every electrical decision here is downstream of one constraint: once the pressure hull closes, nothing inside it can be reached, and a leak is terminal.",
       steps: [
-        { label: "The hull closes", detail: "No further physical access. No debugging loop." },
-        { label: "Power distribution inside the hull", detail: "Every rail has to come up correctly the first time." },
-        { label: "Sensor and hydrophone subsystems integrated", detail: "Prototyped on PCB before anything was sealed." },
-        { label: "Control stack", detail: "ROS / MAVROS / MAVLink, validated in ArduSub simulation first." },
-        { label: "In the water", tone: "decision",
+        {
+          label: "The hull closes",
+          detail: "No further physical access. No debugging loop.",
+        },
+        {
+          label: "Power distribution inside the hull",
+          detail: "Every rail has to come up correctly the first time.",
+        },
+        {
+          label: "Sensor and hydrophone subsystems integrated",
+          detail: "Prototyped on PCB before anything was sealed.",
+        },
+        {
+          label: "Control stack",
+          detail:
+            "ROS / MAVROS / MAVLink, validated in ArduSub simulation first.",
+        },
+        {
+          label: "In the water",
+          tone: "decision",
           branches: [
-            { label: "A fault inside the hull — the mission ends, and stays ended", tone: "bad" },
-            { label: "It holds — autonomous docking and the competition run", tone: "good" },
-          ] },
+            {
+              label:
+                "A fault inside the hull, the mission ends, and stays ended",
+              tone: "bad",
+            },
+            {
+              label: "It holds, autonomous docking and the competition run",
+              tone: "good",
+            },
+          ],
+        },
       ],
     },
   ],
@@ -94,7 +126,10 @@ export const mira: Project = {
         ["ROS / MAVROS / MAVLink control software", "Mine"],
         ["Cross-functional test coordination", "Mine"],
         ["Mechanical design, pressure hull, frame and thrusters", "The team's"],
-        ["Competition entry and the 2nd place at TAC Norway 2024", "The team's"],
+        [
+          "Competition entry and the 2nd place at TAC Norway 2024",
+          "The team's",
+        ],
       ],
     },
   ],
@@ -104,14 +139,28 @@ export const mira: Project = {
   ],
 
   gallery: [
-    { file: "MIRA_AUV.jpeg", type: "image", caption: "Project MIRA — extruded aluminium frame, ducted thrusters, domed pressure housings" },
+    {
+      file: "MIRA_AUV.jpeg",
+      type: "image",
+      caption:
+        "Project MIRA, extruded aluminium frame, ducted thrusters, domed pressure housings",
+    },
     {
       file: "VideoOfUsDoingAutonomousDockingAUV.mp4",
       type: "video",
-      caption: "Underwater — an autonomous docking run",
+      caption: "Underwater, an autonomous docking run",
     },
-    { file: "TAC_PhotowithThrophy.jpeg", type: "image", caption: "TAC Challenge, Norway 2024" },
-    { file: "mira-electronics.jpg", type: "image", caption: "Electronics stack inside the pressure hull", pending: true },
+    {
+      file: "TAC_PhotowithThrophy.jpeg",
+      type: "image",
+      caption: "TAC Challenge, Norway 2024",
+    },
+    {
+      file: "mira-electronics.jpg",
+      type: "image",
+      caption: "Electronics stack inside the pressure hull",
+      pending: true,
+    },
   ],
 
   attribution: [

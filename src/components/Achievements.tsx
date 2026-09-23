@@ -15,10 +15,7 @@ export default function Achievements() {
       const d = (e as CustomEvent).detail as Omit<Toast, "key">;
       const key = ++n;
       setToasts((t) => [...t, { ...d, key }]);
-      setTimeout(
-        () => setToasts((t) => t.filter((x) => x.key !== key)),
-        5200
-      );
+      setTimeout(() => setToasts((t) => t.filter((x) => x.key !== key)), 5200);
     };
     window.addEventListener(ACHIEVEMENT_EVENT, onUnlock);
     return () => window.removeEventListener(ACHIEVEMENT_EVENT, onUnlock);
@@ -37,16 +34,16 @@ export default function Achievements() {
   |___|
   /| |\\   ROS 2 · Nav2 · C++ · CANopen · SLAM
 `,
-      head
+      head,
     );
     console.log(
       "%cI shipped a 300 kg AMR at 97%% docking success over 300 logged trials\non a live factory floor. I'd like to do that again.",
-      body
+      body,
     );
     console.log(`%c${profile.email}`, link);
     console.log(
-      "%cBuilt with Next.js 16, React Three Fiber and Tailwind v4.\nSource: github.com/00PrabalK00/prabalk.dev\n\nPS — there are undocumented commands in the terminal below.",
-      body
+      "%cBuilt with Next.js 16, React Three Fiber and Tailwind v4.\nSource: github.com/00PrabalK00/prabalk.dev\n\nPS, there are undocumented commands in the terminal below.",
+      body,
     );
   }, []);
 

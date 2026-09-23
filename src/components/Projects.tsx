@@ -34,7 +34,7 @@ export default function Projects() {
       filter === "All"
         ? projects
         : projects.filter((p) => BUCKET[p.name] === filter),
-    [filter]
+    [filter],
   );
 
   return (
@@ -89,7 +89,11 @@ export default function Projects() {
                       className="text-[1.9rem] leading-none font-semibold tracking-[-0.035em] transition-colors sm:text-[2.4rem]"
                       style={{ color: isOpen ? p.accent : undefined }}
                     >
-                      <span className={isOpen ? "" : "text-bone group-hover:text-accent"}>
+                      <span
+                        className={
+                          isOpen ? "" : "text-bone group-hover:text-accent"
+                        }
+                      >
                         {p.name}
                       </span>
                     </h3>
@@ -126,7 +130,9 @@ export default function Projects() {
                         <p className="mono mt-8 max-w-[46ch] text-[11px] leading-relaxed tracking-[0.05em] text-mute/92">
                           {p.tech.map((t, ti) => (
                             <span key={t}>
-                              {ti > 0 && <span className="text-line-2"> / </span>}
+                              {ti > 0 && (
+                                <span className="text-line-2"> / </span>
+                              )}
                               {t}
                             </span>
                           ))}

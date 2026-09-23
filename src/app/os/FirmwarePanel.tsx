@@ -51,7 +51,10 @@ export default function FirmwarePanel({
         body: await file.arrayBuffer(),
       });
 
-      const data = (await res.json().catch(() => ({}))) as { error?: string; version?: string };
+      const data = (await res.json().catch(() => ({}))) as {
+        error?: string;
+        version?: string;
+      };
       if (res.ok) {
         onFlash(`Firmware ${data.version} published`);
         setTotp("");
@@ -85,8 +88,12 @@ export default function FirmwarePanel({
   return (
     <div className="flex flex-col gap-2">
       <div className="mb-1 flex items-baseline gap-3">
-        <span className="mono text-[10px] uppercase tracking-[0.16em] text-mute">Running</span>
-        <span className="mono text-[12px] text-bone">{deviceFw || "unknown"}</span>
+        <span className="mono text-[10px] uppercase tracking-[0.16em] text-mute">
+          Running
+        </span>
+        <span className="mono text-[12px] text-bone">
+          {deviceFw || "unknown"}
+        </span>
         {pending && (
           <span className="mono text-[10px] uppercase tracking-[0.14em] text-amber-400">
             {firmware.version} waiting to install
@@ -104,13 +111,17 @@ export default function FirmwarePanel({
       <div className="grid grid-cols-2 gap-2">
         <input
           value={version}
-          onChange={(e) => setVersion(e.target.value.replace(/[^0-9.]/g, "").slice(0, 12))}
+          onChange={(e) =>
+            setVersion(e.target.value.replace(/[^0-9.]/g, "").slice(0, 12))
+          }
           placeholder="1.1.0"
           className="mono border border-line bg-ink-3 px-2.5 py-2 text-[13px] text-bone outline-none focus:border-accent"
         />
         <input
           value={totp}
-          onChange={(e) => setTotp(e.target.value.replace(/\D/g, "").slice(0, 6))}
+          onChange={(e) =>
+            setTotp(e.target.value.replace(/\D/g, "").slice(0, 6))
+          }
           inputMode="numeric"
           autoComplete="off"
           placeholder="6-digit code"
@@ -137,9 +148,10 @@ export default function FirmwarePanel({
       )}
 
       <p className="mono mt-1 text-[10px] leading-relaxed text-mute">
-        Needs a live authenticator code — a session alone is not enough to replace the code running
-        in someone&apos;s house. The device verifies the SHA-256 before rebooting, and the previous
-        firmware stays bootable, so a bad image rolls back instead of bricking it.
+        Needs a live authenticator code, a session alone is not enough to
+        replace the code running in someone&apos;s house. The device verifies
+        the SHA-256 before rebooting, and the previous firmware stays bootable,
+        so a bad image rolls back instead of bricking it.
       </p>
     </div>
   );

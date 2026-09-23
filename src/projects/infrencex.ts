@@ -19,7 +19,11 @@ export const infrencex: Project = {
     "An Ink-based TUI with live token and cost tracking, subagent monitoring, and automatic provider failover that preserves conversation history. Five role-aware personas, a plan-first mode requiring approval before changes, and an extensible plugin framework supporting Skills and ESM/Claude-format plugins.",
 
   links: [
-    { label: "Repository", href: "https://github.com/00PrabalK00/INFRX", kind: "repo" },
+    {
+      label: "Repository",
+      href: "https://github.com/00PrabalK00/INFRX",
+      kind: "repo",
+    },
   ],
 
   stack: ["Node.js", "Ink", "TypeScript", "JSON-RPC", "MCP"],
@@ -27,7 +31,7 @@ export const infrencex: Project = {
   problem: {
     heading: "Problem",
     body: [
-      "Provider choice is usually a config value set once and forgotten, which means paying list price for work that a cheaper model would have done identically — and losing the session when that provider has an outage.",
+      "Provider choice is usually a config value set once and forgotten, which means paying list price for work that a cheaper model would have done identically, and losing the session when that provider has an outage.",
       "Failover is the harder half. Switching provider mid-task is only useful if the conversation survives the switch.",
     ],
   },
@@ -49,7 +53,7 @@ export const infrencex: Project = {
       file: "infrencex-cli.jpg",
       type: "image",
       caption:
-        "The project's own render of the TUI — cost and model shown in the status line, which is the part that makes routing decisions visible",
+        "The project's own render of the TUI, cost and model shown in the status line, which is the part that makes routing decisions visible",
     },
   ],
 
@@ -57,7 +61,12 @@ export const infrencex: Project = {
     "Routing quality depends on the market's availability signals; a provider that is listed but degraded still has to be discovered by failing.",
   ],
 
-  attribution: [{ kind: "built-by-me", detail: "The CLI, routing, failover and plugin framework." }],
+  attribution: [
+    {
+      kind: "built-by-me",
+      detail: "The CLI, routing, failover and plugin framework.",
+    },
+  ],
 
   related: ["continuum"],
 };

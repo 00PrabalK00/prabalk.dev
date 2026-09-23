@@ -18,12 +18,14 @@ export const botopsy: Project = {
   order: 7,
 
   thesis:
-    "Students get a broken robot, diagnose it, repair it, and prove the fix — because that is the loop the job actually consists of.",
+    "Students get a broken robot, diagnose it, repair it, and prove the fix, because that is the loop the job actually consists of.",
 
   summary:
-    "Browser-accessible ROS and ROS 2 environments with VM checkpoints and save/resume, built around a diagnose-modify-test-prove loop instead of lecture-and-quiz. Six courses and 96 graded labs planned, plus a separate teacher-led curriculum for grades 3–8.",
+    "Browser-accessible ROS and ROS 2 environments with VM checkpoints and save/resume, built around a diagnose-modify-test-prove loop instead of lecture-and-quiz. Six courses and 96 graded labs planned, plus a separate teacher-led curriculum for grades 3 to 8.",
 
-  links: [{ label: "botopsylab.com", href: "https://botopsylab.com", kind: "site" }],
+  links: [
+    { label: "botopsylab.com", href: "https://botopsylab.com", kind: "site" },
+  ],
 
   stack: ["ROS 2", "Browser VMs", "Autograding", "Curriculum design"],
 
@@ -37,13 +39,15 @@ export const botopsy: Project = {
 
   built: {
     heading: "What I built",
-    body: ["An environment where the robot is already broken, and grading checks that you proved the fix."],
+    body: [
+      "An environment where the robot is already broken, and grading checks that you proved the fix.",
+    ],
     points: [
-      "Browser-accessible ROS and ROS 2 environments — no local install",
+      "Browser-accessible ROS and ROS 2 environments, no local install",
       "VM checkpoints with save and resume, so a lab can be left and returned to",
       "Six courses, 96 graded labs planned",
       "Diagnose → modify → test → prove loop with automated grading",
-      "A separate teacher-led curriculum for grades 3–8",
+      "A separate teacher-led curriculum for grades 3 to 8",
     ],
   },
 
@@ -52,16 +56,17 @@ export const botopsy: Project = {
       file: "botopsy-lab.png",
       type: "image",
       caption:
-        "The premise, stated on the front page — a broken ROS 2 system, the real tools, and a test that checks your fix rather than your answer",
+        "The premise, stated on the front page, a broken ROS 2 system, the real tools, and a test that checks your fix rather than your answer",
     },
   ],
 
-  limitations: [
-    "Course and lab counts are the plan, not the shipped total.",
-  ],
+  limitations: ["Course and lab counts are the plan, not the shipped total."],
 
   attribution: [
-    { kind: "built-by-me", detail: "The platform, curriculum design and the grading model." },
+    {
+      kind: "built-by-me",
+      detail: "The platform, curriculum design and the grading model.",
+    },
   ],
 
   related: ["rosscope"],

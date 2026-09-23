@@ -17,7 +17,7 @@ export const smr300: Project = {
   subtitle: "Autonomy stack for a 300 kg industrial AMR",
   status: "deployed",
   year: "2026",
-  role: "Robotics Software Intern — autonomy stack owner",
+  role: "Robotics Software Intern, autonomy stack owner",
   category: "robot-systems",
   order: 1,
 
@@ -58,7 +58,7 @@ export const smr300: Project = {
   built: {
     heading: "What I built",
     body: [
-      "A layered stack — hardware, autonomy, operator — where each layer can be configured without editing the one below it.",
+      "A layered stack, hardware, autonomy, operator, where each layer can be configured without editing the one below it.",
     ],
     points: [
       "Reusable ROS 2 autonomy stack integrating LiDAR, PGV, Nav2, an AI camera, CANopen and CiA 402",
@@ -99,7 +99,7 @@ export const smr300: Project = {
     {
       heading: "Failure diagnosis on a live floor",
       body: [
-        "Intermittent docking failures were traced to direct sunlight entering through open factory doors and saturating the reflective-marker return. An environmental failure mode, not a software regression — which is the kind of answer that only comes from instrumenting the robot on the floor it actually runs on.",
+        "Intermittent docking failures were traced to direct sunlight entering through open factory doors and saturating the reflective-marker return. An environmental failure mode, not a software regression, which is the kind of answer that only comes from instrumenting the robot on the floor it actually runs on.",
       ],
     },
   ],
@@ -110,20 +110,38 @@ export const smr300: Project = {
       caption:
         "The sequence that runs 97% of the time and, more importantly, what happens the other 3%. Nothing lifts until the pose has been validated.",
       steps: [
-        { label: "Approach the shelf", detail: "Nav2 drives to the pre-dock pose." },
-        { label: "Cluster the LiDAR return", detail: "Reflective-marker signatures isolated for two- and four-legged shelves." },
-        { label: "Is the approach corridor clean?", tone: "decision",
+        {
+          label: "Approach the shelf",
+          detail: "Nav2 drives to the pre-dock pose.",
+        },
+        {
+          label: "Cluster the LiDAR return",
+          detail:
+            "Reflective-marker signatures isolated for two- and four-legged shelves.",
+        },
+        {
+          label: "Is the approach corridor clean?",
+          tone: "decision",
           branches: [
-            { label: "No — sector safety gating blocks motion", tone: "bad" },
-            { label: "Yes — continue to the center check" },
-          ] },
-        { label: "Center check on the computed pose", tone: "decision",
+            { label: "No, sector safety gating blocks motion", tone: "bad" },
+            { label: "Yes, continue to the center check" },
+          ],
+        },
+        {
+          label: "Center check on the computed pose",
+          tone: "decision",
           branches: [
-            { label: "Within tolerance — lift", tone: "good" },
-            { label: "Out of tolerance — reposition and retry" },
-            { label: "Retry exhausted — safe abort and alert", tone: "bad" },
-          ] },
-        { label: "Lift the shelf", detail: "The lift actuator enforces its own limit switches, independently of the drives.", tone: "good" },
+            { label: "Within tolerance, lift", tone: "good" },
+            { label: "Out of tolerance, reposition and retry" },
+            { label: "Retry exhausted, safe abort and alert", tone: "bad" },
+          ],
+        },
+        {
+          label: "Lift the shelf",
+          detail:
+            "The lift actuator enforces its own limit switches, independently of the drives.",
+          tone: "good",
+        },
       ],
     },
     {
@@ -132,14 +150,30 @@ export const smr300: Project = {
         "The drive state machine the hardware interface drives over CANopen. The point of the diagram is the fault path: a fault resets automatically rather than stopping the robot for a person.",
       steps: [
         { label: "Switch on disabled" },
-        { label: "Ready to switch on", detail: "Heartbeat monitoring confirms the drives are actually present." },
-        { label: "Operation enabled", detail: "Velocity commands translated to Kinco CANopen frames over SocketCAN; position integrated from velocity feedback." },
-        { label: "Is the drive in fault?", tone: "decision",
+        {
+          label: "Ready to switch on",
+          detail:
+            "Heartbeat monitoring confirms the drives are actually present.",
+        },
+        {
+          label: "Operation enabled",
+          detail:
+            "Velocity commands translated to Kinco CANopen frames over SocketCAN; position integrated from velocity feedback.",
+        },
+        {
+          label: "Is the drive in fault?",
+          tone: "decision",
           branches: [
-            { label: "Yes — automatic fault reset sequence, then re-enable" },
-            { label: "No — motion permitted", tone: "good" },
-          ] },
-        { label: "Command gating", detail: "Motion is refused during initialization or while any drive reports an error state.", tone: "bad" },
+            { label: "Yes, automatic fault reset sequence, then re-enable" },
+            { label: "No, motion permitted", tone: "good" },
+          ],
+        },
+        {
+          label: "Command gating",
+          detail:
+            "Motion is refused during initialization or while any drive reports an error state.",
+          tone: "bad",
+        },
       ],
     },
   ],
@@ -151,9 +185,18 @@ export const smr300: Project = {
         "Each layer is configurable without editing the one below it. That is what makes the stack reusable across a fleet rather than tuned to one robot.",
       head: ["Layer", "What lives there"],
       rows: [
-        ["Operator", "Mission control and monitoring, map editor and zone management, URDF and sensor configuration, Nav2 parameter tuning, Node-RED dashboard, deployment validation"],
-        ["Autonomy", "Nav2 planning and following, PGV localization with odometry fallback, shelf recognition and docking actions, sector safety gating and safe abort, obstacle detection, runtime diagnostics"],
-        ["Hardware", "ros2_control plugin, Kinco drives over CANopen, the CiA 402 state machine, lift actuator with independent limit switches, LiDAR and PGV interfaces"],
+        [
+          "Operator",
+          "Mission control and monitoring, map editor and zone management, URDF and sensor configuration, Nav2 parameter tuning, Node-RED dashboard, deployment validation",
+        ],
+        [
+          "Autonomy",
+          "Nav2 planning and following, PGV localization with odometry fallback, shelf recognition and docking actions, sector safety gating and safe abort, obstacle detection, runtime diagnostics",
+        ],
+        [
+          "Hardware",
+          "ros2_control plugin, Kinco drives over CANopen, the CiA 402 state machine, lift actuator with independent limit switches, LiDAR and PGV interfaces",
+        ],
       ],
     },
     {
@@ -164,7 +207,11 @@ export const smr300: Project = {
       rows: [
         ["Shelf docking", "150", "97% success, 2 cm mean error"],
         ["Point to point", "150", "3 cm mean mismatch, down from 5 cm"],
-        ["Operator platform", "5 operators, 2 engineers", "Node-RED dashboard evaluated in use"],
+        [
+          "Operator platform",
+          "5 operators, 2 engineers",
+          "Node-RED dashboard evaluated in use",
+        ],
       ],
     },
   ],
@@ -173,7 +220,8 @@ export const smr300: Project = {
     {
       value: "97%",
       label: "Shelf docking success",
-      context: "Across 150 logged shelf-docking trials on a live factory floor.",
+      context:
+        "Across 150 logged shelf-docking trials on a live factory floor.",
     },
     {
       value: "2 cm",
@@ -193,27 +241,43 @@ export const smr300: Project = {
   ],
 
   gallery: [
-    { file: "Shelf_Docking_SMR300.mp4", type: "video", caption: "Autonomous shelf docking — approach, align, lift" },
-    { file: "SMR300_onFactoryFloor.jpeg", type: "image", caption: "SMR300 on the factory floor, squaring up to a shelf" },
-    { file: "UI_SMR300ControlPlane.jpeg", type: "image", caption: "Operator control plane — live scan, path editor, safety groups" },
-    { file: "PGV_Mode_SMR300.mp4", type: "video", caption: "PGV mode — tag-referenced localization run" },
+    {
+      file: "Shelf_Docking_SMR300.mp4",
+      type: "video",
+      caption: "Autonomous shelf docking, approach, align, lift",
+    },
+    {
+      file: "SMR300_onFactoryFloor.jpeg",
+      type: "image",
+      caption: "SMR300 on the factory floor, squaring up to a shelf",
+    },
+    {
+      file: "UI_SMR300ControlPlane.jpeg",
+      type: "image",
+      caption: "Operator control plane, live scan, path editor, safety groups",
+    },
+    {
+      file: "PGV_Mode_SMR300.mp4",
+      type: "video",
+      caption: "PGV mode, tag-referenced localization run",
+    },
     {
       file: "smr300-operator.jpg",
       type: "image",
       caption:
-        "Operator control plane mid-run — live LiDAR return, planned path, saved zones, and the robot aligning to a shelf point under AUTO",
+        "Operator control plane mid-run, live LiDAR return, planned path, saved zones, and the robot aligning to a shelf point under AUTO",
     },
     {
       file: "smr300-map.png",
       type: "image",
       caption:
-        "An occupancy grid built on the factory floor — the map the operator platform edits and Nav2 plans against",
+        "An occupancy grid built on the factory floor, the map the operator platform edits and Nav2 plans against",
     },
     {
       file: "smr300-nodered.jpg",
       type: "image",
       caption:
-        "FlowPilot's control plane over the Node-RED flow — the guarded SMR300 task queue, with validation and snapshot/rollback beside it",
+        "FlowPilot's control plane over the Node-RED flow, the guarded SMR300 task queue, with validation and snapshot/rollback beside it",
     },
   ],
 
@@ -221,17 +285,20 @@ export const smr300: Project = {
     {
       name: "OpenRosWarehouse",
       href: "https://github.com/00PrabalK00/OpenRosWarehouse",
-      contains: "The ROS 2 autonomy stack — navigation, docking, safety gating and bringup.",
+      contains:
+        "The ROS 2 autonomy stack, navigation, docking, safety gating and bringup.",
     },
     {
       name: "next_HI",
       href: "https://github.com/00PrabalK00/next_HI",
-      contains: "The ros2_control hardware interface: CANopen and the CiA 402 state machine.",
+      contains:
+        "The ros2_control hardware interface: CANopen and the CiA 402 state machine.",
     },
     {
       name: "next_EKF",
       href: "https://github.com/00PrabalK00/next_EKF",
-      contains: "State estimation, with covariances derived from Allan variance analysis.",
+      contains:
+        "State estimation, with covariances derived from Allan variance analysis.",
     },
   ],
 

@@ -42,7 +42,13 @@ import { LiveClock } from "@/components/ui";
 /* ------------------------------------------------------------------ */
 function GithubMark({ size = 13 }: { size?: number }) {
   return (
-    <svg viewBox="0 0 24 24" width={size} height={size} fill="currentColor" aria-hidden>
+    <svg
+      viewBox="0 0 24 24"
+      width={size}
+      height={size}
+      fill="currentColor"
+      aria-hidden
+    >
       <path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.8 18.3 5.1 18.3 5.1c.7 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3Z" />
     </svg>
   );
@@ -50,7 +56,13 @@ function GithubMark({ size = 13 }: { size?: number }) {
 
 function LinkedinMark({ size = 13 }: { size?: number }) {
   return (
-    <svg viewBox="0 0 24 24" width={size} height={size} fill="currentColor" aria-hidden>
+    <svg
+      viewBox="0 0 24 24"
+      width={size}
+      height={size}
+      fill="currentColor"
+      aria-hidden
+    >
       <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.42v1.56h.05a3.75 3.75 0 0 1 3.37-1.85c3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13ZM7.12 20.45H3.55V9h3.57v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0Z" />
     </svg>
   );
@@ -75,7 +87,7 @@ const APPS: App[] = [
     id: "smr300",
     name: "smr300",
     cmd: "smr300",
-    desc: "The 300 kg AMR — full autonomy stack, 300 logged trials",
+    desc: "The 300 kg AMR, full autonomy stack, 300 logged trials",
     meta: "flagship",
     Icon: Truck,
     accent: "#51e2f5",
@@ -106,7 +118,7 @@ const APPS: App[] = [
     name: "experience",
     cmd: "experience",
     desc: "Five roles, two degrees, $15K of hardware managed",
-    meta: "2023 — now",
+    meta: "2023, now",
     Icon: Briefcase,
     accent: "#a28089",
     render: () => <Timeline />,
@@ -217,7 +229,7 @@ export default function Console() {
       visited.current.add(id);
       if (visited.current.size >= APPS.length) unlock("explorer");
     },
-    [say]
+    [say],
   );
 
   const run = useCallback(
@@ -258,7 +270,7 @@ export default function Console() {
             APPS.map((a) => ({
               kind: "out" as const,
               text: `  ${a.cmd.padEnd(12)} ${a.meta}`,
-            }))
+            })),
           );
           break;
         case "open":
@@ -268,14 +280,17 @@ export default function Console() {
           if (target) launch(target.id);
           else
             say([
-              { kind: "err", text: `open: ${arg || "(nothing)"}: no such directory` },
+              {
+                kind: "err",
+                text: `open: ${arg || "(nothing)"}: no such directory`,
+              },
               { kind: "dim", text: "try `ls`" },
             ]);
           break;
         }
         case "whoami":
           say([
-            { kind: "ok", text: `${profile.name} — Robotics Software Engineer` },
+            { kind: "ok", text: `${profile.name}, Robotics Software Engineer` },
             { kind: "out", text: profile.tagline },
             { kind: "dim", text: `${profile.location} · NYU Tandon MS '28` },
           ]);
@@ -286,7 +301,7 @@ export default function Console() {
             { kind: "dim", text: "──────────────────────────────" },
             { kind: "out", text: "Role     Robotics Software Engineer" },
             { kind: "out", text: "Stack    ROS 2 · Nav2 · C++ · CANopen" },
-            { kind: "out", text: "Shipped  SMR300 — 300 kg industrial AMR" },
+            { kind: "out", text: "Shipped SMR300 to 300 kg industrial AMR" },
             { kind: "out", text: "Record   97% docking · 300 trials" },
             { kind: "out", text: "Patents  3 filed" },
             { kind: "out", text: "Langs    English · Hindi · Thai · Marathi" },
@@ -324,15 +339,30 @@ export default function Console() {
           unlock("terminal");
           say([
             { kind: "ok", text: "" },
-            { kind: "out", text: "  AVAILABLE      from Aug 2026 · NYU Tandon, MS Mechatronics & Robotics" },
-            { kind: "out", text: "  LOOKING FOR    Robotics SWE · Autonomy · Mechatronics" },
+            {
+              kind: "out",
+              text: "  AVAILABLE      from Aug 2026 · NYU Tandon, MS Mechatronics & Robotics",
+            },
+            {
+              kind: "out",
+              text: "  LOOKING FOR    Robotics SWE · Autonomy · Mechatronics",
+            },
             { kind: "out", text: "  LOCATION       New York City, or remote" },
             { kind: "dim", text: "" },
-            { kind: "out", text: "  Shipped a 300 kg AMR: 97% docking success, 2 cm error," },
-            { kind: "out", text: "  300 logged trials on a live factory floor. 3 patents filed." },
+            {
+              kind: "out",
+              text: "  Shipped a 300 kg AMR: 97% docking success, 2 cm error,",
+            },
+            {
+              kind: "out",
+              text: "  300 logged trials on a live factory floor. 3 patents filed.",
+            },
             { kind: "dim", text: "" },
             { kind: "ok", text: `  ${profile.email}` },
-            { kind: "dim", text: "  `resume` for the PDF · `contact` for everything else" },
+            {
+              kind: "dim",
+              text: "  `resume` for the PDF · `contact` for everything else",
+            },
           ]);
           break;
 
@@ -347,7 +377,7 @@ export default function Console() {
             ...ACHIEVEMENTS.map((a) =>
               have.has(a.id)
                 ? { kind: "ok" as const, text: `  [x] ${a.title}` }
-                : { kind: "dim" as const, text: `  [ ] ???  — ${a.hint}` }
+                : { kind: "dim" as const, text: ` [ ] ???, ${a.hint}` },
             ),
           ]);
           break;
@@ -369,7 +399,9 @@ export default function Console() {
         case "sudo": {
           const tail = rest.join(" ");
           if (tail.startsWith("rm")) {
-            say([{ kind: "err", text: "root privileges granted. bold of you." }]);
+            say([
+              { kind: "err", text: "root privileges granted. bold of you." },
+            ]);
             RM_FRAMES.forEach((frame, i) => {
               setTimeout(() => say(frame), 380 * (i + 1));
             });
@@ -403,7 +435,7 @@ export default function Console() {
         }
       }
     },
-    [say, launch]
+    [say, launch],
   );
 
   useEffect(() => {
@@ -499,7 +531,7 @@ export default function Console() {
           </span>
         </div>
 
-        {/* heading — kept compact so the first row of cards is on screen
+        {/* heading, kept compact so the first row of cards is on screen
             with it at 100% zoom on a laptop */}
         <div className="mt-7 mb-7 flex flex-wrap items-end justify-between gap-x-8 gap-y-4 sm:mt-9 sm:mb-9">
           <div>
@@ -583,7 +615,7 @@ export default function Console() {
             })}
           </div>
 
-          {/* live panel + terminal — capped to the viewport so a long `ls`
+          {/* live panel + terminal, capped to the viewport so a long `ls`
               scrolls inside the log instead of pushing the pane off-screen */}
           <div className="flex flex-col gap-5 xl:sticky xl:top-8 xl:max-h-[calc(100svh-4rem)] xl:self-start">
             <div className="shrink-0">
@@ -591,107 +623,107 @@ export default function Console() {
             </div>
 
             <div className="flex h-[380px] min-h-0 flex-col border border-line bg-ink-2 sm:h-[420px] xl:h-auto xl:flex-1">
-            <div className="mono flex items-center gap-2 border-b border-line px-4 py-2.5 text-[10px] tracking-[0.16em] uppercase text-mute">
-              <TerminalIcon size={12} strokeWidth={1.8} />
-              bash
-              <span className="ml-auto text-mute/78 normal-case">80×24</span>
-            </div>
+              <div className="mono flex items-center gap-2 border-b border-line px-4 py-2.5 text-[10px] tracking-[0.16em] uppercase text-mute">
+                <TerminalIcon size={12} strokeWidth={1.8} />
+                bash
+                <span className="ml-auto text-mute/78 normal-case">80×24</span>
+              </div>
 
-            <div
-              ref={logRef}
-              data-lenis-prevent
-              onClick={() => inputRef.current?.focus()}
-              className="mono min-h-0 flex-1 cursor-text overflow-y-auto px-4 py-3.5 text-[12px] leading-[1.8]"
-            >
-              {lines.map((l, i) => (
-                <div
-                  key={i}
-                  className={
-                    l.kind === "in"
-                      ? "text-bone"
-                      : l.kind === "err"
-                        ? "text-fault"
-                        : l.kind === "ok"
-                          ? "text-pass"
-                          : l.kind === "dim"
-                            ? "text-mute/82"
-                            : "text-mute"
-                  }
-                >
-                  {l.kind === "in" && (
-                    <span className="text-accent select-none">❯ </span>
-                  )}
-                  <span className="whitespace-pre-wrap">{l.text}</span>
-                </div>
-              ))}
-            </div>
-
-            {/* suggestion chips */}
-            <div className="flex flex-wrap gap-1.5 border-t border-line px-3 pt-2.5">
-              {HINTS.map((h) => (
-                <button
-                  key={h}
-                  type="button"
-                  onClick={() => run(h)}
-                  className="mono border border-line px-2 py-1 text-[10px] text-mute/92 transition-colors hover:border-accent/50 hover:text-accent"
-                >
-                  {h}
-                </button>
-              ))}
-            </div>
-
-            <form
-              className="flex items-center gap-2 px-4 py-3"
-              onSubmit={(e) => {
-                e.preventDefault();
-                run(input);
-                setInput("");
-              }}
-            >
-              <span className="mono shrink-0 text-[12px]">
-                <span className="text-pass">prabal</span>
-                <span className="text-mute/82">:</span>
-                <span className="text-accent">~</span>
-                <span className="text-mute/82">$</span>
-              </span>
-              <input
-                ref={inputRef}
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Tab") {
-                    e.preventDefault();
-                    complete();
-                  } else if (e.key === "ArrowUp") {
-                    e.preventDefault();
-                    const n = Math.min(hIdx + 1, history.length - 1);
-                    if (n >= 0) {
-                      setHIdx(n);
-                      setInput(history[n]);
+              <div
+                ref={logRef}
+                data-lenis-prevent
+                onClick={() => inputRef.current?.focus()}
+                className="mono min-h-0 flex-1 cursor-text overflow-y-auto px-4 py-3.5 text-[12px] leading-[1.8]"
+              >
+                {lines.map((l, i) => (
+                  <div
+                    key={i}
+                    className={
+                      l.kind === "in"
+                        ? "text-bone"
+                        : l.kind === "err"
+                          ? "text-fault"
+                          : l.kind === "ok"
+                            ? "text-pass"
+                            : l.kind === "dim"
+                              ? "text-mute/82"
+                              : "text-mute"
                     }
-                  } else if (e.key === "ArrowDown") {
-                    e.preventDefault();
-                    const n = hIdx - 1;
-                    setHIdx(n);
-                    setInput(n >= 0 ? history[n] : "");
-                  }
+                  >
+                    {l.kind === "in" && (
+                      <span className="text-accent select-none">❯ </span>
+                    )}
+                    <span className="whitespace-pre-wrap">{l.text}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* suggestion chips */}
+              <div className="flex flex-wrap gap-1.5 border-t border-line px-3 pt-2.5">
+                {HINTS.map((h) => (
+                  <button
+                    key={h}
+                    type="button"
+                    onClick={() => run(h)}
+                    className="mono border border-line px-2 py-1 text-[10px] text-mute/92 transition-colors hover:border-accent/50 hover:text-accent"
+                  >
+                    {h}
+                  </button>
+                ))}
+              </div>
+
+              <form
+                className="flex items-center gap-2 px-4 py-3"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  run(input);
+                  setInput("");
                 }}
-                spellCheck={false}
-                autoComplete="off"
-                /* iOS capitalises the first letter and autocorrects by
+              >
+                <span className="mono shrink-0 text-[12px]">
+                  <span className="text-pass">prabal</span>
+                  <span className="text-mute/82">:</span>
+                  <span className="text-accent">~</span>
+                  <span className="text-mute/82">$</span>
+                </span>
+                <input
+                  ref={inputRef}
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Tab") {
+                      e.preventDefault();
+                      complete();
+                    } else if (e.key === "ArrowUp") {
+                      e.preventDefault();
+                      const n = Math.min(hIdx + 1, history.length - 1);
+                      if (n >= 0) {
+                        setHIdx(n);
+                        setInput(history[n]);
+                      }
+                    } else if (e.key === "ArrowDown") {
+                      e.preventDefault();
+                      const n = hIdx - 1;
+                      setHIdx(n);
+                      setInput(n >= 0 ? history[n] : "");
+                    }
+                  }}
+                  spellCheck={false}
+                  autoComplete="off"
+                  /* iOS capitalises the first letter and autocorrects by
                    default, which turns `ls` into `Ls` and `neofetch` into
                    something else entirely. Every command would fail. */
-                autoCapitalize="none"
-                autoCorrect="off"
-                enterKeyHint="go"
-                aria-label="Terminal input"
-                className="mono w-full bg-transparent text-[16px] text-bone caret-transparent outline-none sm:text-[12px]"
-              />
-              {/* our own caret so it blinks even when the field is empty */}
-              <span className="mono -ml-2 shrink-0 text-[12px] text-accent blink">
-                ▋
-              </span>
-            </form>
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  enterKeyHint="go"
+                  aria-label="Terminal input"
+                  className="mono w-full bg-transparent text-[16px] text-bone caret-transparent outline-none sm:text-[12px]"
+                />
+                {/* our own caret so it blinks even when the field is empty */}
+                <span className="mono -ml-2 shrink-0 text-[12px] text-accent blink">
+                  ▋
+                </span>
+              </form>
             </div>
           </div>
         </div>

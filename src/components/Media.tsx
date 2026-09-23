@@ -25,20 +25,24 @@ const ASPECT: Record<NonNullable<MediaSlot["span"]> | "default", string> = {
 export default function Media() {
   const groups = useMemo(
     () => [...new Set(mediaSlots.map((m) => m.group))],
-    []
+    [],
   );
   const [group, setGroup] = useState<string>("All");
   const [showEmpty, setShowEmpty] = useState(false);
 
   const shown = useMemo(() => {
     const byGroup =
-      group === "All" ? mediaSlots : mediaSlots.filter((m) => m.group === group);
-    return showEmpty ? byGroup : byGroup.filter((m) => SHIPPED_MEDIA.has(m.file));
+      group === "All"
+        ? mediaSlots
+        : mediaSlots.filter((m) => m.group === group);
+    return showEmpty
+      ? byGroup
+      : byGroup.filter((m) => SHIPPED_MEDIA.has(m.file));
   }, [group, showEmpty]);
 
   const shippedCount = (g: string) =>
     mediaSlots.filter(
-      (m) => (g === "All" || m.group === g) && SHIPPED_MEDIA.has(m.file)
+      (m) => (g === "All" || m.group === g) && SHIPPED_MEDIA.has(m.file),
     ).length;
 
   return (
@@ -93,7 +97,7 @@ export default function Media() {
 
       {shown.length === 0 && (
         <p className="mono py-10 text-[12px] text-mute">
-          Nothing here yet — drop files into /public/media.
+          Nothing here yet, drop files into /public/media.
         </p>
       )}
 

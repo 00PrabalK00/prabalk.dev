@@ -50,12 +50,17 @@ export function CaseStudy({ project: p }: { project: Project }) {
             href="https://www.prabalkhare.com/boring"
             className="group inline-flex items-center gap-1.5 rounded-[3px] border border-[#c4ebee] bg-[#f2fbfb] px-2.5 py-1.5 text-[13px] font-medium text-[#06636f] transition-colors hover:border-[#51e2f5]"
           >
-            <span aria-hidden className="transition-transform group-hover:-translate-x-0.5">
+            <span
+              aria-hidden
+              className="transition-transform group-hover:-translate-x-0.5"
+            >
               ←
             </span>
             Back
           </a>
-          <span className="text-[12px] text-zinc-500">{STATUS_LABEL[p.status]}</span>
+          <span className="text-[12px] text-zinc-500">
+            {STATUS_LABEL[p.status]}
+          </span>
         </div>
       </div>
 
@@ -158,150 +163,160 @@ export function CaseStudy({ project: p }: { project: Project }) {
 
             {p.hero && <Figure media={p.hero} className="mt-9" priority />}
 
-        {/* Metrics: only ever with their context attached. */}
-        {p.metrics && p.metrics.length > 0 && (
-          <div className="mt-12 grid gap-6 border-y border-zinc-200 py-8 sm:grid-cols-3">
-            {p.metrics.map((m) => (
-              <div key={m.label}>
-                <p className="text-[1.75rem] leading-none font-semibold tracking-tight text-[#06636f]">
-                  {m.value}
-                </p>
-                <p className="mt-2 text-[14px] font-medium">{m.label}</p>
-                <p className="mt-1 text-[12px] leading-[1.6] text-zinc-500">{m.context}</p>
+            {/* Metrics: only ever with their context attached. */}
+            {p.metrics && p.metrics.length > 0 && (
+              <div className="mt-12 grid gap-6 border-y border-zinc-200 py-8 sm:grid-cols-3">
+                {p.metrics.map((m) => (
+                  <div key={m.label}>
+                    <p className="text-[1.75rem] leading-none font-semibold tracking-tight text-[#06636f]">
+                      {m.value}
+                    </p>
+                    <p className="mt-2 text-[14px] font-medium">{m.label}</p>
+                    <p className="mt-1 text-[12px] leading-[1.6] text-zinc-500">
+                      {m.context}
+                    </p>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        )}
-
-        <Prose section={p.problem} />
-        <Prose section={p.built} />
-        <Prose section={p.architecture} />
-
-        {p.deepDive?.map((s) => <Prose key={s.heading} section={s} />)}
-
-            {p.flows?.map((f) => <FlowDiagram key={f.title} flow={f} />)}
-
-            {p.tables?.map((t) => <RefTable key={t.title} table={t} />)}
-
-        {/* Experiments */}
-        {p.experiments && p.experiments.length > 0 && (
-          <section className="mt-14">
-            <Heading>Experiments</Heading>
-            <div className="space-y-8">
-              {p.experiments.map((e) => (
-                <div key={e.name}>
-                  <h3 className="text-[16px] font-semibold">
-                    {e.name}
-                    {e.negative && (
-                      <span className="ml-2 rounded-[3px] border border-zinc-300 px-1.5 py-0.5 align-middle text-[10px] font-normal tracking-[0.1em] text-zinc-500 uppercase">
-                        negative result
-                      </span>
-                    )}
-                  </h3>
-                  <dl className="mt-3 space-y-2">
-                    <Row term="Question" value={e.question} />
-                    <Row term="Method" value={e.method} />
-                    <Row term="Result" value={e.result} emphasis />
-                  </dl>
-                </div>
-              ))}
-            </div>
-
-            {negatives.length > 0 && (
-              <p className="mt-8 border-l-2 border-zinc-300 pl-5 text-[14px] leading-[1.7] text-zinc-600">
-                {negatives.length === 1 ? "One result" : `${negatives.length} results`} did
-                not confirm the hypothesis. They are reported here because an
-                experiment that only ever confirms things is not an experiment.
-              </p>
             )}
-          </section>
-        )}
 
-        {/* Limitations — the section most portfolios skip. */}
-        {p.limitations && p.limitations.length > 0 && (
-          <section className="mt-14">
-            <Heading>Limitations and failure modes</Heading>
-            <ul className="space-y-2.5">
-              {p.limitations.map((l) => (
-                <li
-                  key={l}
-                  className="relative pl-5 text-[15px] leading-[1.7] text-zinc-700 before:absolute before:top-[10px] before:left-0 before:h-1 before:w-1 before:rounded-full before:bg-zinc-400"
-                >
-                  {l}
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
+            <Prose section={p.problem} />
+            <Prose section={p.built} />
+            <Prose section={p.architecture} />
 
-        {/* Gallery. Pending slots are declared, not silently skipped. */}
-        {p.gallery && p.gallery.length > 0 && (
-          <Gallery items={p.gallery} />
-        )}
-
-        {/* Repository map */}
-        {p.repos && p.repos.length > 0 && (
-          <section className="mt-14">
-            <Heading>Repository map</Heading>
-            <div className="space-y-4">
-              {p.repos.map((r) => (
-                <div key={r.href}>
-                  <a
-                    href={r.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[15px] font-medium text-[#06636f] underline-offset-4 hover:underline"
-                  >
-                    {r.name} ↗
-                  </a>
-                  <p className="mt-0.5 text-[14px] leading-[1.6] text-zinc-600">
-                    {r.contains}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Timeline */}
-        {p.timeline && p.timeline.length > 0 && (
-          <section className="mt-14">
-            <Heading>Timeline</Heading>
-            <ol className="space-y-4 border-l border-zinc-200 pl-6">
-              {p.timeline.map((t) => (
-                <li key={t.when} className="relative">
-                  <span
-                    aria-hidden
-                    className="absolute top-[7px] -left-[27px] h-2 w-2 rounded-full bg-[#51e2f5] ring-4 ring-white"
-                  />
-                  <p className="text-[14px] font-medium">{t.when}</p>
-                  <p className="mt-0.5 text-[14px] leading-[1.6] text-zinc-600">{t.what}</p>
-                </li>
-              ))}
-            </ol>
-          </section>
-        )}
-
-        {/* Attribution — required on every project. */}
-        <section className="mt-14">
-          <Heading>Attribution</Heading>
-          <dl className="space-y-4">
-            {p.attribution.map((a) => (
-              <div key={a.detail} className="sm:flex sm:gap-6">
-                <dt className="text-[13px] font-medium text-zinc-500 sm:w-52 sm:shrink-0">
-                  {ATTRIBUTION_LABEL[a.kind]}
-                </dt>
-                <dd className="mt-1 text-[14px] leading-[1.7] text-zinc-700 sm:mt-0">
-                  {a.detail}
-                </dd>
-              </div>
+            {p.deepDive?.map((s) => (
+              <Prose key={s.heading} section={s} />
             ))}
-          </dl>
-        </section>
 
-        {/* Related */}
-        {p.related && p.related.length > 0 && <Related slugs={p.related} />}
+            {p.flows?.map((f) => (
+              <FlowDiagram key={f.title} flow={f} />
+            ))}
 
+            {p.tables?.map((t) => (
+              <RefTable key={t.title} table={t} />
+            ))}
+
+            {/* Experiments */}
+            {p.experiments && p.experiments.length > 0 && (
+              <section className="mt-14">
+                <Heading>Experiments</Heading>
+                <div className="space-y-8">
+                  {p.experiments.map((e) => (
+                    <div key={e.name}>
+                      <h3 className="text-[16px] font-semibold">
+                        {e.name}
+                        {e.negative && (
+                          <span className="ml-2 rounded-[3px] border border-zinc-300 px-1.5 py-0.5 align-middle text-[10px] font-normal tracking-[0.1em] text-zinc-500 uppercase">
+                            negative result
+                          </span>
+                        )}
+                      </h3>
+                      <dl className="mt-3 space-y-2">
+                        <Row term="Question" value={e.question} />
+                        <Row term="Method" value={e.method} />
+                        <Row term="Result" value={e.result} emphasis />
+                      </dl>
+                    </div>
+                  ))}
+                </div>
+
+                {negatives.length > 0 && (
+                  <p className="mt-8 border-l-2 border-zinc-300 pl-5 text-[14px] leading-[1.7] text-zinc-600">
+                    {negatives.length === 1
+                      ? "One result"
+                      : `${negatives.length} results`}{" "}
+                    did not confirm the hypothesis. They are reported here
+                    because an experiment that only ever confirms things is not
+                    an experiment.
+                  </p>
+                )}
+              </section>
+            )}
+
+            {/* Limitations, the section most portfolios skip. */}
+            {p.limitations && p.limitations.length > 0 && (
+              <section className="mt-14">
+                <Heading>Limitations and failure modes</Heading>
+                <ul className="space-y-2.5">
+                  {p.limitations.map((l) => (
+                    <li
+                      key={l}
+                      className="relative pl-5 text-[15px] leading-[1.7] text-zinc-700 before:absolute before:top-[10px] before:left-0 before:h-1 before:w-1 before:rounded-full before:bg-zinc-400"
+                    >
+                      {l}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
+            {/* Gallery. Pending slots are declared, not silently skipped. */}
+            {p.gallery && p.gallery.length > 0 && <Gallery items={p.gallery} />}
+
+            {/* Repository map */}
+            {p.repos && p.repos.length > 0 && (
+              <section className="mt-14">
+                <Heading>Repository map</Heading>
+                <div className="space-y-4">
+                  {p.repos.map((r) => (
+                    <div key={r.href}>
+                      <a
+                        href={r.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[15px] font-medium text-[#06636f] underline-offset-4 hover:underline"
+                      >
+                        {r.name} ↗
+                      </a>
+                      <p className="mt-0.5 text-[14px] leading-[1.6] text-zinc-600">
+                        {r.contains}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* Timeline */}
+            {p.timeline && p.timeline.length > 0 && (
+              <section className="mt-14">
+                <Heading>Timeline</Heading>
+                <ol className="space-y-4 border-l border-zinc-200 pl-6">
+                  {p.timeline.map((t) => (
+                    <li key={t.when} className="relative">
+                      <span
+                        aria-hidden
+                        className="absolute top-[7px] -left-[27px] h-2 w-2 rounded-full bg-[#51e2f5] ring-4 ring-white"
+                      />
+                      <p className="text-[14px] font-medium">{t.when}</p>
+                      <p className="mt-0.5 text-[14px] leading-[1.6] text-zinc-600">
+                        {t.what}
+                      </p>
+                    </li>
+                  ))}
+                </ol>
+              </section>
+            )}
+
+            {/* Attribution, required on every project. */}
+            <section className="mt-14">
+              <Heading>Attribution</Heading>
+              <dl className="space-y-4">
+                {p.attribution.map((a) => (
+                  <div key={a.detail} className="sm:flex sm:gap-6">
+                    <dt className="text-[13px] font-medium text-zinc-500 sm:w-52 sm:shrink-0">
+                      {ATTRIBUTION_LABEL[a.kind]}
+                    </dt>
+                    <dd className="mt-1 text-[14px] leading-[1.7] text-zinc-700 sm:mt-0">
+                      {a.detail}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </section>
+
+            {/* Related */}
+            {p.related && p.related.length > 0 && <Related slugs={p.related} />}
           </div>
         </div>
 
@@ -320,7 +335,10 @@ export function CaseStudy({ project: p }: { project: Project }) {
             href="https://www.prabalkhare.com/boring"
             className="group inline-flex items-center gap-1.5 rounded-[3px] border border-[#c4ebee] bg-[#f2fbfb] px-3 py-1.5 font-medium text-[#06636f] transition-colors hover:border-[#51e2f5]"
           >
-            <span aria-hidden className="transition-transform group-hover:-translate-x-0.5">
+            <span
+              aria-hidden
+              className="transition-transform group-hover:-translate-x-0.5"
+            >
               ←
             </span>
             Back
@@ -396,9 +414,7 @@ function FlowDiagram({ flow }: { flow: Flow }) {
         {flow.steps.map((st, i) => (
           <li key={st.label}>
             {/* connector */}
-            {i > 0 && (
-              <div aria-hidden className="ml-5 h-6 w-px bg-zinc-300" />
-            )}
+            {i > 0 && <div aria-hidden className="ml-5 h-6 w-px bg-zinc-300" />}
 
             <div
               className={`rounded-[4px] border px-4 py-3 ${tone[st.tone ?? "default"]}`}
@@ -503,7 +519,10 @@ function Gallery({ items }: { items: MediaRef[] }) {
           </p>
           <ul className="mt-2 space-y-1">
             {pending.map((m) => (
-              <li key={m.file} className="text-[13px] leading-[1.6] text-zinc-400">
+              <li
+                key={m.file}
+                className="text-[13px] leading-[1.6] text-zinc-400"
+              >
                 {m.caption}
               </li>
             ))}
@@ -601,7 +620,9 @@ function Related({ slugs }: { slugs: string[] }) {
             >
               {r.title}
             </a>
-            <p className="mt-0.5 text-[13px] leading-[1.6] text-zinc-600">{r.subtitle}</p>
+            <p className="mt-0.5 text-[13px] leading-[1.6] text-zinc-600">
+              {r.subtitle}
+            </p>
           </li>
         ))}
       </ul>

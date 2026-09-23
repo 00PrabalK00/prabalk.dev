@@ -2,7 +2,11 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { CaseStudy } from "@/components/CaseStudy";
 import { allProjectSlugs, getProject } from "@/projects";
-import { ATTRIBUTION_LABEL, STATUS_LABEL, type Project } from "@/projects/types";
+import {
+  ATTRIBUTION_LABEL,
+  STATUS_LABEL,
+  type Project,
+} from "@/projects/types";
 import { SITE_URL } from "@/lib/site";
 
 /**
@@ -46,7 +50,7 @@ export async function generateMetadata({
   // would compete as duplicates.
   const canonical = canonicalFor(p);
 
-  const title = `${p.title} — ${p.subtitle}`;
+  const title = `${p.title}, ${p.subtitle}`;
 
   return {
     title,
@@ -84,7 +88,9 @@ export default async function ProjectPage({
    * person or a model is reading it.
    */
   const repo = project.links.find((l) => l.kind === "repo")?.href;
-  const demo = project.links.find((l) => l.kind === "site" || l.kind === "demo")?.href;
+  const demo = project.links.find(
+    (l) => l.kind === "site" || l.kind === "demo",
+  )?.href;
   const isResearch = project.category === "current-research";
 
   const schema = {
@@ -131,7 +137,9 @@ export default async function ProjectPage({
             name: e.name,
             abstract: e.question,
             description: `Method: ${e.method} Result: ${e.result}`,
-            ...(e.negative ? { disambiguatingDescription: "Negative result" } : {}),
+            ...(e.negative
+              ? { disambiguatingDescription: "Negative result" }
+              : {}),
           })),
         }
       : {}),

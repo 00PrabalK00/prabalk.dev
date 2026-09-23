@@ -17,13 +17,13 @@ export const prabalos: Project = {
   title: "PrabalOS",
   subtitle: "A connected ESP32 device for staying in touch",
   status: "deployed",
-  year: "2025 — present",
+  year: "2025 to present",
   role: "Author",
   category: "infrastructure",
   order: 3,
 
   thesis:
-    "A physical device for family communication that had to keep working, unattended, from the other side of the world — so everything about it is designed around not being able to touch it again.",
+    "A physical device for family communication that had to keep working, unattended, from the other side of the world, so everything about it is designed around not being able to touch it again.",
 
   summary:
     "An ESP32 device with a display, touch input, audio and physical buttons, backed by a web control panel: remote messaging, voice notes, drawings, device synchronisation and Discord integration, with TOTP-authenticated login, recovery codes, private blob storage and a remote firmware update path.",
@@ -66,7 +66,7 @@ export const prabalos: Project = {
     {
       heading: "Designing for no physical access",
       body: [
-        "Remote firmware delivery is the load-bearing feature. A device you cannot reach needs an update path that verifies what it downloaded and can roll back when the new image does not come up — which is the problem the HttpsOta library was extracted to solve.",
+        "Remote firmware delivery is the load-bearing feature. A device you cannot reach needs an update path that verifies what it downloaded and can roll back when the new image does not come up, which is the problem the HttpsOta library was extracted to solve.",
       ],
     },
   ],
@@ -77,14 +77,38 @@ export const prabalos: Project = {
       caption:
         "The interesting part is not the feature. It is that every hop has to survive the device being unreachable, asleep, or on a network nobody controls.",
       steps: [
-        { label: "Someone writes, draws or records a voice note", detail: "From the web control panel, or via the Discord integration." },
-        { label: "Authenticated", detail: "TOTP, with recovery codes for the case where the authenticator is lost.", tone: "decision",
+        {
+          label: "Someone writes, draws or records a voice note",
+          detail: "From the web control panel, or via the Discord integration.",
+        },
+        {
+          label: "Authenticated",
+          detail:
+            "TOTP, with recovery codes for the case where the authenticator is lost.",
+          tone: "decision",
           branches: [
-            { label: "Not authenticated — the API returns 401 rather than a redirect", tone: "bad" },
-          ] },
-        { label: "Stored", detail: "Private blob storage for drawings and voice notes; state in Redis." },
-        { label: "The device polls and synchronises", detail: "Over WiFi, on its own schedule — the backend never assumes it is reachable." },
-        { label: "It lands on the display", detail: "With touch, audio and physical buttons to respond.", tone: "good" },
+            {
+              label:
+                "Not authenticated, the API returns 401 rather than a redirect",
+              tone: "bad",
+            },
+          ],
+        },
+        {
+          label: "Stored",
+          detail:
+            "Private blob storage for drawings and voice notes; state in Redis.",
+        },
+        {
+          label: "The device polls and synchronises",
+          detail:
+            "Over WiFi, on its own schedule, the backend never assumes it is reachable.",
+        },
+        {
+          label: "It lands on the display",
+          detail: "With touch, audio and physical buttons to respond.",
+          tone: "good",
+        },
       ],
     },
     {
@@ -94,15 +118,28 @@ export const prabalos: Project = {
       steps: [
         { label: "A new firmware image is published" },
         { label: "The device checks version, hash and size" },
-        { label: "Downloads to the inactive OTA slot", detail: "SHA-256 verified while downloading.", tone: "decision",
+        {
+          label: "Downloads to the inactive OTA slot",
+          detail: "SHA-256 verified while downloading.",
+          tone: "decision",
           branches: [
-            { label: "Hash mismatch or stall — nothing is installed", tone: "bad" },
-          ] },
-        { label: "Reboots into the new image", tone: "decision",
+            {
+              label: "Hash mismatch or stall, nothing is installed",
+              tone: "bad",
+            },
+          ],
+        },
+        {
+          label: "Reboots into the new image",
+          tone: "decision",
           branches: [
             { label: "Comes up and reports its version", tone: "good" },
-            { label: "Does not — automatic rollback to the previous slot", tone: "bad" },
-          ] },
+            {
+              label: "Does not, automatic rollback to the previous slot",
+              tone: "bad",
+            },
+          ],
+        },
       ],
     },
   ],
@@ -112,12 +149,27 @@ export const prabalos: Project = {
       title: "The parts",
       head: ["Layer", "What is there"],
       rows: [
-        ["Device", "ESP32, display, touch input, audio, physical buttons, WiFi"],
+        [
+          "Device",
+          "ESP32, display, touch input, audio, physical buttons, WiFi",
+        ],
         ["Firmware", "Synchronisation, rendering, input handling, OTA client"],
-        ["Backend", "APIs for messaging, voice notes, drawings and device sync; Redis state; private blob storage"],
-        ["Control panel", "Web UI for sending, plus firmware delivery and device status"],
-        ["Auth", "TOTP login, recovery codes, session guard on every write route"],
-        ["Integrations", "Discord, and timezone handling for a device in another timezone"],
+        [
+          "Backend",
+          "APIs for messaging, voice notes, drawings and device sync; Redis state; private blob storage",
+        ],
+        [
+          "Control panel",
+          "Web UI for sending, plus firmware delivery and device status",
+        ],
+        [
+          "Auth",
+          "TOTP login, recovery codes, session guard on every write route",
+        ],
+        [
+          "Integrations",
+          "Discord, and timezone handling for a device in another timezone",
+        ],
       ],
     },
   ],
@@ -131,12 +183,15 @@ export const prabalos: Project = {
       file: "prabalos-hardware.jpg",
       type: "image",
       caption:
-        "The device — presence, both timezones side by side, and two buttons that need no explaining to use",
+        "The device, presence, both timezones side by side, and two buttons that need no explaining to use",
     },
   ],
 
   attribution: [
-    { kind: "built-by-me", detail: "Hardware, firmware, backend, control panel and deployment." },
+    {
+      kind: "built-by-me",
+      detail: "Hardware, firmware, backend, control panel and deployment.",
+    },
   ],
 
   related: ["httpsota"],

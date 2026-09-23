@@ -25,11 +25,7 @@ const GLYPH: Record<string, string> = {
  * /api/github route as the full section, so showing both costs one upstream
  * call per five minutes rather than two.
  */
-export default function GithubMini({
-  onOpen,
-}: {
-  onOpen: () => void;
-}) {
+export default function GithubMini({ onOpen }: { onOpen: () => void }) {
   const [data, setData] = useState<GithubPayload | null>(null);
   const [now, setNow] = useState<number | null>(null);
   const [pulse, setPulse] = useState(false);
@@ -77,7 +73,13 @@ export default function GithubMini({
     return out.slice(-18);
   }, [data]);
 
-  const shade = ["#e4f8f6", "rgba(81,226,245,0.30)", "rgba(81,226,245,0.55)", "rgba(81,226,245,0.80)", "#2bb8d4"];
+  const shade = [
+    "#e4f8f6",
+    "rgba(81,226,245,0.30)",
+    "rgba(81,226,245,0.55)",
+    "rgba(81,226,245,0.80)",
+    "#2bb8d4",
+  ];
 
   return (
     <div className="flex flex-col border border-line bg-ink-2">
@@ -96,7 +98,7 @@ export default function GithubMini({
           </span>
         )}
         <span className="ml-auto normal-case tracking-normal text-mute/82">
-          {data?.lastPushedAt && now ? relTime(data.lastPushedAt, now) : "—"}
+          {data?.lastPushedAt && now ? relTime(data.lastPushedAt, now) : ", "}
         </span>
       </div>
 
@@ -112,7 +114,7 @@ export default function GithubMini({
         ].map((s) => (
           <div key={s.label} className="px-3 py-3">
             <div className="text-xl font-semibold tracking-tight tabular-nums text-bone">
-              {s.value ?? <span className="text-line-2">—</span>}
+              {s.value ?? <span className="text-line-2">, </span>}
             </div>
             <div className="mono mt-0.5 text-[9.5px] tracking-[0.12em] uppercase text-mute/88">
               {s.label}
@@ -121,7 +123,7 @@ export default function GithubMini({
         ))}
       </div>
 
-      {/* contribution strip — hidden on short viewports where the sidebar is
+      {/* contribution strip, hidden on short viewports where the sidebar is
           already competing with the terminal for height */}
       {weeks && (
         <div className="hidden border-b border-line px-4 py-3 [@media(min-height:820px)]:block">
@@ -150,7 +152,10 @@ export default function GithubMini({
               <div
                 key={l.name}
                 title={`${l.name} ${l.bytesShare}%`}
-                style={{ width: `${l.bytesShare}%`, background: langColor(l.name) }}
+                style={{
+                  width: `${l.bytesShare}%`,
+                  background: langColor(l.name),
+                }}
               />
             ))}
           </div>
@@ -171,7 +176,10 @@ export default function GithubMini({
       {/* recent activity */}
       <ol data-lenis-prevent className="max-h-[150px] overflow-y-auto">
         {(data?.events ?? []).slice(0, 8).map((e) => (
-          <li key={e.id} className="border-b border-line/50 px-4 py-2 last:border-0">
+          <li
+            key={e.id}
+            className="border-b border-line/50 px-4 py-2 last:border-0"
+          >
             <div className="flex items-baseline gap-2">
               <span className="mono w-3 shrink-0 text-[10px] text-accent/70">
                 {GLYPH[e.type] ?? "·"}
@@ -190,7 +198,7 @@ export default function GithubMini({
             </div>
             <p className="mono mt-0.5 truncate pl-5 text-[10.5px] text-mute/92">
               {e.summary}
-              {e.detail ? ` — ${e.detail}` : ""}
+              {e.detail ? `, ${e.detail}` : ""}
             </p>
           </li>
         ))}

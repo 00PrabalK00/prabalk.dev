@@ -13,7 +13,7 @@ export const contractencrypt: Project = {
   compact: true,
 
   thesis:
-    "Implement both schemes from the primitives, then attack them — because the interesting question is not which is faster but which assumption survives.",
+    "Implement both schemes from the primitives, then attack them, because the interesting question is not which is faster but which assumption survives.",
 
   summary:
     "An LWE-based lattice scheme and P-256 ECDH with AES-CBC, implemented from the primitives and benchmarked on speed, ciphertext size, Shannon entropy and bit-flip resilience. Quantum attack circuits were then simulated in Qiskit against both.",
@@ -52,8 +52,14 @@ export const contractencrypt: Project = {
   ],
 
   attribution: [
-    { kind: "built-by-me", detail: "Both implementations, the benchmark and the attack simulation." },
-    { kind: "based-on-external-research", detail: "LWE, ECDH and the quantum algorithms are established work." },
+    {
+      kind: "built-by-me",
+      detail: "Both implementations, the benchmark and the attack simulation.",
+    },
+    {
+      kind: "based-on-external-research",
+      detail: "LWE, ECDH and the quantum algorithms are established work.",
+    },
   ],
 
   related: [],

@@ -11,7 +11,7 @@ export const gesturecar: Project = {
   order: 3,
 
   thesis:
-    "No pairing, no router, no broker — ESP-NOW puts the glove and the car on the same link and nothing else is in the way.",
+    "No pairing, no router, no broker, ESP-NOW puts the glove and the car on the same link and nothing else is in the way.",
 
   summary:
     "Gesture data from an IMU glove transmitted as binary over ESP-NOW, received by an ESP device and passed to an Arduino over serial for motor control.",
@@ -37,13 +37,18 @@ export const gesturecar: Project = {
     {
       file: "gesture-car.jpg",
       type: "image",
-      caption: "The glove and the car — an IMU on the back of the hand, the receiver on the chassis",
+      caption:
+        "The glove and the car, an IMU on the back of the hand, the receiver on the chassis",
     },
   ],
 
-  limitations: ["Bench project. No failsafe — losing the link does not stop the car."],
+  limitations: [
+    "Bench project. No failsafe, losing the link does not stop the car.",
+  ],
 
-  attribution: [{ kind: "built-by-me", detail: "Glove, link and motor control." }],
+  attribution: [
+    { kind: "built-by-me", detail: "Glove, link and motor control." },
+  ],
 
   related: [],
 };

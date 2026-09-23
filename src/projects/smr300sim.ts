@@ -3,7 +3,8 @@ import type { Project } from "./types";
 export const smr300sim: Project = {
   slug: "smr300-sim",
   title: "smr300l_gazebo_ros2control",
-  subtitle: "The SMR300 in simulation, so changes could be tested off the floor",
+  subtitle:
+    "The SMR300 in simulation, so changes could be tested off the floor",
   status: "open-source",
   year: "2026",
   role: "Author",
@@ -38,7 +39,12 @@ export const smr300sim: Project = {
     "A simulator agrees with the robot exactly as far as its model does. It catches logic regressions, not the sunlight-on-a-reflective-marker class of failure.",
   ],
 
-  attribution: [{ kind: "built-by-me", detail: "The simulation and its control configuration." }],
+  attribution: [
+    {
+      kind: "built-by-me",
+      detail: "The simulation and its control configuration.",
+    },
+  ],
 
   related: ["smr300", "ripple"],
 };

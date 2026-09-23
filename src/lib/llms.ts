@@ -1,5 +1,9 @@
 import { PROJECTS, projectUrl, projectsByCategory } from "@/projects";
-import { ATTRIBUTION_LABEL, CATEGORY_LABEL, STATUS_LABEL } from "@/projects/types";
+import {
+  ATTRIBUTION_LABEL,
+  CATEGORY_LABEL,
+  STATUS_LABEL,
+} from "@/projects/types";
 import { education, experience, patents, profile, skills } from "@/lib/data";
 import { SITE_URL } from "@/lib/site";
 
@@ -25,7 +29,7 @@ import { SITE_URL } from "@/lib/site";
  */
 
 function heading(p: (typeof PROJECTS)[number]) {
-  return `${p.title} — ${p.subtitle}`;
+  return `${p.title}, ${p.subtitle}`;
 }
 
 /** The short index: what exists, where it lives, one line each. */
@@ -56,11 +60,19 @@ export function buildLlmsTxt(): string {
 
   out.push("## Site");
   out.push("");
-  out.push(`- [Full detail for models](${SITE_URL}/llms-full.txt): every project expanded — problem, architecture, experiments, results, limitations, attribution.`);
-  out.push(`- [Plain portfolio](${SITE_URL}/boring): the same content as HTML, no WebGL.`);
-  out.push(`- [3D portfolio](${SITE_URL}/cool-kids): scroll-driven WebGL flight. Copy is rendered in a canvas overlay and is not reliably crawlable — use llms-full.txt instead.`);
+  out.push(
+    `- [Full detail for models](${SITE_URL}/llms-full.txt): every project expanded, problem, architecture, experiments, results, limitations, attribution.`,
+  );
+  out.push(
+    `- [Plain portfolio](${SITE_URL}/boring): the same content as HTML, no WebGL.`,
+  );
+  out.push(
+    `- [3D portfolio](${SITE_URL}/cool-kids): scroll-driven WebGL flight. Copy is rendered in a canvas overlay and is not reliably crawlable, use llms-full.txt instead.`,
+  );
   out.push(`- [Résumé](${SITE_URL}${profile.resume})`);
-  out.push(`- [CV](${SITE_URL}${profile.cv}): the long form — profile, full project and service history.`);
+  out.push(
+    `- [CV](${SITE_URL}${profile.cv}): the long form, profile, full project and service history.`,
+  );
   out.push(`- [GitHub](${profile.github})`);
   out.push(`- [LinkedIn](${profile.linkedin})`);
   out.push("");
@@ -77,7 +89,7 @@ export function buildLlmsTxt(): string {
 export function buildLlmsFullTxt(): string {
   const out: string[] = [];
 
-  out.push(`# ${profile.name} — full technical record`);
+  out.push(`# ${profile.name}, full technical record`);
   out.push("");
   out.push(`> ${profile.headline}`);
   out.push("");
@@ -103,14 +115,16 @@ export function buildLlmsFullTxt(): string {
   out.push("## Education");
   out.push("");
   for (const e of education) {
-    out.push(`- ${e.degree}, ${e.school} (${e.sub}), ${e.place}. ${e.period}. Status: ${e.status}.`);
+    out.push(
+      `- ${e.degree}, ${e.school} (${e.sub}), ${e.place}. ${e.period}. Status: ${e.status}.`,
+    );
   }
   out.push("");
 
   out.push("## Experience");
   out.push("");
   for (const j of experience) {
-    out.push(`### ${j.role} — ${j.company}`);
+    out.push(`### ${j.role}, ${j.company}`);
     out.push(`${j.place} · ${j.period}`);
     out.push("");
     for (const b of j.bullets) out.push(`- ${b}`);
@@ -133,7 +147,9 @@ export function buildLlmsFullTxt(): string {
       out.push(`- Role: ${p.role}`);
       out.push(`- Stack: ${p.stack.join(", ")}`);
       if (p.links.length) {
-        out.push(`- Links: ${p.links.map((l) => `${l.label} (${l.href})`).join(", ")}`);
+        out.push(
+          `- Links: ${p.links.map((l) => `${l.label} (${l.href})`).join(", ")}`,
+        );
       }
       out.push("");
       out.push(`**Thesis.** ${p.thesis}`);
@@ -141,7 +157,12 @@ export function buildLlmsFullTxt(): string {
       out.push(p.summary);
       out.push("");
 
-      for (const sec of [p.problem, p.built, p.architecture, ...(p.deepDive ?? [])]) {
+      for (const sec of [
+        p.problem,
+        p.built,
+        p.architecture,
+        ...(p.deepDive ?? []),
+      ]) {
         if (!sec) continue;
         out.push(`#### ${sec.heading}`);
         out.push("");
@@ -158,7 +179,7 @@ export function buildLlmsFullTxt(): string {
           out.push("");
           if (f.caption) out.push(f.caption + "\n");
           for (const st of f.steps) {
-            out.push(`- ${st.label}${st.detail ? ` — ${st.detail}` : ""}`);
+            out.push(`- ${st.label}${st.detail ? `, ${st.detail}` : ""}`);
             for (const b of st.branches ?? []) out.push(`  - ${b.label}`);
           }
           out.push("");
@@ -181,7 +202,7 @@ export function buildLlmsFullTxt(): string {
         out.push("#### Measured results");
         out.push("");
         for (const m of p.metrics) {
-          out.push(`- **${m.value}** — ${m.label}. ${m.context}`);
+          out.push(`- **${m.value}**, ${m.label}. ${m.context}`);
         }
         out.push("");
       }
@@ -208,7 +229,8 @@ export function buildLlmsFullTxt(): string {
       if (p.repos?.length) {
         out.push("#### Repositories");
         out.push("");
-        for (const r of p.repos) out.push(`- ${r.name} (${r.href}): ${r.contains}`);
+        for (const r of p.repos)
+          out.push(`- ${r.name} (${r.href}): ${r.contains}`);
         out.push("");
       }
 

@@ -27,10 +27,13 @@ export default async function OsPage() {
     return (
       <main className="flex min-h-screen items-center justify-center bg-ink px-5">
         <div className="max-w-[460px] border border-fault bg-ink-2 p-6">
-          <h1 className="font-display text-[18px] font-semibold text-bone">Storage unconfigured</h1>
+          <h1 className="font-display text-[18px] font-semibold text-bone">
+            Storage unconfigured
+          </h1>
           <p className="mono mt-3 text-[12px] leading-relaxed text-mute">
-            Set UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN in the project environment.
-            Until then there is nowhere to keep presence, messages or button presses.
+            Set UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN in the
+            project environment. Until then there is nowhere to keep presence,
+            messages or button presses.
           </p>
         </div>
       </main>

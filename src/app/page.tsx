@@ -24,7 +24,7 @@ import styles from "./door.module.css";
  */
 
 export const metadata: Metadata = {
-  title: "Prabal Khare — Robotics Engineer & Embodied AI",
+  title: "Prabal Khare, Robotics Engineer & Embodied AI",
   description:
     "Robotics software engineer building ROS 2 autonomy stacks for real robots. Pick your poison: the cinematic version, or the one that loads in a blink.",
   alternates: { canonical: `${SITE_URL}/` },
@@ -138,11 +138,10 @@ export default function Door() {
               >
                 fast way
               </Choice>
-              .
-              <Caption resting>Either one reaches the same robots.</Caption>
+              .<Caption resting>Either one reaches the same robots.</Caption>
               <Caption peer="loud">
                 Seven robots and the research, in 3D, flown past on your scroll
-                wheel. WebGL and a real-time renderer — best on a laptop, and it
+                wheel. WebGL and a real-time renderer, best on a laptop, and it
                 takes a moment to load.
               </Caption>
               <Caption peer="fast">
@@ -151,7 +150,6 @@ export default function Door() {
               </Caption>
             </div>
           </div>
-
         </div>
       </main>
     </>

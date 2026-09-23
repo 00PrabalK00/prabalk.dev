@@ -69,13 +69,26 @@ export const vtol: Project = {
       caption:
         "Detection runs on the aircraft rather than on a ground station, because the link is the first thing to go at a disaster site.",
       steps: [
-        { label: "Vertical takeoff", detail: "No runway needed, which is the point of the airframe." },
-        { label: "Fly the scan pattern", detail: "Autonomous coverage of the search area via MAVROS." },
-        { label: "Detect on board", detail: "Thermal and visual, TFLite and YOLOv5 on the Raspberry Pi.", tone: "decision",
+        {
+          label: "Vertical takeoff",
+          detail: "No runway needed, which is the point of the airframe.",
+        },
+        {
+          label: "Fly the scan pattern",
+          detail: "Autonomous coverage of the search area via MAVROS.",
+        },
+        {
+          label: "Detect on board",
+          detail: "Thermal and visual, TFLite and YOLOv5 on the Raspberry Pi.",
+          tone: "decision",
           branches: [
-            { label: "Heat signature with visual support — flag the position", tone: "good" },
-            { label: "Nothing — continue the pattern" },
-          ] },
+            {
+              label: "Heat signature with visual support, flag the position",
+              tone: "good",
+            },
+            { label: "Nothing, continue the pattern" },
+          ],
+        },
         { label: "Report to the rescue team", tone: "good" },
       ],
     },
