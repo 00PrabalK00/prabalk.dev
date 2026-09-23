@@ -11,7 +11,6 @@ const BUCKET: Record<string, Filter> = {
   Kurat: "Robotics",
   "Project MIRA": "Robotics",
   "Autonomous VTOL UAV": "Robotics",
-  Ripple: "Robotics",
   RosScope: "Tooling",
   next_EKF: "Robotics",
   next_HI: "Robotics",

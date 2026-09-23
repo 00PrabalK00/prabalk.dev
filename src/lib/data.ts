@@ -280,24 +280,6 @@ export type Project = {
 
 export const projects: Project[] = [
   {
-    name: "Ripple",
-    kind: "Robot recovery research + site engineer",
-    year: "2026",
-    blurb:
-      "A persistent recovery layer for robots: it watches failures, compares recovery conditions, captures evidence from SO101 and SMR300 runs, and turns tool outputs into deployable robotics pages.",
-    bullets: [
-      "SO101 hardware and camera evidence: front RealSense, wrist camera and rollout video from the real-arm research workspace.",
-      "Recovery-condition comparison figures from the research arm, including pooled injected results and cost/success analysis.",
-      "RosScope built locally and captured against a live ROS 2 graph with talker, listener and parameter_blackboard nodes.",
-      "Screenshots collected from FlowPilot, OpenDroneKit, Continuum and PrabalOS to replace empty project tiles with real evidence.",
-    ],
-    tech: ["ROS 2", "SO101", "RosScope", "Nav2", "VLA recovery", "Playwright"],
-    link: "https://github.com/00PrabalK00/ripple-research",
-    linkLabel: "Research repo",
-    accent: "#4DA6FF",
-    featured: true,
-  },
-  {
     name: "Kurat",
     kind: "Autonomous conversational robot",
     year: "2025 — present",
