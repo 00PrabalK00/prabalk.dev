@@ -14,10 +14,17 @@ export const ACT1_END = 0.32; // warehouse act ends, fog swallows everything
  * fully up. The gap between one station's copy ending and the next beginning
  * is what stops beats colliding mid-read.
  */
+/*
+ * Retuned for eight stations rather than six. The normalized numbers shrink,
+ * but STAGE_VH in Cinema.tsx grows by the same proportion (3400 → 4500svh), so
+ * a beat still occupies the same real scroll distance as it did before — ~207vh
+ * of hold against the old ~211vh. The reading pace is unchanged; there is
+ * simply more film.
+ */
 const FIRST = 0.335;
-const SLOT = 0.098;
-const TRANSIT = 0.026;
-const HOLD = 0.062;
+const SLOT = 0.073;
+const TRANSIT = 0.019;
+const HOLD = 0.046;
 
 const slot = (i: number) => {
   const enter = FIRST + i * SLOT;
@@ -30,7 +37,9 @@ export type StationKind =
   | "companion"
   | "arm"
   | "cloud"
-  | "graph";
+  | "graph"
+  | "incident"
+  | "bench";
 
 export type Station = {
   id: string;
@@ -70,6 +79,7 @@ const RAW: Omit<Station, "enter" | "from" | "to">[] = [
       "Hydrophone and sensor-control subsystems, PCB prototyping",
       "ROS / MAVROS / MAVLink control software",
     ],
+    link: "https://mira.prabalkhare.com",
   },
   {
     id: "vtol",
@@ -86,6 +96,7 @@ const RAW: Omit<Station, "enter" | "from" | "to">[] = [
       "TensorFlow Lite and YOLOv5 inference on board",
       "Autonomous scan patterns and a custom battery management system",
     ],
+    link: "https://pushpak.prabalkhare.com",
   },
   {
     id: "kurat",
@@ -102,6 +113,7 @@ const RAW: Omit<Station, "enter" | "from" | "to">[] = [
       "YOLOv8 perception, Whisper speech, ORB-SLAM3 localization, Nav2 navigation",
       "Real-time interaction under a modular autonomy split",
     ],
+    link: "https://kurat.prabalkhare.com",
   },
   {
     id: "arm",
@@ -111,13 +123,14 @@ const RAW: Omit<Station, "enter" | "from" | "to">[] = [
     color: "#e0c94a",
     align: "left",
     kicker: "RobotDrawing · ABB IRB140",
-    title: "Teach it to route, not to draw.",
-    body: "Robotic drawing reframed as a stroke-level travelling salesman problem, solved by a learned router instead of a slow classical solver.",
+    title: "I taught it to route. It lost.",
+    body: "Robotic drawing reframed as a stroke-level travelling salesman problem, solved by a learned router — which then failed to beat the classical solver it was meant to replace.",
     facts: [
       "GNN + Pointer Network, imitation learning then reinforcement learning",
-      "Curriculum learning scales past 300 strokes",
-      "~150 ms inference — simulated-annealing quality, roughly 20× faster",
+      "Simulated annealing: 26.8 pen-ups at 195 ms. The learned router: 28.8 at 10.9 s",
+      "Slower and worse, across 28 images. Measuring it properly is how I know",
     ],
+    link: "https://robotdrawing.prabalkhare.com",
   },
   {
     id: "dronekit",
@@ -134,6 +147,7 @@ const RAW: Omit<Station, "enter" | "from" | "to">[] = [
       "Cracks mapped onto COLMAP 3D reconstructions",
       "FEniCSx simulation estimates propagation and flags severity",
     ],
+    link: "https://opendronekit.prabalkhare.com",
   },
   {
     id: "continuum",
@@ -150,13 +164,57 @@ const RAW: Omit<Station, "enter" | "from" | "to">[] = [
       "log / diff / blame / restore / branch / merge, plus semantic search",
       "Local-first — nothing leaves .continuum/ by default",
     ],
+    link: "https://continuum.prabalkhare.com",
+  },
+
+  /* ---------------------------------------------------------------- *
+   * Act III — the research wing.                                      *
+   *                                                                   *
+   * Everything before this point is a robot that was built. These two *
+   * are questions being asked about robots that already exist, which  *
+   * is why they sit past the others in open space rather than in the  *
+   * same row: the flight arrives somewhere quieter.                   *
+   * ---------------------------------------------------------------- */
+  {
+    id: "ripple",
+    kind: "incident",
+    pos: [-9, 1.5, -146],
+    view: [6.5, 1.2, 10],
+    color: "#51e2f5",
+    align: "right",
+    kicker: "Ripple · Active research",
+    title: "It stopped. Now what?",
+    body: "A site engineer that watches a Nav2 robot fail, recovers inside a budget you set, and asks a person when the evidence says the problem is physical — then remembers what worked at that spot.",
+    facts: [
+      "The model only emits tool calls; the edge validates, journals, then acts",
+      "A keepout counts once the mask and costmap show it. An arrival counts once odometry settles",
+      "123 unit tests, recovery 13/13 in simulation — and never yet on physical hardware",
+    ],
+    link: "https://ripple.prabalkhare.com",
+  },
+  {
+    id: "so101",
+    kind: "bench",
+    pos: [9, -0.5, -166],
+    view: [-6.5, 1.6, 10],
+    color: "#9df9ef",
+    align: "left",
+    kicker: "SO101 · SmolVLA · Active research",
+    title: "Rule out the wiring first.",
+    body: "Most reported manipulation failures are not policy failures. They are camera ordering, normalisation or action scaling wearing a policy's name — so the first result here is that replayed actions reproduce their demonstrations.",
+    facts: [
+      "Leader and follower on the LeRobot SO101, two cameras, MuJoCo evaluation",
+      "Recorded actions replayed through the evaluator reproduce the demonstrations",
+      "No performance claim yet. That is the honest state of it",
+    ],
+    link: "https://so101.prabalkhare.com",
   },
 ];
 
 export const STATIONS: Station[] = RAW.map((s, i) => ({ ...s, ...slot(i) }));
 
 /** The four patents, rendered as monoliths at the end of the flight. */
-export const MONOLITH_Z = -152;
+export const MONOLITH_Z = -192;
 
 export const OUTRO = {
   patents: { from: 0.936, to: 0.98 },

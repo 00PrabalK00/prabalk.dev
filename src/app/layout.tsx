@@ -23,7 +23,7 @@ const mono = Space_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE),
   title: {
-    default: "Prabal Khare — Robotics Software Engineer",
+    default: "Prabal Khare — Robotics Engineer & Embodied AI",
     template: "%s · Prabal Khare",
   },
   description:
@@ -46,13 +46,13 @@ export const metadata: Metadata = {
     type: "website",
     url: SITE,
     siteName: "Prabal Khare",
-    title: "Prabal Khare — Robotics Software Engineer",
+    title: "Prabal Khare — Robotics Engineer & Embodied AI",
     description:
       "ROS 2 autonomy, localization, navigation and operator tooling for robots that ship. 97% docking success on a 300 kg industrial AMR.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Prabal Khare — Robotics Software Engineer",
+    title: "Prabal Khare — Robotics Engineer & Embodied AI",
     description:
       "ROS 2 autonomy, localization, navigation and operator tooling for robots that ship.",
   },

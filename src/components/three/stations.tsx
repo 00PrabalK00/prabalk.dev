@@ -904,6 +904,37 @@ const CLOUD_HALF_Y = 2.2;
 const BOX_MARGIN = 0.15;
 const BOX_HALF_XZ = CLOUD_HALF_XZ + BOX_MARGIN;
 const BOX_HALF_Y = CLOUD_HALF_Y + BOX_MARGIN;
+
+/*
+ * Wireframes with fixed dimensions, built once.
+ *
+ * These were constructed inline in JSX — `args={[new THREE.BoxGeometry(...)]}`.
+ * R3F keys reconstruction off the identity of the `args` array, so a fresh
+ * array holding a freshly built BoxGeometry meant the edges were regenerated on
+ * every render of the component, and the discarded source geometry kept its GPU
+ * buffer until the driver got around to it. Nothing about either box varies, so
+ * they are module singletons that live for the page.
+ *
+ * The intermediate BoxGeometry is disposed immediately: EdgesGeometry copies
+ * the positions it needs at construction and never refers back to it.
+ */
+const RECON_BOUNDS_EDGES = (() => {
+  const box = new THREE.BoxGeometry(
+    BOX_HALF_XZ * 2,
+    BOX_HALF_Y * 2,
+    BOX_HALF_XZ * 2,
+  );
+  const edges = new THREE.EdgesGeometry(box);
+  box.dispose();
+  return edges;
+})();
+
+const MONOLITH_EDGES = (() => {
+  const box = new THREE.BoxGeometry(1.5, 4.4, 0.28);
+  const edges = new THREE.EdgesGeometry(box);
+  box.dispose();
+  return edges;
+})();
 /** Cracks sit just proud of the front face so they read as surface damage. */
 const CRACK_Z = CLOUD_HALF_XZ + 0.04;
 
@@ -1027,12 +1058,7 @@ function CloudStation({ s }: { s: Station }) {
         </group>
 
         {/* bounding box of the reconstruction */}
-        <lineSegments>
-          <edgesGeometry
-            args={[
-              new THREE.BoxGeometry(BOX_HALF_XZ * 2, BOX_HALF_Y * 2, BOX_HALF_XZ * 2),
-            ]}
-          />
+        <lineSegments geometry={RECON_BOUNDS_EDGES}>
           <lineBasicMaterial color={s.color} transparent opacity={0.22} />
         </lineSegments>
       </group>
@@ -1209,8 +1235,7 @@ export function Monoliths({
               transparent
             />
           </mesh>
-          <lineSegments>
-            <edgesGeometry args={[new THREE.BoxGeometry(1.5, 4.4, 0.28)]} />
+          <lineSegments geometry={MONOLITH_EDGES}>
             <lineBasicMaterial color={P.accent} transparent opacity={0.65} />
           </lineSegments>
           {/* filing seal */}
@@ -1234,6 +1259,248 @@ export function Monoliths({
 /* ------------------------------------------------------------------ */
 /* Dispatcher                                                          */
 /* ------------------------------------------------------------------ */
+
+/* ------------------------------------------------------------------ */
+/* Act III — the research wing                                         */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Ripple, as an incident.
+ *
+ * Not a robot — Ripple is the thing that watches one. So the object is the
+ * shape of what it does: a route that stops at a fault, then branches into
+ * recovery attempts. Two are verified and close green; one is refused by the
+ * safety layer and stops short, red. A fourth line goes up, to a person.
+ *
+ * The refused branch is the point. A recovery the edge declines to run is as
+ * much a part of the system as one that succeeds.
+ */
+function IncidentStation({ s }: { s: Station }) {
+  const root = useRef<THREE.Group>(null);
+  const fault = useRef<THREE.Mesh>(null);
+  const packets = useRef<THREE.Group>(null);
+  useReveal(s, root, 0.94);
+
+  const { pathGeo, branches, refusedGeo, escalateGeo } = useMemo(() => {
+    const path: THREE.Vector3[] = [];
+    for (let i = 0; i <= 18; i++) {
+      const t = i / 18;
+      path.push(new THREE.Vector3(-3.2 + t * 3.2, 0, Math.sin(t * 2.1) * 0.35));
+    }
+    const pathGeo = new THREE.BufferGeometry().setFromPoints(path);
+
+    const mk = (lift: number, side: number) => {
+      const pts: THREE.Vector3[] = [];
+      for (let i = 0; i <= 22; i++) {
+        const t = i / 22;
+        pts.push(
+          new THREE.Vector3(
+            t * 3.0,
+            Math.sin(t * Math.PI) * lift,
+            side * Math.sin(t * Math.PI) * 1.5,
+          ),
+        );
+      }
+      return new THREE.BufferGeometry().setFromPoints(pts);
+    };
+    const branches = [mk(0.5, 1), mk(0.34, -1)];
+
+    const refused: THREE.Vector3[] = [];
+    for (let i = 0; i <= 10; i++) {
+      const t = i / 10;
+      refused.push(new THREE.Vector3(t * 1.1, -0.55 * Math.sin(t * Math.PI), t * 0.5));
+    }
+    const refusedGeo = new THREE.BufferGeometry().setFromPoints(refused);
+
+    const escalateGeo = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(0, 0.2, 0),
+      new THREE.Vector3(0, 2.5, 0),
+    ]);
+
+    return { pathGeo, branches, refusedGeo, escalateGeo };
+  }, []);
+
+  useFrame((state) => {
+    const t = state.clock.elapsedTime;
+    if (fault.current) {
+      const m = fault.current.material as THREE.MeshStandardMaterial;
+      // Reads as an alarm that has not cleared, rather than decoration.
+      m.emissiveIntensity = 2.4 + Math.sin(t * 3.2) * 1.4;
+    }
+    if (packets.current) {
+      packets.current.children.forEach((c, i) => {
+        const k = (t * 0.32 + i * 0.5) % 1;
+        c.position.set(
+          k * 3.0,
+          Math.sin(k * Math.PI) * (i === 0 ? 0.5 : 0.34),
+          (i === 0 ? 1 : -1) * Math.sin(k * Math.PI) * 1.5,
+        );
+      });
+    }
+  });
+
+  return (
+    <group ref={root} position={s.pos} visible={false}>
+      <lineSegments geometry={pathGeo}>
+        <lineBasicMaterial color={s.color} transparent opacity={0.34} />
+      </lineSegments>
+
+      <mesh ref={fault}>
+        <icosahedronGeometry args={[0.3, 1]} />
+        <meshStandardMaterial
+          color={P.fault}
+          emissive={P.fault}
+          emissiveIntensity={2.4}
+          toneMapped={false}
+        />
+      </mesh>
+
+      {branches.map((g, i) => (
+        <lineSegments key={i} geometry={g}>
+          <lineBasicMaterial color={P.pass} transparent opacity={0.66} />
+        </lineSegments>
+      ))}
+
+      <lineSegments geometry={refusedGeo}>
+        <lineBasicMaterial color={P.fault} transparent opacity={0.5} />
+      </lineSegments>
+
+      <mesh position={[3.0, 0, 0]}>
+        <icosahedronGeometry args={[0.22, 1]} />
+        <meshStandardMaterial
+          color={P.pass}
+          emissive={P.pass}
+          emissiveIntensity={2}
+          toneMapped={false}
+        />
+      </mesh>
+
+      <lineSegments geometry={escalateGeo}>
+        <lineBasicMaterial color={s.color} transparent opacity={0.4} />
+      </lineSegments>
+      <mesh position={[0, 2.6, 0]}>
+        <boxGeometry args={[0.34, 0.34, 0.06]} />
+        <meshStandardMaterial
+          color={s.color}
+          emissive={s.color}
+          emissiveIntensity={1.5}
+          toneMapped={false}
+        />
+      </mesh>
+
+      <group ref={packets}>
+        {[0, 1].map((i) => (
+          <mesh key={i}>
+            <sphereGeometry args={[0.075, 10, 10]} />
+            <meshStandardMaterial
+              color={P.pass}
+              emissive={P.pass}
+              emissiveIntensity={2.6}
+              toneMapped={false}
+            />
+          </mesh>
+        ))}
+      </group>
+    </group>
+  );
+}
+
+/**
+ * SO101, as a leader and a follower.
+ *
+ * Two arms, the same arm twice. The left one is driven; the right copies it a
+ * beat later. The lag is the whole idea — teleoperated demonstrations are what
+ * the policy trains on, and verifying that a replayed action reproduces its
+ * demonstration is the result this project actually has.
+ */
+function BenchStation({ s }: { s: Station }) {
+  const root = useRef<THREE.Group>(null);
+  const leader = useRef<THREE.Group>(null);
+  const follower = useRef<THREE.Group>(null);
+  const leaderFore = useRef<THREE.Group>(null);
+  const followerFore = useRef<THREE.Group>(null);
+  useReveal(s, root, 0.94);
+
+  useFrame((state) => {
+    const t = state.clock.elapsedTime;
+    // One motion, sampled twice — the follower reads the same curve, later.
+    const yaw = (u: number) => Math.sin(u * 0.6) * 0.5;
+    const lift = (u: number) => Math.sin(u * 0.6 + 1.1) * 0.42 - 0.2;
+
+    if (leader.current) leader.current.rotation.y = yaw(t);
+    if (leaderFore.current) leaderFore.current.rotation.z = lift(t);
+    if (follower.current) follower.current.rotation.y = yaw(t - 0.55);
+    if (followerFore.current) followerFore.current.rotation.z = lift(t - 0.55);
+  });
+
+  const arm = (
+    baseRef: React.RefObject<THREE.Group | null>,
+    foreRef: React.RefObject<THREE.Group | null>,
+    x: number,
+    dim: boolean,
+  ) => (
+    <group position={[x, 0, 0]}>
+      <mesh position={[0, -0.06, 0]}>
+        <boxGeometry args={[1.5, 0.08, 1.1]} />
+        <meshStandardMaterial color="#2a3138" roughness={0.7} metalness={0.3} />
+      </mesh>
+
+      <group ref={baseRef}>
+        <mesh position={[0, 0.2, 0]}>
+          <cylinderGeometry args={[0.24, 0.3, 0.4, 16]} />
+          <meshStandardMaterial color="#3d464f" roughness={0.5} metalness={0.5} />
+        </mesh>
+
+        <mesh position={[0, 0.85, 0]}>
+          <boxGeometry args={[0.17, 0.95, 0.17]} />
+          <meshStandardMaterial color="#4a545e" roughness={0.45} metalness={0.5} />
+        </mesh>
+
+        <group ref={foreRef} position={[0, 1.32, 0]}>
+          <mesh position={[0.36, 0, 0]}>
+            <boxGeometry args={[0.8, 0.14, 0.14]} />
+            <meshStandardMaterial color="#4a545e" roughness={0.45} metalness={0.5} />
+          </mesh>
+          {[-0.08, 0.08].map((z) => (
+            <mesh key={z} position={[0.82, 0, z]}>
+              <boxGeometry args={[0.2, 0.05, 0.04]} />
+              <meshStandardMaterial
+                color={s.color}
+                emissive={s.color}
+                emissiveIntensity={dim ? 0.7 : 1.6}
+                toneMapped={false}
+              />
+            </mesh>
+          ))}
+        </group>
+      </group>
+
+      {/* the two cameras every verification check goes through */}
+      {[
+        [-0.5, 0.95, 0.42],
+        [0.5, 0.95, -0.42],
+      ].map((pp, i) => (
+        <mesh key={i} position={pp as [number, number, number]}>
+          <boxGeometry args={[0.12, 0.12, 0.2]} />
+          <meshStandardMaterial
+            color="#1b2026"
+            emissive={s.color}
+            emissiveIntensity={0.5}
+            toneMapped={false}
+          />
+        </mesh>
+      ))}
+    </group>
+  );
+
+  return (
+    <group ref={root} position={s.pos} visible={false}>
+      {arm(leader, leaderFore, -1.15, false)}
+      {arm(follower, followerFore, 1.15, true)}
+    </group>
+  );
+}
+
 export function StationObject({ s }: { s: Station }) {
   switch (s.kind) {
     case "auv":
@@ -1248,5 +1515,9 @@ export function StationObject({ s }: { s: Station }) {
       return <CloudStation s={s} />;
     case "graph":
       return <GraphStation s={s} />;
+    case "incident":
+      return <IncidentStation s={s} />;
+    case "bench":
+      return <BenchStation s={s} />;
   }
 }

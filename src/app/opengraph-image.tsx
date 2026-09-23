@@ -5,7 +5,7 @@ import { ImageResponse } from "next/og";
  * ones on the page. Uses only system-default fonts — fetching a webfont here
  * would put a network call in the build path for no visual gain at this size.
  */
-export const alt = "Prabal Khare — Robotics Software Engineer";
+export const alt = "Prabal Khare — Robotics Engineer & Embodied AI";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -62,7 +62,7 @@ export default function OpengraphImage() {
               textTransform: "uppercase",
             }}
           >
-            Robotics Software Engineer · Brooklyn, NY
+            Robotics Engineer · Embodied AI · Brooklyn, NY
           </div>
         </div>
 

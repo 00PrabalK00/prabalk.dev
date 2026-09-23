@@ -1,0 +1,93 @@
+/*
+ * The travelling pointer.
+ *
+ * There is one arrow on the door, not two. It parks under the first option and
+ * moves to the second when you point at it. Actually measuring the distance
+ * between two inline words would mean shipping JavaScript to a page whose whole
+ * argument is that it ships none, so instead each option owns a pointer and the
+ * pair are cross-faded along the axis of travel: the resting one leaves to the
+ * right, the arriving one enters from the left. At 220 ms the eye reads it as
+ * one arrow crossing rather than two arrows blinking.
+ *
+ * :has() is doing the work Tailwind's peer-* cannot — the second option needs to
+ * affect the first, and sibling combinators only ever walk forward.
+ */
+
+.line {
+  position: relative;
+}
+
+.pick {
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.pointer {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  pointer-events: none;
+  transform: translateX(-50%);
+  transition:
+    opacity 220ms ease,
+    transform 220ms ease;
+}
+
+.loud .pointer {
+  opacity: 1;
+}
+
+.fast .pointer {
+  opacity: 0;
+  transform: translateX(-50%) translateX(-18px);
+}
+
+.line:has(.fast:hover) .loud .pointer,
+.line:has(.fast:focus-within) .loud .pointer {
+  opacity: 0;
+  transform: translateX(-50%) translateX(18px);
+}
+
+.line:has(.fast:hover) .fast .pointer,
+.line:has(.fast:focus-within) .fast .pointer {
+  opacity: 1;
+  transform: translateX(-50%);
+}
+
+/* A nudge on the arrow itself while you are on the word it points at. */
+.pick:hover .arrow,
+.pick:focus-within .arrow {
+  transform: translateY(-2px);
+}
+
+.arrow {
+  font-size: 22px;
+  line-height: 1;
+  transition: transform 180ms ease;
+}
+
+/*
+ * The label is the only instruction on the page, so it is set to be read rather
+ * than noticed: the vivid palette values it used to inherit measure 1.5:1 on
+ * this ground and were effectively decorative.
+ */
+.label {
+  font-size: 13px;
+  line-height: 1.3;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pointer,
+  .arrow {
+    transition-duration: 1ms;
+  }
+}

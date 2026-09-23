@@ -36,6 +36,12 @@ export default function Contact() {
       href: profile.resume,
       download: profile.resumeFileName,
     },
+    {
+      label: "CV",
+      value: "Download PDF",
+      href: profile.cv,
+      download: profile.cvFileName,
+    },
   ];
 
   return (

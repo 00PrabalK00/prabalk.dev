@@ -25,6 +25,34 @@ const CYAN = P.teal;
 const PASS = P.pass;
 const VIOLET = P.violet;
 
+/** Scratch colours for the robot's beacon — see the lerpColors call below. */
+const LED_ACCENT = new THREE.Color();
+const LED_PASS = new THREE.Color(PASS);
+
+/**
+ * Whether the display already supersamples enough to make MSAA redundant.
+ *
+ * Read once at module scope rather than per-render: it cannot change without a
+ * reload, and the WebGL context reads it exactly once at creation anyway.
+ * Guarded for SSR, where this module is still evaluated.
+ */
+const HIGH_DENSITY =
+  typeof window !== "undefined" && window.devicePixelRatio > 1.5;
+
+/** Stable `args` identities for the floor grids — see the gridHelper comment. */
+const GRID_FINE_ARGS = [
+  160,
+  160,
+  new THREE.Color("#1f2833"),
+  new THREE.Color("#1f2833"),
+] as const;
+const GRID_COARSE_ARGS = [
+  160,
+  32,
+  new THREE.Color("#334252"),
+  new THREE.Color("#334252"),
+] as const;
+
 /* ------------------------------------------------------------------ */
 /* Robot position along the aisle, as a function of scroll             */
 /* ------------------------------------------------------------------ */
@@ -248,16 +276,17 @@ function Floor() {
         />
       </mesh>
 
-      <gridHelper
-        ref={grid1}
-        args={[160, 160, new THREE.Color("#1f2833"), new THREE.Color("#1f2833")]}
-        position={[0, 0.001, -14]}
-      />
-      <gridHelper
-        ref={grid2}
-        args={[160, 32, new THREE.Color("#334252"), new THREE.Color("#334252")]}
-        position={[0, 0.002, -14]}
-      />
+      {/*
+       * The args arrays are memoized because R3F treats `args` as the
+       * constructor signature: a fresh array — and these built two fresh
+       * THREE.Color objects inline — means a new identity every render, so the
+       * helper was torn down and rebuilt each time rather than reused. The
+       * division counts are deliberately unchanged; a gridHelper is one
+       * LineSegments draw, so 160 divisions is ~1.3k verts and not worth the
+       * visual change.
+       */}
+      <gridHelper ref={grid1} args={GRID_FINE_ARGS} position={[0, 0.001, -14]} />
+      <gridHelper ref={grid2} args={GRID_COARSE_ARGS} position={[0, 0.002, -14]} />
 
       {tags.map(([x, z], i) => (
         <mesh key={i} rotation={[-Math.PI / 2, 0, 0]} position={[x, 0.005, z]}>
@@ -466,9 +495,12 @@ function Robot() {
     // beacon: accent while driving, green once docked
     if (led.current) {
       const docked = smoothstep(range(u, 0.56, 0.62));
+      // Same reasoning as the camera rig: these were two Color allocations per
+      // frame. `accent` is the only one that can change, so it is re-set rather
+      // than re-allocated.
       led.current.color.lerpColors(
-        new THREE.Color(accent),
-        new THREE.Color(PASS),
+        LED_ACCENT.set(accent),
+        LED_PASS,
         docked
       );
       if (honking) {
@@ -806,6 +838,18 @@ function Stars() {
 /* ------------------------------------------------------------------ */
 /* Director: drives camera + fog from scroll                           */
 /* ------------------------------------------------------------------ */
+/**
+ * Scratch vectors for the camera rig.
+ *
+ * These used to be allocated inside the frame callback — two Vector3 per frame,
+ * every frame, for the whole flight. Nothing kept them alive, so the cost was
+ * not a leak but the garbage collector waking up mid-scroll, which is exactly
+ * where a dropped frame is most visible. Hoisted to module scope: the rig is a
+ * singleton, so there is nothing to collide with.
+ */
+const TARGET_POS = new THREE.Vector3();
+const TARGET_LOOK = new THREE.Vector3();
+
 function Director() {
   const pos = useRef(new THREE.Vector3(0, 1.15, 14.5));
   const look = useRef(new THREE.Vector3(0, 1, 3.5));
@@ -816,8 +860,8 @@ function Director() {
     const target = sampleKeys(p, rz);
 
     const k = damp(dt, 0.0008);
-    pos.current.lerp(new THREE.Vector3(...target.pos), k);
-    look.current.lerp(new THREE.Vector3(...target.look), k);
+    pos.current.lerp(TARGET_POS.set(...target.pos), k);
+    look.current.lerp(TARGET_LOOK.set(...target.look), k);
 
     state.camera.position.copy(pos.current);
     state.camera.lookAt(look.current);
@@ -1099,8 +1143,17 @@ export default function CinemaScene() {
       frameloop={paused ? "never" : "always"}
       dpr={[1, maxDpr]}
       performance={{ min: 0.5 }}
+      /*
+       * MSAA and a 2x backing store are two ways to buy the same thing, and
+       * paying for both is the most expensive setting in this scene: the
+       * multisample buffer scales with the framebuffer, so antialias at DPR 2
+       * costs roughly four times what it costs at DPR 1 to fix aliasing that
+       * the extra pixels have already largely fixed. On a retina display the
+       * samples are below the resolving limit anyway. So: supersample OR
+       * multisample, never both.
+       */
       gl={{
-        antialias: true,
+        antialias: HIGH_DENSITY ? false : true,
         powerPreference: "high-performance",
         alpha: false,
       }}

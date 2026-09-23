@@ -3,6 +3,8 @@
  * payloads are longer than the real command handling.
  */
 
+import { profile } from "@/lib/data";
+
 export type EggLine = { kind: "in" | "out" | "err" | "ok" | "dim"; text: string };
 
 const out = (text: string): EggLine => ({ kind: "out", text });
@@ -145,7 +147,7 @@ function man(page: string | undefined): EggLine[] {
     dim(""),
     out("BUGS"),
     out("     Refactors working code at 2 a.m."),
-    out("     Report bugs to prabalkhare.1010@gmail.com"),
+    out(`     Report bugs to ${profile.email}`),
     dim(""),
     out("SEE ALSO"),
     out("     hire(1), ros2(1), htop(1)"),

@@ -20,8 +20,17 @@ export default function Timeline() {
           <Reveal key={e.school} delay={i * 80}>
             <div>
               <div className="mono mb-4 flex items-center gap-3 text-[10px] tracking-[0.16em] uppercase">
-                <span className={e.status === "incoming" ? "text-accent" : "text-pass"}>
-                  {e.status === "incoming" ? "incoming" : "completing"}
+                {/*
+                 * The label is the data now. It used to be a two-way branch on
+                 * "incoming", which meant the status could go stale in data.ts
+                 * while the page kept rendering one of two hardcoded words —
+                 * which is exactly what happened once the NYU program actually
+                 * started.
+                 */}
+                <span
+                  className={e.status === "current" ? "text-accent" : "text-pass"}
+                >
+                  {e.status}
                 </span>
                 <span className="text-mute/88">{e.period}</span>
               </div>

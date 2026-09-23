@@ -36,9 +36,16 @@ const ACT1_BEATS: Beat[] = [
     from: 0.0,
     to: 0.1,
     align: "left",
-    kicker: "Robotics Software Engineer · Brooklyn, NY",
+    /*
+     * The opening beat is the first thing anyone reads on this route, so it
+     * carries the positioning rather than the job title. "Robotics Software
+     * Engineer who builds the whole robot" was true and had stopped being the
+     * point — it describes the deployed-systems half and says nothing about the
+     * research half, which is where the current work is.
+     */
+    kicker: "Robotics Engineer · Embodied AI · Brooklyn, NY",
     big: "PRABAL\nKHARE",
-    body: "I build the whole robot. Sensors, comms, localization, navigation, controls, operator tooling — and the deployment that proves it works.",
+    body: "I build robot systems and study what happens when learned policies fail. Sensors, comms, localization, navigation, controls, operator tooling — and now, at NYU, whether a policy can recover when it breaks.",
   },
   {
     from: 0.13,
@@ -93,7 +100,7 @@ const ACT1_BEATS: Beat[] = [
     align: "center",
     kicker: "Keep going",
     title: "That's one robot.",
-    body: "There are five more ahead.",
+    body: "Six more ahead — and then the research that asks whether any of them actually work.",
   },
 ];
 
@@ -150,8 +157,13 @@ const FADES = deriveFades(BEATS);
 // Desktop gets the full-length flight. On a phone the same progress is spread
 // over far less pixel height, so the whole thing is shortened rather than
 // asking someone to swipe through 34 screens.
-const STAGE_VH = 3400;
-const STAGE_VH_SM = 2100;
+/*
+ * Eight stations now, not six. These grew by the same proportion as the
+ * normalized slot in cinema.ts shrank, so a beat still occupies roughly the
+ * same real scroll distance it always did — the film is longer, not faster.
+ */
+const STAGE_VH = 4500;
+const STAGE_VH_SM = 2800;
 
 export default function Cinema() {
   const stageRef = useRef<HTMLDivElement>(null);
@@ -479,6 +491,31 @@ export default function Cinema() {
                       </li>
                     ))}
                   </ul>
+                )}
+
+                {/*
+                 * Every project now has a permanent URL, so the film stops
+                 * being a closed loop: a beat can hand you off to the evidence
+                 * rather than only describing it. pointer-events are restored
+                 * here because the overlay itself is inert — it has to be, or
+                 * it would eat the scroll that drives the camera.
+                 */}
+                {b.link && (
+                  <a
+                    href={b.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`mono pointer-events-auto mt-7 inline-flex items-center gap-2 border-b pb-1 text-[11px] tracking-[0.18em] uppercase transition-colors sm:mt-9 ${
+                      b.align === "center" ? "mx-auto" : ""
+                    }`}
+                    style={{
+                      color: `color-mix(in srgb, ${b.accent ?? "var(--c-accent)"}, black var(--accent-darken))`,
+                      borderColor: `color-mix(in srgb, ${b.accent ?? "var(--c-accent)"}, transparent 60%)`,
+                    }}
+                  >
+                    Case study
+                    <span aria-hidden>&#8599;</span>
+                  </a>
                 )}
               </div>
             </div>

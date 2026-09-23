@@ -7,16 +7,27 @@ export const profile = {
   name: "Prabal Khare",
   initials: "PK",
   roles: [
-    "Robotics Software Engineer",
+    "Robotics Engineer",
+    "Embodied AI Researcher",
     "Autonomy Engineer",
-    "Mechatronics Engineer",
     "ROS 2 Engineer",
   ],
+  /*
+   * The positioning, and the one line the whole site is arranged around.
+   *
+   * "Robotics Software Engineer who builds the whole robot" was accurate and
+   * had stopped being the point: it describes the deployed-systems half and
+   * says nothing about the research half, which is where the current work is.
+   * The second sentence is the one that matters — it is what Ripple, HUG and
+   * the SO101 evaluation work all have in common.
+   */
+  headline:
+    "I build robot systems and study what happens when learned policies fail.",
   tagline:
-    "I build the whole robot — sensors, comms, localization, navigation, controls, operator tooling, and the deployment that proves it works.",
+    "I build the whole robot — sensors, comms, localization, navigation, controls, operator tooling, and the deployment that proves it works. Now at NYU, working on whether learned policies can recover when they do not.",
   location: "Brooklyn, New York",
   previousLocation: "Bangkok, Thailand",
-  email: "prabalkhare.1010@gmail.com",
+  email: "pk3391@nyu.edu",
   github: "https://github.com/00PrabalK00",
   githubUser: "00PrabalK00",
   linkedin: "https://www.linkedin.com/in/prabalk",
@@ -25,6 +36,11 @@ export const profile = {
    *  directly — no Google sign-in wall, no broken share link. */
   resume: "/Prabal_Khare_Resume.pdf",
   resumeFileName: "Prabal_Khare_Resume.pdf",
+  /** The long form — profile, full publication and project history, service.
+   *  The résumé is the one-pager a recruiter wants; this is for academic
+   *  applications and anyone who asked for everything. */
+  cv: "/Prabal_Khare_CV.pdf",
+  cvFileName: "Prabal_Khare_CV.pdf",
   /** Kept as a mirror in case the Drive copy is ever the newer one. */
   resumeDrive:
     "https://drive.google.com/file/d/1GmldZ472upLU58mr1qOuZ3cXxaoN7R9H/view",
@@ -46,7 +62,7 @@ export const education = [
     degree: "M.S. Mechatronics and Robotics",
     place: "Brooklyn, NY",
     period: "Aug 2026 — May 2028",
-    status: "incoming",
+    status: "current",
   },
   {
     school: "Vellore Institute of Technology",
@@ -54,7 +70,7 @@ export const education = [
     degree: "B.Tech Computer Engineering — Robotics & AI Specialization",
     place: "Chennai, India",
     period: "2022 — Jul 2026",
-    status: "completing",
+    status: "completed",
   },
 ];
 
@@ -614,6 +630,32 @@ export const skills = [
       "PGV",
       "SGBM",
       "MiDaS",
+    ],
+  },
+  /*
+   * Its own category rather than more keywords in Perception & Vision. The
+   * research phase is a different kind of work from the perception stack —
+   * evaluating whether a learned policy actually works is not the same skill as
+   * making a camera produce depth — and burying it in an existing list would
+   * hide the part of the profile that has changed most.
+   */
+  {
+    group: "Embodied AI & Learning",
+    items: [
+      "Vision-Language-Action models",
+      "LeRobot",
+      "SmolVLA",
+      "LIBERO",
+      "Robot policy evaluation",
+      "Policy recovery",
+      "Robot agents",
+      "World action models",
+      "Grasp generation",
+      "MANO",
+      "Dexterous manipulation",
+      "MuJoCo",
+      "Experiment design",
+      "Simulation-based evaluation",
     ],
   },
   {

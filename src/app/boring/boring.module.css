@@ -1,0 +1,123 @@
+/*
+ * Tabs without JavaScript.
+ *
+ * This route's entire promise is that it ships no component JavaScript, so the
+ * tabs are five radio inputs and their labels. `:checked` switches the panel,
+ * the browser handles arrow-key navigation and focus for free, and the whole
+ * mechanism costs nothing at runtime.
+ *
+ * The radios are clipped rather than `display: none` — hiding them outright
+ * would take them out of the focus order and make the tabs keyboard-dead.
+ */
+
+.radio {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+.tablist {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  border-bottom: 1px solid #e4e4e7;
+}
+
+.tab {
+  cursor: pointer;
+  padding: 0.6rem 0.85rem;
+  margin-bottom: -1px;
+  border-bottom: 2px solid transparent;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: #71717a;
+  transition:
+    color 140ms ease,
+    border-color 140ms ease;
+}
+
+.tab:hover {
+  color: #18181b;
+}
+
+.panel {
+  display: none;
+}
+
+/*
+ * These key off a data attribute rather than the inputs' ids, for two reasons.
+ * CSS Modules scopes id selectors exactly like class selectors, so a bare
+ * `#b-work` compiles to a hashed id that nothing in the markup carries — every
+ * panel stays hidden and the page renders blank. And the obvious fix,
+ * `:global(#b-work):checked`, compiles to a selector with an unbalanced paren,
+ * which the browser throws away wholesale — same blank page, harder to spot.
+ * Data attributes are passed through untouched, so there is nothing to get
+ * wrong. The ids stay in the markup purely for `htmlFor`.
+ */
+.radio[data-for="work"]:checked ~ .tablist .tab[data-tab="work"],
+.radio[data-for="exp"]:checked ~ .tablist .tab[data-tab="exp"],
+.radio[data-for="pat"]:checked ~ .tablist .tab[data-tab="pat"],
+.radio[data-for="media"]:checked ~ .tablist .tab[data-tab="media"],
+.radio[data-for="about"]:checked ~ .tablist .tab[data-tab="about"] {
+  color: #18181b;
+  border-bottom-color: #51e2f5;
+}
+
+.radio[data-for="work"]:checked ~ .panels .panel[data-panel="work"],
+.radio[data-for="exp"]:checked ~ .panels .panel[data-panel="exp"],
+.radio[data-for="pat"]:checked ~ .panels .panel[data-panel="pat"],
+.radio[data-for="media"]:checked ~ .panels .panel[data-panel="media"],
+.radio[data-for="about"]:checked ~ .panels .panel[data-panel="about"] {
+  display: block;
+}
+
+/* Keyboard focus has to be visible on the label, since the input is clipped. */
+.radio[data-for="work"]:focus-visible ~ .tablist .tab[data-tab="work"],
+.radio[data-for="exp"]:focus-visible ~ .tablist .tab[data-tab="exp"],
+.radio[data-for="pat"]:focus-visible ~ .tablist .tab[data-tab="pat"],
+.radio[data-for="media"]:focus-visible ~ .tablist .tab[data-tab="media"],
+.radio[data-for="about"]:focus-visible ~ .tablist .tab[data-tab="about"] {
+  outline: 2px solid #06636f;
+  outline-offset: -2px;
+  border-radius: 2px;
+}
+
+/*
+ * The bullets that used to make every entry three inches tall now live behind a
+ * disclosure styled to match the chip row next to it.
+ */
+.details > summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+  list-style: none;
+  border: 1px solid #c4ebee;
+  background: #f2fbfb;
+  border-radius: 3px;
+  padding: 0.2rem 0.55rem;
+  font-size: 12px;
+  color: #06636f;
+}
+
+.details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.details > summary::after {
+  content: "▾";
+  font-size: 10px;
+  transition: transform 140ms ease;
+}
+
+.details[open] > summary::after {
+  transform: rotate(180deg);
+}
+
+.details > summary:hover {
+  border-color: #51e2f5;
+}

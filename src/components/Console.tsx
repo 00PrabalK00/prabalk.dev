@@ -172,6 +172,7 @@ const COMMANDS = [
   "whoami",
   "neofetch",
   "resume",
+  "cv",
   "download",
   "clear",
   "close",
@@ -242,7 +243,8 @@ export default function Console() {
             { kind: "out", text: "  whoami           short bio" },
             { kind: "out", text: "  neofetch         system summary" },
             { kind: "out", text: "  resume           open the PDF" },
-            { kind: "out", text: "  download         save the PDF" },
+            { kind: "out", text: "  cv               open the long form" },
+            { kind: "out", text: "  download [cv]    save the PDF" },
             { kind: "dim", text: "tab completes · ↑ ↓ for history" },
             {
               kind: "dim",
@@ -291,16 +293,23 @@ export default function Console() {
           ]);
           break;
         case "resume":
-        case "cv":
           window.open(profile.resume, "_blank", "noopener");
           say([{ kind: "ok", text: `opening ${profile.resumeFileName}` }]);
           break;
+        case "cv":
+          window.open(profile.cv, "_blank", "noopener");
+          say([{ kind: "ok", text: `opening ${profile.cvFileName}` }]);
+          break;
         case "download": {
+          // `download cv` saves the long form; bare `download` stays the résumé
+          const wantsCv = arg === "cv";
+          const href = wantsCv ? profile.cv : profile.resume;
+          const name = wantsCv ? profile.cvFileName : profile.resumeFileName;
           const a = document.createElement("a");
-          a.href = profile.resume;
-          a.download = profile.resumeFileName;
+          a.href = href;
+          a.download = name;
           a.click();
-          say([{ kind: "ok", text: `saving ${profile.resumeFileName}` }]);
+          say([{ kind: "ok", text: `saving ${name}` }]);
           break;
         }
         case "clear":

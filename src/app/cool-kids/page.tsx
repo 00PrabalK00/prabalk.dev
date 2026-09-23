@@ -14,7 +14,7 @@ import { SITE_URL } from "@/lib/site";
  */
 
 export const metadata: Metadata = {
-  title: "Prabal Khare — Robotics Software Engineer",
+  title: "Prabal Khare — Robotics Engineer & Embodied AI",
   description:
     "The full cinematic flight: a 300 kg AMR, six robots, and the autonomy stack behind them.",
   alternates: { canonical: `${SITE_URL}/cool-kids` },
@@ -24,7 +24,7 @@ const personSchema = {
   "@context": "https://schema.org",
   "@type": "Person",
   name: profile.name,
-  jobTitle: "Robotics Software Engineer",
+  jobTitle: "Robotics Engineer",
   email: `mailto:${profile.email}`,
   url: SITE_URL,
   sameAs: [profile.github, profile.linkedin, profile.youtube, profile.botopsy],
