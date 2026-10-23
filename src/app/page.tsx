@@ -23,6 +23,7 @@ import {
 import { PROJECTS, PROJECTS_BY_SLUG, projectUrl } from "@/projects";
 import { STATUS_LABEL } from "@/projects/types";
 import { SITE_URL } from "@/lib/site";
+import GithubGraph from "@/components/GithubGraph";
 import styles from "./home.module.css";
 
 export const metadata: Metadata = {
@@ -346,7 +347,9 @@ function Header() {
         className="h-32 w-32 shrink-0 rounded-full object-cover ring-[3px] ring-[#51c6cf] ring-offset-2 sm:h-44 sm:w-44"
       />
 
-      <div className="min-w-0">
+      <div className="min-w-0 flex-1">
+        {/* Wide screens: top-right, with the name and headline wrapping around it. */}
+        <GithubGraph className="mb-4 ml-8 hidden xl:float-right xl:block" />
         <h1 className="text-4xl font-bold tracking-tight sm:text-[2.9rem]">
           {profile.name}
         </h1>
@@ -394,6 +397,9 @@ function Header() {
             </li>
           ))}
         </ul>
+
+        {/* Narrower screens: below the links instead. */}
+        <GithubGraph className="mt-6 xl:hidden" />
       </div>
     </header>
   );
