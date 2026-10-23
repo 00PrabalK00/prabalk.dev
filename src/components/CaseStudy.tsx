@@ -47,7 +47,7 @@ export function CaseStudy({ project: p }: { project: Project }) {
       <div className="sticky top-0 z-50 border-b border-zinc-200 bg-white/95 backdrop-blur">
         <div className="flex max-w-7xl items-center justify-between gap-3 px-6 py-3 sm:px-10 lg:px-16">
           <a
-            href="https://www.prabalkhare.com/boring"
+            href="https://www.prabalkhare.com/"
             className="group inline-flex items-center gap-1.5 rounded-[3px] border border-[#c4ebee] bg-[#f2fbfb] px-2.5 py-1.5 text-[13px] font-medium text-[#06636f] transition-colors hover:border-[#51e2f5]"
           >
             <span
@@ -332,7 +332,7 @@ export function CaseStudy({ project: p }: { project: Project }) {
          */}
         <footer className="mt-16 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-zinc-200 pt-8 text-[14px]">
           <a
-            href="https://www.prabalkhare.com/boring"
+            href="https://www.prabalkhare.com/"
             className="group inline-flex items-center gap-1.5 rounded-[3px] border border-[#c4ebee] bg-[#f2fbfb] px-3 py-1.5 font-medium text-[#06636f] transition-colors hover:border-[#51e2f5]"
           >
             <span

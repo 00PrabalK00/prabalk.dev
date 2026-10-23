@@ -63,12 +63,7 @@ export function buildLlmsTxt(): string {
   out.push(
     `- [Full detail for models](${SITE_URL}/llms-full.txt): every project expanded, problem, architecture, experiments, results, limitations, attribution.`,
   );
-  out.push(
-    `- [Plain portfolio](${SITE_URL}/boring): the same content as HTML, no WebGL.`,
-  );
-  out.push(
-    `- [3D portfolio](${SITE_URL}/cool-kids): scroll-driven WebGL flight. Copy is rendered in a canvas overlay and is not reliably crawlable, use llms-full.txt instead.`,
-  );
+  out.push(`- [Portfolio](${SITE_URL}/): the full site as plain HTML.`);
   out.push(`- [Résumé](${SITE_URL}${profile.resume})`);
   out.push(
     `- [CV](${SITE_URL}${profile.cv}): the long form, profile, full project and service history.`,

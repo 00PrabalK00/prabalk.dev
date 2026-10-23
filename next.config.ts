@@ -78,7 +78,12 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     // The SO101 bring-up page became Wren; old case-study links still land.
-    return [{ source: "/p/so101", destination: "/p/wren", permanent: true }];
+    return [
+      { source: "/p/so101", destination: "/p/wren", permanent: true },
+      // The plain page became the whole site; the WebGL one was removed.
+      { source: "/boring", destination: "/", permanent: true },
+      { source: "/cool-kids", destination: "/", permanent: true },
+    ];
   },
 };
 
