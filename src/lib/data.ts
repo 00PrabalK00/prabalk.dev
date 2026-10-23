@@ -52,7 +52,7 @@ export const heroStats = [
   { value: 300, suffix: " kg", label: "AMR shipped" },
   { value: 97, suffix: "%", label: "Docking success" },
   { value: 2, suffix: " cm", label: "Docking error" },
-  { value: 3, suffix: "", label: "Patents filed" },
+  { value: 4, suffix: "", label: "Patents published" },
 ];
 
 export const education = [
@@ -333,18 +333,18 @@ export const projects: Project[] = [
   },
   {
     name: "OpenDroneKit",
-    kind: "Structural inspection toolkit",
-    year: "2025",
+    kind: "Open-source offline drone inspection and GIS toolkit",
+    year: "2025 to present",
     blurb:
-      "Offline-first drone inspection desktop app: mission planning, defect analytics, and crack propagation estimation over a 3D reconstruction.",
+      "Survey, inspect and measure, with nothing leaving the laptop. One desktop app plans the mission, flies it over MAVLink, reconstructs georeferenced maps that open in QGIS, marks cracks, corrosion and solar faults for review, measures in metres and writes the client report.",
     bullets: [
-      "~40,000 metal, brick and mixed defect images through YOLOv8 detection and U-Net crack segmentation.",
-      "Cracks projected onto COLMAP reconstructions, then fed to FEniCSx to estimate propagation and flag severity.",
-      "PyQt6 workflows for project setup, dataset import, analysis, reconstruction and reporting.",
+      "22 mission templates exported to six autopilot formats, with geofence containment, no-fly detours and terrain following; flight tested against ArduPilot in SITL.",
+      "COLMAP reconstruction to orthomosaic, DSM, DTM and hillshade: 77 of 77 images registered on the public Aukerman survey, 1.27 px reprojection error, 1.22 m georeference RMSE.",
+      "Shipped defect models with measured scores, crack segmentation IoU 0.637 and solar cell mAP50 0.88; each finding records the exact weights that produced it, and without a model it declines to guess.",
     ],
-    tech: ["PyQt6", "YOLOv8", "U-Net", "COLMAP", "FEniCSx", "Python"],
-    link: "https://github.com/00PrabalK00/OpenDroneKit",
-    linkLabel: "Repository",
+    tech: ["Python", "COLMAP", "MAVLink / ArduPilot", "SegFormer", "YOLO11", "PostGIS"],
+    link: "https://opendronekit.com",
+    linkLabel: "opendronekit.com",
     accent: "#A78BFA",
     featured: true,
   },
@@ -625,33 +625,45 @@ export const benchProjects = [
   },
 ];
 
+/** Shared across every filing: who applied and what Prabal's role was. */
+export const patentMeta = {
+  role: "Lead Inventor",
+  applicant: "Vellore Institute of Technology, Chennai",
+  office: "Indian Patent Office",
+};
+
 export const patents = [
   {
-    title: "Transformation Drone, Autonomous Drone-Rover System",
+    title: "Container for Dispensing Medications",
+    number: "202641121625",
+    status: "Published, awaiting examination",
+    published: "16 October 2026",
+    body: "A smart bottle that carries medication and the water to take it with. A Peltier stack under the body heats or cools the contents through inlet and outlet lines, a sealed compartment holds the microcontroller, battery and wiring, and an integrated dispenser on the side releases the pills.",
+    tags: ["Pill dispenser", "Peltier", "Thermal design", "BMS", "Embedded"],
+  },
+  {
+    title: "A System for a Companion Robot",
+    number: "202641114580",
+    status: "Published",
+    published: "2 October 2026",
+    body: "The system behind Kurat: a companion robot built on a three-brain architecture that separates perception, cognition and action, so each layer can fail and recover without taking the others down. Perception, speech, localization and navigation run on board a Jetson Orin Nano with a RealSense depth camera.",
+    tags: ["Companion robot", "Three-brain architecture", "Jetson Orin Nano", "RealSense", "ROS 2"],
+  },
+  {
+    title: "Self-Calibrating Vision System and Method Thereof",
+    number: "202641064821",
+    status: "Published",
+    published: "2026",
+    body: "A stereo pan-tilt vision system whose extrinsics stay trustworthy without repeated manual recalibration. An IMU reference and a laser anchor correct drift, and an EKF/UKF fuses SGBM block matching with monocular depth priors.",
+    tags: ["Stereo vision", "Self-calibration", "IMU", "EKF / UKF", "SGBM"],
+  },
+  {
+    title: "AI-Enabled Search-and-Rescue Robot",
     number: "202641035669",
-    status: "Filed",
+    status: "Published",
+    published: "2026",
     body: "One vehicle that drives and flies. Four arms carry both the propellers and geared drive wheels, so it rolls through terrain on the ground and lifts off when the ground runs out, with AI-driven visual and thermal detection for search and rescue in GPS-denied environments.",
-    tags: [
-      "UAV-UGV",
-      "Search & rescue",
-      "GPS-denied",
-      "Thermal",
-      "Raspberry Pi",
-    ],
-  },
-  {
-    title: "Thermoregulation System for Portable Water Containers",
-    number: "Number pending",
-    status: "Filed",
-    body: "A smart bottle that heats or cools its own contents. A Peltier stack under the body circulates water through inlet and outlet lines, with a sealed compartment for the microcontroller, battery and wiring, and an integrated pill dispenser on the side, so medication and the water to take it with travel together.",
-    tags: ["Peltier", "Thermal design", "BMS", "Pill dispenser", "Embedded"],
-  },
-  {
-    title: "IMU Calibration and Sensor Fusion Module",
-    number: "Number pending",
-    status: "Filed",
-    body: "Bias, scale-factor and misalignment calibration with complementary and EKF-based fusion for stable attitude estimation under vibration.",
-    tags: ["IMU", "Calibration", "EKF", "Attitude estimation"],
+    tags: ["UAV-UGV", "Search & rescue", "GPS-denied", "Thermal", "Raspberry Pi"],
   },
 ];
 
@@ -1033,9 +1045,9 @@ export const mediaSlots: MediaSlot[] = [
   },
 
   {
-    file: "opendronekit-ui.jpg",
+    file: "odk-site-ortho-1600.webp",
     type: "image",
-    caption: "OpenDroneKit, inspection workbench UI",
+    caption: "OpenDroneKit, offline orthomosaic of the public Aukerman Park survey",
     group: "Hardware",
     span: "wide",
   },
@@ -1105,7 +1117,7 @@ export const SHIPPED_MEDIA = new Set([
   "KURAT_Detection.jpeg",
   "Anamatronic_head.jpg",
   "2LayerPCBFab.jpg",
-  "opendronekit-ui.jpg",
+  "odk-site-ortho-1600.webp",
   "odk-mission.jpg",
   "odk-reconstruction.jpg",
   "continuum-extension.png",

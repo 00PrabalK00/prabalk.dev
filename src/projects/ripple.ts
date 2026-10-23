@@ -26,10 +26,10 @@ export const ripple: Project = {
   subdomain: "ripple",
   title: "Ripple",
   subtitle: "An always-on site engineer for Nav2 robots",
-  status: "active-research",
+  status: "active-development",
   year: "2025 to present",
   role: "Author",
-  category: "current-research",
+  category: "robot-systems",
   order: 1,
 
   thesis:
@@ -453,5 +453,5 @@ export const ripple: Project = {
     },
   ],
 
-  related: ["so101", "rosscope", "smr300"],
+  related: ["wren", "rosscope", "smr300"],
 };

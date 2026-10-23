@@ -9,7 +9,7 @@ export const kurat: Project = {
   year: "2025 to present",
   role: "Author",
   category: "robot-systems",
-  order: 3,
+  order: 5,
 
   thesis:
     "A companion robot split into three brains, perception, cognition, action, so that any one of them can fail and recover without taking the robot down with it.",
@@ -148,5 +148,5 @@ export const kurat: Project = {
     },
   ],
 
-  related: ["smr300", "so101"],
+  related: ["smr300", "wren"],
 };

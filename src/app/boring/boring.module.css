@@ -28,12 +28,12 @@
 
 .tab {
   cursor: pointer;
-  padding: 0.6rem 0.85rem;
+  padding: 0.75rem 1.25rem;
   margin-bottom: -1px;
   border-bottom: 2px solid transparent;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 500;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
   color: #71717a;
   transition:
     color 140ms ease,
@@ -64,7 +64,8 @@
 .radio[data-for="media"]:checked ~ .tablist .tab[data-tab="media"],
 .radio[data-for="about"]:checked ~ .tablist .tab[data-tab="about"] {
   color: #18181b;
-  border-bottom-color: #51e2f5;
+  font-weight: 600;
+  border-bottom-color: #0b7a84;
 }
 
 .radio[data-for="work"]:checked ~ .panels .panel[data-panel="work"],
@@ -96,11 +97,11 @@
   gap: 0.35rem;
   cursor: pointer;
   list-style: none;
-  border: 1px solid #c4ebee;
-  background: #f2fbfb;
-  border-radius: 3px;
-  padding: 0.2rem 0.55rem;
-  font-size: 12px;
+  border: 1px solid #d4d4d8;
+  background: #fff;
+  border-radius: 6px;
+  padding: 0.6rem 1rem;
+  font-size: 14px;
   color: #06636f;
 }
 

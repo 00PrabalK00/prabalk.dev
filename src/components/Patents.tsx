@@ -1,17 +1,19 @@
 ﻿"use client";
 
-import { honors, patents, skills } from "@/lib/data";
+import { honors, patentMeta, patents, skills } from "@/lib/data";
 import { Reveal, Section } from "@/components/ui";
 import MediaSlot from "@/components/MediaSlot";
 
-/** Photographs of the filed hardware, keyed by patent title prefix. */
+/** Photographs of the built hardware, keyed by patent title prefix. */
 const PATENT_MEDIA: Record<string, string[]> = {
-  "Transformation Drone": [
+  "Container for Dispensing": ["thermobottle.jpg"],
+  "A System for a Companion": ["Kurat_body.jpeg", "KURAT_Detection.jpeg"],
+  "Self-Calibrating Vision": ["stereoptu-rig.jpg", "stereoptu-reproj.png"],
+  "AI-Enabled Search-and-Rescue": [
     "TransformationDroneVideo.mp4",
     "transformationdrone_rovermode.jpeg",
     "transformationdrone_dronemode.jpeg",
   ],
-  Thermoregulation: ["thermobottle.jpg"],
 };
 
 function mediaFor(title: string) {
@@ -24,8 +26,8 @@ export function Patents() {
     <Section
       id="patents"
       index="05 / IP"
-      title="Patents filed"
-      kicker="Three Indian patent applications: hybrid aerial-ground robotics, portable thermoregulation, and inertial sensing."
+      title="Patents"
+      kicker={`${patentMeta.role} on four published Indian patent applications: medication dispensing, companion robotics, self-calibrating vision, and search-and-rescue. Applicant: ${patentMeta.applicant}.`}
     >
       <ol>
         {patents.map((p, i) => (
@@ -38,6 +40,11 @@ export function Patents() {
                   </div>
                   <div className="mono mt-2 text-[12.5px] tabular-nums text-bone">
                     {p.number}
+                  </div>
+                  <div className="mono mt-3 text-[11px] leading-relaxed text-mute">
+                    {p.published}
+                    <br />
+                    {patentMeta.role}
                   </div>
                 </div>
 

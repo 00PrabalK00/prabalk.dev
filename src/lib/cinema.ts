@@ -207,7 +207,7 @@ const RAW: Omit<Station, "enter" | "from" | "to">[] = [
       "Recorded actions replayed through the evaluator reproduce the demonstrations",
       "No performance claim yet. That is the honest state of it",
     ],
-    link: "https://so101.prabalkhare.com",
+    link: "https://wren.prabalkhare.com",
   },
 ];
 

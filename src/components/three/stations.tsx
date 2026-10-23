@@ -98,6 +98,7 @@ function darkenForLightStage(m: THREE.Material) {
 function useReveal(s: Station, ref: React.RefObject<THREE.Group | null>, max = 1) {
   const mats = useRef<RevealMaterial[] | null>(null);
   const noDepth = useRef<boolean[]>([]);
+  const baseOpacity = useRef<number[]>([]);
   /** Last presence written, quantised. -1 so the first frame always applies. */
   const lastStep = useRef(-1);
 
@@ -113,15 +114,22 @@ function useReveal(s: Station, ref: React.RefObject<THREE.Group | null>, max = 1
     if (mats.current === null) {
       const list: RevealMaterial[] = [];
       const flags: boolean[] = [];
+      const bases: number[] = [];
       g.traverse((o) => {
         const m = (o as THREE.Mesh).material;
         if (!m || Array.isArray(m) || !("opacity" in m)) return;
         darkenForLightStage(m);
         list.push(m as RevealMaterial);
-        flags.push(Boolean(o.userData.noDepth));
+        // Meshes tagged keepOpacity (the glass domes) fade up to their own
+        // authored opacity instead of to fully opaque, and never write depth,
+        // or they would hide what sits behind them.
+        const keep = Boolean(o.userData.keepOpacity);
+        bases.push(keep ? (m as RevealMaterial).opacity : 1);
+        flags.push(Boolean(o.userData.noDepth) || keep);
       });
       mats.current = list;
       noDepth.current = flags;
+      baseOpacity.current = bases;
     }
 
     const target = a * max;
@@ -135,7 +143,7 @@ function useReveal(s: Station, ref: React.RefObject<THREE.Group | null>, max = 1
     g.scale.setScalar(0.86 + a * 0.14);
     for (let i = 0; i < mats.current.length; i++) {
       const m = mats.current[i];
-      m.opacity = value;
+      m.opacity = value * baseOpacity.current[i];
       if (!noDepth.current[i]) m.depthWrite = writeDepth;
     }
   });
@@ -354,18 +362,26 @@ function AuvStation({ s }: { s: Station }) {
             transparent
           />
         </mesh>
-        <mesh position={[0, 0, -0.75]} rotation={[-Math.PI / 2, 0, 0]}>
+        <mesh
+          position={[0, 0, -0.75]}
+          rotation={[-Math.PI / 2, 0, 0]}
+          userData={{ keepOpacity: true }}
+        >
           <sphereGeometry args={[0.44, 32, 20, 0, Math.PI * 2, 0, Math.PI / 2]} />
           <meshPhysicalMaterial
             color="#cfe6f5"
             roughness={0.04}
             metalness={0}
-            transmission={0.92}
-            thickness={0.35}
-            ior={1.45}
+            /* Clear-coated and see-through rather than `transmission`: any
+               visible transmissive material makes three render the whole scene
+               a second time into an offscreen target every frame, and compile
+               a new program the first time the station appears, for a dome a
+               few dozen pixels wide. */
+            opacity={0.32}
             clearcoat={1}
             envMapIntensity={1.6}
             transparent
+            depthWrite={false}
           />
         </mesh>
         {/* housing clamps */}
@@ -389,15 +405,15 @@ function AuvStation({ s }: { s: Station }) {
         </mesh>
 
         {/* forward camera dome */}
-        <mesh position={[0, 0.42, -0.9]}>
+        <mesh position={[0, 0.42, -0.9]} userData={{ keepOpacity: true }}>
           <sphereGeometry args={[0.2, 24, 24]} />
           <meshPhysicalMaterial
             color="#cfe6f5"
             roughness={0.05}
-            transmission={0.9}
-            thickness={0.2}
-            ior={1.45}
+            opacity={0.35}
+            clearcoat={1}
             transparent
+            depthWrite={false}
           />
         </mesh>
 
@@ -1220,7 +1236,7 @@ export function Monoliths({
 
   return (
     <group ref={root} position={[0, 0, z]} visible={false}>
-      {[-3.4, 0, 3.4].map((x, i) => (
+      {[-5.1, -1.7, 1.7, 5.1].map((x) => (
         <group key={x} position={[x, -0.4, 0]}>
           {/* polished obsidian slab — the env map does the work here */}
           <mesh>
@@ -1242,8 +1258,8 @@ export function Monoliths({
           <mesh position={[0, 1.5, 0.16]}>
             <ringGeometry args={[0.26, 0.32, 40]} />
             <meshStandardMaterial
-              color={i === 0 ? P.pass : P.accent}
-              emissive={i === 0 ? P.pass : P.accent}
+              color={P.pass}
+              emissive={P.pass}
               emissiveIntensity={2.4}
               toneMapped={false}
               transparent

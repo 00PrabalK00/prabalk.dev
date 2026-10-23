@@ -17,7 +17,7 @@ export const mira: Project = {
   year: "2023 to 2025",
   role: "Electrical architecture and control software",
   category: "robot-systems",
-  order: 4,
+  order: 6,
 
   thesis:
     "A sealed-hull AUV that placed 2nd at the TAC Challenge in Norway, 2024, where every design decision is downstream of the fact that you cannot open the hull once it is closed.",

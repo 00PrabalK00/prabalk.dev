@@ -16,7 +16,7 @@ export const nextekf: Project = {
   year: "2026",
   role: "Author",
   category: "robot-systems",
-  order: 5,
+  order: 7,
   compact: true,
 
   thesis:

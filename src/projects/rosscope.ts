@@ -16,7 +16,7 @@ export const rosscope: Project = {
   year: "2026",
   role: "Author",
   category: "robot-systems",
-  order: 2,
+  order: 4,
 
   thesis:
     "A Qt6 desktop tool that shows you what a ROS 2 graph is actually doing, instead of making you infer it from scrolling logs.",

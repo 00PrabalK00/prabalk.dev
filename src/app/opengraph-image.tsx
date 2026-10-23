@@ -107,7 +107,7 @@ export default function OpengraphImage() {
           ["300 kg", "AMR shipped"],
           ["97%", "docking success"],
           ["2 cm", "docking error"],
-          ["3", "patents filed"],
+          ["4", "patents published"],
         ].map(([value, label]) => (
           <div
             key={label}

@@ -4,6 +4,7 @@ import { claudeskills } from "./claudeskills";
 import { continuum } from "./continuum";
 import { continuumext } from "./continuumext";
 import { contractencrypt } from "./contractencrypt";
+import { crownfall } from "./crownfall";
 import { facetrack } from "./facetrack";
 import { gesturecar } from "./gesturecar";
 import { infrencex } from "./infrencex";
@@ -21,7 +22,7 @@ import { ripple } from "./ripple";
 import { robotdrawing } from "./robotdrawing";
 import { rosscope } from "./rosscope";
 import { smr300 } from "./smr300";
-import { so101 } from "./so101";
+import { wren } from "./wren";
 import { stereoptu } from "./stereoptu";
 import { vtol } from "./vtol";
 
@@ -39,7 +40,7 @@ import { vtol } from "./vtol";
 export const PROJECTS: Project[] = [
   // Current research — what the portfolio should lead with.
   ripple,
-  so101,
+  wren,
   // Robot systems
   smr300,
   rosscope,
@@ -63,6 +64,7 @@ export const PROJECTS: Project[] = [
   botopsy,
   // Lab bench
   contractencrypt,
+  crownfall,
   facetrack,
   gesturecar,
   smr300sim,
@@ -115,6 +117,9 @@ export const PROJECTS_BY_SLUG = new Map(PROJECTS.map((p) => [p.slug, p]));
 export const SUBDOMAIN_TO_SLUG = new Map(
   PROJECTS.filter((p) => p.subdomain).map((p) => [p.subdomain!, p.slug]),
 );
+// so101.* was shared before the SO101 bring-up page became Wren; keep it
+// resolving rather than breaking links that are already out in the world.
+SUBDOMAIN_TO_SLUG.set("so101", "wren");
 
 export function getProject(slug: string): Project | undefined {
   return PROJECTS_BY_SLUG.get(slug);

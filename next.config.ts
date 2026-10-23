@@ -76,6 +76,10 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async redirects() {
+    // The SO101 bring-up page became Wren; old case-study links still land.
+    return [{ source: "/p/so101", destination: "/p/wren", permanent: true }];
+  },
 };
 
 export default nextConfig;

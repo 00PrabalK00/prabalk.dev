@@ -4,7 +4,7 @@ import {
   CATEGORY_LABEL,
   STATUS_LABEL,
 } from "@/projects/types";
-import { education, experience, patents, profile, skills } from "@/lib/data";
+import { education, experience, patentMeta, patents, profile, skills } from "@/lib/data";
 import { SITE_URL } from "@/lib/site";
 
 /**
@@ -246,9 +246,13 @@ export function buildLlmsFullTxt(): string {
   /* ---- the rest ---- */
   out.push("## Patents");
   out.push("");
+  out.push(
+    `${patentMeta.role} on ${patents.length} published Indian patent applications. Applicant: ${patentMeta.applicant}.`
+  );
+  out.push("");
   for (const pt of patents) {
     out.push(`### ${pt.title}`);
-    out.push(`${pt.status} · ${pt.number}`);
+    out.push(`Application No. ${pt.number} · ${pt.status} · ${pt.published}`);
     out.push("");
     out.push(pt.body);
     out.push("");

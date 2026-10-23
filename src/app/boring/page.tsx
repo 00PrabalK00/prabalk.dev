@@ -1,4 +1,12 @@
 import Image from "next/image";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  FileText,
+  FileUser,
+  FlaskConical,
+  Mail,
+} from "lucide-react";
 import Link from "next/link";
 import {
   SHIPPED_MEDIA,
@@ -134,14 +142,39 @@ const CASE_STUDY_SLUGS: Record<string, string> = {
   ContractEncrypt: "contractencrypt",
 };
 
+/**
+ * Project rows that are also a published patent application, keyed by the
+ * row's display name. The badge on the row is the point: a reader skimming
+ * the work list should not have to cross-reference the Patents tab to learn
+ * that the thing in front of them is protected IP.
+ */
+const PATENT_FOR_PROJECT: Record<string, string> = {
+  Kurat: "202641114580",
+  "Recalibration-Free Stereo PTU": "202641064821",
+  "Pushpak Viman": "202641035669",
+};
+
+function patentFor(name: string) {
+  const number = PATENT_FOR_PROJECT[name];
+  return number ? patents.find((pt) => pt.number === number) : undefined;
+}
+
+/**
+ * Rows that stay on the page but sit below the robot work. These are tooling
+ * and software; the hardware and the research should be read first.
+ */
+const PUSHED_DOWN = new Set(["OpenDroneKit", "RosScope", "Continuum"]);
+
 /** Patents are all filed under one group, so they match on filename instead. */
 function mediaForPatent(title: string) {
   const needle = title.toLowerCase();
-  const key = needle.includes("transformation")
+  const key = needle.includes("search-and-rescue")
     ? "transformationdrone_dronemode"
-    : needle.includes("thermo")
+    : needle.includes("medications")
       ? "thermobottle"
-      : null;
+      : needle.includes("companion")
+        ? "Kurat_body"
+        : null;
   return key ? shippedMedia.find((m) => m.file.startsWith(key)) : undefined;
 }
 
@@ -157,20 +190,18 @@ export default function Boring() {
         <EscapeHatch />
 
         {/*
-         * Left-aligned rather than centred. On a wide screen a centred 4xl
-         * column leaves a large empty margin on both sides, and the eye has to
-         * travel to find where the page starts. Anchoring it to the left keeps
-         * the measure readable while letting the text begin where the reader is
-         * already looking.
+         * Centred, at a width that fills a laptop screen. The left-anchored
+         * 92rem column left a band of empty white down the right of every wide
+         * screen, which read as unfinished rather than airy.
          */}
-        <div className="max-w-[92rem] px-6 py-12 sm:px-10 sm:py-16 lg:px-16">
+        <div className="mx-auto max-w-[80rem] px-6 py-10 sm:px-10 sm:py-12">
           <Header />
 
           {/*
            * Inputs first, then the labels, then the panels — `:checked ~` only
            * walks forward, so the DOM order is load-bearing.
            */}
-          <div className="mt-12">
+          <div className="mt-10">
             {(
               [
                 ["work", true],
@@ -235,6 +266,33 @@ export default function Boring() {
   );
 }
 
+/* Brand marks. lucide-react 1.x dropped brand icons, so these are inline. */
+type IconProps = { className?: string; "aria-hidden"?: boolean };
+
+function GithubIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
+      <path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.4-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z" />
+    </svg>
+  );
+}
+
+function LinkedinIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
+      <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13ZM7.12 20.45H3.56V9h3.56v11.45Z" />
+    </svg>
+  );
+}
+
+function YoutubeIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
+      <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8ZM9.6 15.6V8.4l6.2 3.6-6.2 3.6Z" />
+    </svg>
+  );
+}
+
 /**
  * The way back, pinned to the top of the viewport.
  *
@@ -250,7 +308,7 @@ function EscapeHatch() {
        * either side, which read as the buttons being squashed toward the middle
        * of an otherwise wide bar.
        */}
-      <div className="flex items-center justify-between gap-4 px-6 py-3 sm:px-10">
+      <div className="mx-auto flex max-w-[80rem] items-center justify-between gap-4 px-6 py-3 sm:px-10">
         <Link
           href="/cool-kids"
           className="group inline-flex items-center gap-2 text-[13px] font-medium text-[#06636f] underline-offset-4 hover:underline"
@@ -282,57 +340,60 @@ function EscapeHatch() {
  */
 function Header() {
   return (
-    <header className="mx-auto flex max-w-4xl flex-col gap-7 sm:flex-row sm:items-start sm:gap-9">
+    <header className="flex flex-col gap-7 sm:flex-row sm:items-start sm:gap-10 lg:px-10">
       <Image
         src="/media/portrait.jpg"
         alt={`${profile.name}, robotics software engineer`}
-        width={144}
-        height={144}
+        width={176}
+        height={176}
         priority
-        className="h-32 w-32 shrink-0 rounded-full object-cover ring-2 ring-[#9df9ef] sm:h-36 sm:w-36"
+        className="h-32 w-32 shrink-0 rounded-full object-cover ring-[3px] ring-[#51c6cf] ring-offset-2 sm:h-44 sm:w-44"
       />
 
       <div className="min-w-0">
-        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+        <h1 className="text-4xl font-bold tracking-tight sm:text-[2.9rem]">
           {profile.name}
         </h1>
-        <p className="mt-1.5 text-[15px] text-zinc-600">
+        <p className="mt-1.5 text-[17px] text-zinc-600">
           Robotics Software Engineer · {profile.location}
         </p>
 
         {/* The positioning first, at a size that reads as a statement. */}
-        <p className="mt-4 max-w-[52ch] text-[17px] leading-[1.5] font-medium text-zinc-900">
+        <p className="mt-4 text-[19px] leading-[1.45] font-semibold text-zinc-900">
           {profile.headline}
         </p>
-        <p className="mt-3 max-w-[78ch] text-[15px] leading-[1.7] text-zinc-700">
+        <p className="mt-3 max-w-[72ch] text-[16px] leading-[1.6] text-zinc-600">
           {profile.tagline}
         </p>
 
-        <ul className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[14px]">
-          <li>
-            <a
-              href={`mailto:${profile.email}`}
-              className="text-[#06636f] underline-offset-4 hover:underline"
-            >
-              {profile.email}
-            </a>
-          </li>
+        <ul className="mt-6 flex flex-wrap items-center gap-y-2 text-[14.5px]">
           {[
-            { label: "GitHub", href: profile.github },
-            { label: "LinkedIn", href: profile.linkedin },
-            { label: "YouTube", href: profile.youtube },
-            { label: "Botopsy Lab", href: profile.botopsy },
-            { label: "Résumé", href: profile.resume },
-            { label: "CV", href: profile.cv },
-          ].map((l) => (
-            <li key={l.label}>
+            {
+              label: profile.email,
+              href: `mailto:${profile.email}`,
+              Icon: Mail,
+              external: false,
+            },
+            { label: "GitHub", href: profile.github, Icon: GithubIcon, external: true },
+            { label: "LinkedIn", href: profile.linkedin, Icon: LinkedinIcon, external: true },
+            { label: "YouTube", href: profile.youtube, Icon: YoutubeIcon, external: true },
+            { label: "Botopsy Lab", href: profile.botopsy, Icon: FlaskConical, external: true },
+            { label: "Résumé", href: profile.resume, Icon: FileUser, external: true },
+            { label: "CV", href: profile.cv, Icon: FileText, external: true },
+          ].map(({ label, href, Icon, external }, i) => (
+            <li
+              key={label}
+              className={`flex items-center pr-4 sm:pr-3.5 ${i > 0 ? "sm:border-l sm:border-zinc-300 sm:pl-3.5" : ""}`}
+            >
               <a
-                href={l.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[#06636f] underline-offset-4 hover:underline"
+                href={href}
+                {...(external
+                  ? { target: "_blank", rel: "noopener noreferrer" }
+                  : {})}
+                className="inline-flex items-center gap-2 text-[#06636f] underline-offset-4 hover:underline"
               >
-                {l.label}
+                <Icon aria-hidden className="h-[17px] w-[17px] shrink-0" />
+                {label}
               </a>
             </li>
           ))}
@@ -346,8 +407,16 @@ function Header() {
 /* Work — the entry rows                                               */
 /* ------------------------------------------------------------------ */
 
+/** Rows separated by a hairline, the way the mock reads. */
+const ROWS = "divide-y divide-zinc-200 *:py-9 [&>*:first-child]:pt-0";
+
 function Work() {
-  const featured = projects.filter((p) => p.featured);
+  const featured = projects.filter(
+    (p) => p.featured && !PUSHED_DOWN.has(p.name),
+  );
+  const pushedDown = projects.filter(
+    (p) => p.featured && PUSHED_DOWN.has(p.name),
+  );
   /*
    * The bench section renders its own projects from the manifests, so anything
    * whose manifest lives in that category has to come out of here — otherwise
@@ -370,12 +439,11 @@ function Work() {
       !compactSlugs.has(CASE_STUDY_SLUGS[p.name] ?? ""),
   );
 
-  // Current research leads. A visitor should read where the work is going
-  // before they read where it has been, which is the opposite of the order a
-  // résumé puts things in.
-  const research = PROJECTS.filter(
-    (p) => p.category === "current-research",
-  ).sort((a, b) => a.order - b.order);
+  // Ripple and Wren lead the list, above SMR300. They are not a separate
+  // research tier any more, so they sit in the same list as everything else.
+  const lead = ["ripple", "wren"]
+    .map((slug) => PROJECTS_BY_SLUG.get(slug))
+    .filter((p): p is NonNullable<typeof p> => Boolean(p));
 
   // The bench is driven by the manifests now, so each entry has a case study.
   const bench = PROJECTS.filter(
@@ -384,16 +452,10 @@ function Work() {
 
   return (
     <div>
-      <PanelHeading>Current research</PanelHeading>
+      <PanelHeading>Projects and professional experience</PanelHeading>
 
-      {/*
-       * The same row as everything below it. These were text-only at first,
-       * which made the newest and most important work look like the least
-       * substantial thing on the page — the historical projects had thumbnails
-       * and the current research did not.
-       */}
-      <div className="mb-14 space-y-10">
-        {research.map((p) => (
+      <div className={ROWS}>
+        {lead.map((p) => (
           <Entry
             key={p.slug}
             title={p.title}
@@ -404,18 +466,14 @@ function Work() {
             media={mediaForEntry(p.title, p.slug)}
             caseStudy={p.slug}
             link={
-              p.links.find((l) => l.kind === "repo" || l.kind === "site")?.href
+              p.links.find((l) => l.kind === "site" || l.kind === "repo")?.href
             }
             linkLabel={
-              p.links.find((l) => l.kind === "repo" || l.kind === "site")?.label
+              p.links.find((l) => l.kind === "site" || l.kind === "repo")?.label
             }
           />
         ))}
-      </div>
 
-      <PanelHeading>Projects and professional experience</PanelHeading>
-
-      <div className="space-y-10">
         {/*
          * SMR300 is not in `projects` — it is its own object, and it is the
          * strongest thing here, so it leads with its measured numbers instead
@@ -454,6 +512,7 @@ function Work() {
             tech={p.tech}
             media={mediaForEntry(p.name, CASE_STUDY_SLUGS[p.name])}
             caseStudy={CASE_STUDY_SLUGS[p.name]}
+            patent={patentFor(p.name)}
             link={p.link}
             linkLabel={p.linkLabel}
           />
@@ -467,7 +526,7 @@ function Work() {
        * study behind it, and presenting them as a denser tier made them look
        * like offcuts rather than projects.
        */}
-      <div className="mt-10 space-y-10">
+      <div className={`${ROWS} border-t border-zinc-200 pt-9`}>
         {rest.map((p) => (
           <Entry
             key={p.name}
@@ -479,6 +538,27 @@ function Work() {
             tech={p.tech}
             media={mediaForEntry(p.name, CASE_STUDY_SLUGS[p.name])}
             caseStudy={CASE_STUDY_SLUGS[p.name]}
+            patent={patentFor(p.name)}
+            link={p.link}
+            linkLabel={p.linkLabel}
+          />
+        ))}
+      </div>
+
+      {/* Tooling and software, after the robots. */}
+      <div className={`${ROWS} border-t border-zinc-200 pt-9`}>
+        {pushedDown.map((p) => (
+          <Entry
+            key={p.name}
+            title={p.name}
+            subtitle={p.kind}
+            meta={p.year}
+            blurb={p.blurb}
+            bullets={p.bullets}
+            tech={p.tech}
+            media={mediaForEntry(p.name, CASE_STUDY_SLUGS[p.name])}
+            caseStudy={CASE_STUDY_SLUGS[p.name]}
+            patent={patentFor(p.name)}
             link={p.link}
             linkLabel={p.linkLabel}
           />
@@ -493,7 +573,7 @@ function Work() {
        * a desk — and a photograph of a thing that exists is worth more of the
        * page than a line of text about a CLI.
        */}
-      <div className="space-y-10">
+      <div className={ROWS}>
         {bench.map((p) => (
           <Entry
             key={p.slug}
@@ -576,6 +656,7 @@ function Entry({
   linkLabel,
   stat,
   caseStudy,
+  patent,
 }: {
   title: string;
   subtitle: string;
@@ -589,15 +670,17 @@ function Entry({
   stat?: string;
   /** Slug of this project's case study, when one exists. */
   caseStudy?: string;
+  /** The published patent application this project is, when it is one. */
+  patent?: (typeof patents)[number];
 }) {
   return (
-    <article className="grid gap-5 sm:grid-cols-[420px_1fr] sm:gap-9">
+    <article className="grid gap-6 md:grid-cols-[minmax(0,30rem)_1fr] md:gap-10">
       <Thumb media={media} fallback={subtitle} />
 
       <div className="min-w-0">
-        <h3 className="text-[19px] leading-snug font-semibold sm:text-[21px]">
-          {title}
-          <span className="font-normal text-zinc-500">: {subtitle}</span>
+        <h3 className="text-[22px] leading-snug font-bold tracking-tight text-zinc-900 sm:text-[26px]">
+          {title}:{" "}
+          <span className="font-normal text-zinc-600">{subtitle}</span>
         </h3>
 
         {/*
@@ -605,16 +688,28 @@ function Entry({
          * old prototype cannot keep presenting itself as equivalent to current
          * work just because nobody remembered to update a second copy of it.
          */}
-        <p className="mt-1 flex flex-wrap items-center gap-x-2.5 text-[13px] text-zinc-500">
+        <p className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[14px] text-zinc-500">
           {caseStudy && PROJECTS_BY_SLUG.get(caseStudy) && (
-            <span className="rounded-full border border-[#c4ebee] bg-[#f2fbfb] px-2 py-0.5 text-[11px] text-[#06636f]">
+            <span className="rounded-full border border-[#8fd3d8] bg-[#effafa] px-3 py-0.5 text-[13px] text-[#06636f]">
               {STATUS_LABEL[PROJECTS_BY_SLUG.get(caseStudy)!.status]}
+            </span>
+          )}
+          {patent && (
+            <span className="rounded-full border border-amber-300 bg-amber-50 px-3 py-0.5 text-[13px] font-semibold text-amber-800">
+              Patent
             </span>
           )}
           <span>{meta}</span>
         </p>
 
-        <p className="mt-2.5 text-[15px] leading-[1.7] text-zinc-700">
+        {patent && (
+          <p className="mt-2 text-[13.5px] leading-[1.6] text-amber-900">
+            Published Indian patent application: {patent.title}, No.{" "}
+            <span className="tabular-nums">{patent.number}</span>. Lead inventor.
+          </p>
+        )}
+
+        <p className="mt-4 text-[16px] leading-[1.65] text-zinc-600">
           {blurb}
         </p>
 
@@ -624,11 +719,11 @@ function Entry({
           </p>
         )}
 
-        <p className="mt-2.5 text-[13.5px] leading-[1.6] text-zinc-500">
+        <p className="mt-4 text-[14.5px] leading-[1.6] text-zinc-500">
           {tech.join(" · ")}
         </p>
 
-        <div className="mt-3 flex flex-wrap items-center gap-2">
+        <div className="mt-5 flex flex-wrap items-center gap-3">
           {/*
            * An expandable entry is not a case study. Where a project has a
            * manifest, this is the link to the real page.
@@ -636,9 +731,9 @@ function Entry({
           {caseStudy && (
             <a
               href={projectUrl(caseStudy)}
-              className="rounded-[3px] border border-[#51e2f5] bg-[#e6fbfd] px-2.5 py-1 text-[12px] font-medium text-[#06636f] transition-colors hover:bg-[#d3f6fa]"
+              className="inline-flex items-center gap-2 rounded-md bg-[#0b7a84] px-5 py-2.5 text-[14.5px] font-medium text-white shadow-sm transition-colors hover:bg-[#086570]"
             >
-              Case study →
+              Case study <ArrowRight aria-hidden className="h-4 w-4" />
             </a>
           )}
 
@@ -647,9 +742,10 @@ function Entry({
               href={link}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-[3px] border border-[#c4ebee] bg-[#f2fbfb] px-2.5 py-1 text-[12px] text-[#06636f] transition-colors hover:border-[#51e2f5]"
+              className="inline-flex items-center gap-2 rounded-md border border-[#9fd4d8] bg-white px-5 py-2.5 text-[14.5px] font-medium text-[#0b7a84] transition-colors hover:border-[#0b7a84]"
             >
-              {linkLabel ?? "Code"} ↗
+              {linkLabel ?? "Code"}{" "}
+              <ArrowUpRight aria-hidden className="h-4 w-4" />
             </a>
           )}
 
@@ -698,7 +794,7 @@ function Thumb({
 
   return (
     <figure className="min-w-0">
-      <div className="overflow-hidden rounded border border-zinc-200 bg-zinc-50">
+      <div className="overflow-hidden rounded-md border border-zinc-200 bg-zinc-50 shadow-sm">
         {media.type === "video" ? (
           <video
             src={`/media/${media.file}`}
@@ -708,17 +804,17 @@ function Thumb({
             muted
             playsInline
             preload="metadata"
-            className="aspect-[3/2] w-full bg-black object-cover"
+            className="aspect-[16/9.5] w-full bg-black object-cover"
           />
         ) : (
           <Image
             src={`/media/${media.file}`}
             alt={media.caption}
-            width={680}
-            height={454}
-            sizes="(min-width: 640px) 420px, 100vw"
+            width={960}
+            height={570}
+            sizes="(min-width: 768px) 480px, 100vw"
             loading="lazy"
-            className="aspect-[3/2] w-full object-cover"
+            className="aspect-[16/9.5] w-full object-cover"
           />
         )}
       </div>
@@ -805,7 +901,7 @@ function Patents() {
                 {pt.title}
               </h3>
               <p className="mt-1 text-[13px] text-zinc-500">
-                {pt.status} · {pt.number}
+                {pt.status} · {pt.number} · {pt.published}
               </p>
               <p className="mt-2.5 text-[15px] leading-[1.7] text-zinc-700">
                 {pt.body}
@@ -982,7 +1078,7 @@ function PanelHeading({
 }) {
   return (
     <h2
-      className={`mb-6 border-b-2 border-[#9df9ef] pb-2 text-[12px] font-semibold tracking-[0.14em] text-[#7d646d] uppercase ${className}`}
+      className={`mb-8 flex items-center gap-4 text-[13px] font-semibold tracking-[0.16em] text-zinc-600 uppercase after:h-px after:flex-1 after:bg-[#9fd4d8] ${className}`}
     >
       {children}
     </h2>

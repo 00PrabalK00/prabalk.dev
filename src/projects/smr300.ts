@@ -19,7 +19,7 @@ export const smr300: Project = {
   year: "2026",
   role: "Robotics Software Intern, autonomy stack owner",
   category: "robot-systems",
-  order: 1,
+  order: 3,
 
   thesis:
     "A company's ROS 1 architecture replaced with a ROS 2 Humble stack written to be reused across a fleet, then validated over 300 logged trials on a live factory floor.",

@@ -15,7 +15,7 @@ export const nexthi: Project = {
   year: "2026",
   role: "Author",
   category: "robot-systems",
-  order: 6,
+  order: 8,
   compact: true,
 
   thesis:

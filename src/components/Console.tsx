@@ -127,8 +127,8 @@ const APPS: App[] = [
     id: "patents",
     name: "patents",
     cmd: "patents",
-    desc: "A vehicle that flies and drives, and two more filings",
-    meta: "3 filed",
+    desc: "Four published applications, lead inventor on all of them",
+    meta: "4 published",
     Icon: ScrollText,
     accent: "#7fd9e8",
     render: () => <Patents />,
@@ -303,7 +303,7 @@ export default function Console() {
             { kind: "out", text: "Stack    ROS 2 · Nav2 · C++ · CANopen" },
             { kind: "out", text: "Shipped SMR300 to 300 kg industrial AMR" },
             { kind: "out", text: "Record   97% docking · 300 trials" },
-            { kind: "out", text: "Patents  3 filed" },
+            { kind: "out", text: "Patents  4 published" },
             { kind: "out", text: "Langs    English · Hindi · Thai · Marathi" },
           ]);
           break;
@@ -355,7 +355,7 @@ export default function Console() {
             },
             {
               kind: "out",
-              text: "  300 logged trials on a live factory floor. 3 patents filed.",
+              text: "  300 logged trials on a live factory floor. 4 patents published.",
             },
             { kind: "dim", text: "" },
             { kind: "ok", text: `  ${profile.email}` },
