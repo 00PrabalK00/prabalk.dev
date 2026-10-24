@@ -27,9 +27,9 @@ import GithubGraph from "@/components/GithubGraph";
 import styles from "./home.module.css";
 
 export const metadata: Metadata = {
-  title: { absolute: "Prabal Khare, Robotics Engineer" },
+  title: { absolute: "Prabal Khare | Robotics Engineer & Embodied AI Researcher" },
   description:
-    "Robotics software engineer. ROS 2 autonomy, localization, navigation and operator tooling. Projects, experience, patents and contact details.",
+    "Prabal Khare is a robotics engineer and NYU M.S. researcher in Brooklyn, New York, working on embodied AI, ROS 2 autonomy, robot learning and real-world deployment. Projects, research, patents and experience.",
   alternates: { canonical: `${SITE_URL}/` },
 };
 
@@ -59,6 +59,7 @@ const personSchema = {
   "@type": "Person",
   name: profile.name,
   jobTitle: "Robotics Engineer",
+  description: profile.headline,
   email: `mailto:${profile.email}`,
   url: `${SITE_URL}/`,
   image: `${SITE_URL}/media/portrait.jpg`,
@@ -67,6 +68,12 @@ const personSchema = {
     addressLocality: "Brooklyn",
     addressRegion: "NY",
   },
+  // Schools and topics separate this Prabal Khare from others with the name.
+  alumniOf: education.map((e) => ({
+    "@type": "CollegeOrUniversity",
+    name: e.school,
+  })),
+  knowsAbout: ["Robotics", "Embodied AI", "Autonomous Systems", "ROS 2", "Robot Learning"],
   sameAs: [profile.github, profile.linkedin, profile.youtube, profile.botopsy],
 };
 
@@ -102,7 +109,21 @@ const GROUP_ALIASES: Record<string, string> = {
  * back to the first shipped item in the manifest gallery. Videos are allowed —
  * the Thumb component already renders them with preload="none".
  */
+/**
+ * Rows whose thumbnail should be a running clip rather than the group's first
+ * photograph. Looked up before the legacy slots, which are ordered for the
+ * gallery and would otherwise hand these rows a still.
+ */
+const THUMB_VIDEO: Record<string, string> = {
+  "Project MIRA": "mira-underwater.mp4",
+  "Pushpak Viman": "TransformationDroneVideo.mp4",
+};
+
 function mediaForEntry(name: string, slug?: string) {
+  const video = THUMB_VIDEO[name];
+  const pinned = video && shippedMedia.find((m) => m.file === video);
+  if (pinned) return pinned;
+
   const group = GROUP_ALIASES[name] ?? name;
   const legacy = shippedMedia.find((m) => m.group === group);
   if (legacy) return legacy;

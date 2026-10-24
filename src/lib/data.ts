@@ -1113,6 +1113,7 @@ export const SHIPPED_MEDIA = new Set([
   "VTOL.jpeg",
   "TransformationDroneVideo.mp4",
   "VideoOfUsDoingAutonomousDockingAUV.mp4",
+  "mira-underwater.mp4",
   "Kurat_body.jpeg",
   "KURAT_Detection.jpeg",
   "Anamatronic_head.jpg",

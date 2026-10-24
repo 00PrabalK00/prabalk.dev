@@ -21,7 +21,7 @@ const mono = Space_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE),
   title: {
-    default: "Prabal Khare, Robotics Engineer & Embodied AI",
+    default: "Prabal Khare | Robotics Engineer & Embodied AI Researcher",
     template: "%s · Prabal Khare",
   },
   description:

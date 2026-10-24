@@ -151,6 +151,11 @@ export const mira: Project = {
       caption: "Underwater, an autonomous docking run",
     },
     {
+      file: "mira-underwater.mp4",
+      type: "video",
+      caption: "Pool test, the vehicle descending onto the docking station",
+    },
+    {
       file: "TAC_PhotowithThrophy.jpeg",
       type: "image",
       caption: "TAC Challenge, Norway 2024",

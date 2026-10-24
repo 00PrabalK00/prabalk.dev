@@ -32,6 +32,15 @@ function heading(p: (typeof PROJECTS)[number]) {
   return `${p.title}, ${p.subtitle}`;
 }
 
+/** Shipped gallery items only; a pending slot has no file to link to. */
+function shippedGallery(p: (typeof PROJECTS)[number]) {
+  return (p.gallery ?? []).filter((m) => !m.pending);
+}
+
+function mediaUrl(file: string) {
+  return `${SITE_URL}/media/${file}`;
+}
+
 /** The short index: what exists, where it lives, one line each. */
 export function buildLlmsTxt(): string {
   const out: string[] = [];
@@ -51,8 +60,12 @@ export function buildLlmsTxt(): string {
     out.push(`## ${CATEGORY_LABEL[group.category]}`);
     out.push("");
     for (const p of group.items) {
+      const videos = shippedGallery(p).filter((m) => m.type === "video");
+      const demo = videos.length
+        ? ` Video: ${videos.map((m) => mediaUrl(m.file)).join(", ")}.`
+        : "";
       out.push(
-        `- [${heading(p)}](${projectUrl(p.slug)}): ${p.thesis} Status: ${STATUS_LABEL[p.status]} (${p.year}).`,
+        `- [${heading(p)}](${projectUrl(p.slug)}): ${p.thesis} Status: ${STATUS_LABEL[p.status]} (${p.year}).${demo}`,
       );
     }
     out.push("");
@@ -226,6 +239,15 @@ export function buildLlmsFullTxt(): string {
         out.push("");
         for (const r of p.repos)
           out.push(`- ${r.name} (${r.href}): ${r.contains}`);
+        out.push("");
+      }
+
+      const media = shippedGallery(p);
+      if (media.length) {
+        out.push("#### Media");
+        out.push("");
+        for (const m of media)
+          out.push(`- ${m.type === "video" ? "Video" : "Image"}: ${m.caption} (${mediaUrl(m.file)})`);
         out.push("");
       }
 
