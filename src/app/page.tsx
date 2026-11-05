@@ -462,9 +462,9 @@ function Work() {
       !compactSlugs.has(CASE_STUDY_SLUGS[p.name] ?? ""),
   );
 
-  // Ripple and Wren lead the list, above SMR300. They are not a separate
-  // research tier any more, so they sit in the same list as everything else.
-  const lead = ["ripple", "wren"]
+  // Ripple, Wren and the parachute study lead the list, above SMR300. They are
+  // not a separate research tier, so they sit in the same list as the rest.
+  const lead = ["ripple", "wren", "parachute"]
     .map((slug) => PROJECTS_BY_SLUG.get(slug))
     .filter((p): p is NonNullable<typeof p> => Boolean(p));
 
