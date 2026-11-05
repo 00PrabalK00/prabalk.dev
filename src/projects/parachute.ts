@@ -16,8 +16,8 @@ export const parachute: Project = {
   status: "active-research",
   year: "2026",
   role: "Author, course team project",
-  category: "current-research",
-  order: 1,
+  category: "robot-systems",
+  order: 0,
 
   thesis:
     "Compare data-driven design methods on one honest question: given 250 cm² of plastic, which canopy shape lands slowest, and does a search over shapes find anything a central vent does not.",

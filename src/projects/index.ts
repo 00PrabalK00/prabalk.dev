@@ -39,7 +39,7 @@ import { vtol } from "./vtol";
  * same subdomain fails the build rather than shipping a dead link.
  */
 export const PROJECTS: Project[] = [
-  // Current research — what the portfolio should lead with.
+  // Most recent first.
   parachute,
   ripple,
   wren,
