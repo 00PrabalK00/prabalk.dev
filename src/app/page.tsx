@@ -464,9 +464,30 @@ function Work() {
 
   // Newest work sits at the top of the list, above SMR300. New projects go in
   // by date, most recent first, rather than being ranked.
-  const lead = ["parachute", "ripple", "wren"]
-    .map((slug) => PROJECTS_BY_SLUG.get(slug))
-    .filter((p): p is NonNullable<typeof p> => Boolean(p));
+  const bySlugs = (slugs: string[]) =>
+    slugs
+      .map((slug) => PROJECTS_BY_SLUG.get(slug))
+      .filter((p): p is NonNullable<typeof p> => Boolean(p));
+  const lead = bySlugs(["parachute", "wren"]);
+  // Ripple sits below SMR300.
+  const afterSmr300 = bySlugs(["ripple"]);
+
+  const manifestEntry = (p: (typeof lead)[number]) => (
+    <Entry
+      key={p.slug}
+      title={p.title}
+      subtitle={p.subtitle}
+      meta={p.year}
+      blurb={p.summary}
+      tech={p.stack}
+      media={mediaForEntry(p.title, p.slug)}
+      caseStudy={p.slug}
+      link={p.links.find((l) => l.kind === "site" || l.kind === "repo")?.href}
+      linkLabel={
+        p.links.find((l) => l.kind === "site" || l.kind === "repo")?.label
+      }
+    />
+  );
 
   // The bench is driven by the manifests now, so each entry has a case study.
   const bench = PROJECTS.filter(
@@ -478,24 +499,7 @@ function Work() {
       <PanelHeading>Projects and professional experience</PanelHeading>
 
       <div className={ROWS}>
-        {lead.map((p) => (
-          <Entry
-            key={p.slug}
-            title={p.title}
-            subtitle={p.subtitle}
-            meta={p.year}
-            blurb={p.summary}
-            tech={p.stack}
-            media={mediaForEntry(p.title, p.slug)}
-            caseStudy={p.slug}
-            link={
-              p.links.find((l) => l.kind === "site" || l.kind === "repo")?.href
-            }
-            linkLabel={
-              p.links.find((l) => l.kind === "site" || l.kind === "repo")?.label
-            }
-          />
-        ))}
+        {lead.map(manifestEntry)}
 
         {/*
          * SMR300 is not in `projects` — it is its own object, and it is the
@@ -523,6 +527,8 @@ function Work() {
             .map((m) => `${m.value}${m.suffix} ${m.label.toLowerCase()}`)
             .join(" · ")}
         />
+
+        {afterSmr300.map(manifestEntry)}
 
         {featured.map((p) => (
           <Entry
