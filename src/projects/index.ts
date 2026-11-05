@@ -16,6 +16,7 @@ import { httpsota } from "./httpsota";
 import { kurat } from "./kurat";
 import { mira } from "./mira";
 import { opendronekit } from "./opendronekit";
+import { parachute } from "./parachute";
 import { prabalos } from "./prabalos";
 import { pushpak } from "./pushpak";
 import { ripple } from "./ripple";
@@ -39,6 +40,7 @@ import { vtol } from "./vtol";
  */
 export const PROJECTS: Project[] = [
   // Current research — what the portfolio should lead with.
+  parachute,
   ripple,
   wren,
   // Robot systems
